@@ -141,8 +141,8 @@ char convertKey(int key)
 {
     if (key >= KEY_A && key <= KEY_Z)  // a-z
         return key + 32;
-    if (key >= KEY_COMMA && key <= KEY_NINE) return key;
-    if (key == KEY_APOSTROPHE || key == KEY_SEMICOLON || key == KEY_EQUAL || key == KEY_LEFT_BRACKET || key == KEY_BACKSLASH || key == KEY_RIGHT_BRACKET || key == KEY_GRAVE) return key;
+    if (key == KEY_SPACE || (key >= KEY_COMMA && key <= KEY_NINE) || key == KEY_APOSTROPHE || key == KEY_SEMICOLON || key == KEY_EQUAL || key == KEY_LEFT_BRACKET || key == KEY_BACKSLASH || key == KEY_RIGHT_BRACKET || key == KEY_GRAVE)
+        return key;
     return 0;
 }
 

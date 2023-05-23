@@ -6,6 +6,7 @@
             "type": "process",
             "command": "mingw32-make",
             "args": [
+                "-j7",
                 "default"
             ],
             "options": {

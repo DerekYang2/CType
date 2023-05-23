@@ -52,21 +52,43 @@ void TextDrawer::set_offset(float x)
 void TextDrawer::draw()
 {
     float left_most = center + offset;
-    DrawLine(0, bottom_y, gameScreenWidth, bottom_y, GREEN);
     BeginShaderMode(shader);    // Activate SDF font shader    
+    const Color future_col = rgb(105, 105, 105);
+    const float fall_off = 200;
+    Color col;
     for (int i = char_status.size() - 1; i >= 0 && left_most >= 0; i--)
     {
         string char_str(1, char_status[i].second);
         Vector2 dimension = char_dimension[char_status[i].second];
         left_most -= dimension.x;
-        DrawTextEx(font, char_str.c_str(), { left_most, bottom_y - dimension.y}, font_size, font_size / spacing, BLUE);
+
+        if (left_most > center || char_status[i].first == MISSING)
+            col = future_col;
+        else if (char_status[i].first == CORRECT)
+            col = BLACK;
+        else if (char_status[i].first == INCORRECT)
+            col = RED;
+        if (left_most < fall_off)
+            col.a = 255 * (left_most * left_most / (fall_off * fall_off));
+        
+        if (char_str != " ")
+            DrawTextEx(font, char_str.c_str(), { left_most, bottom_y - dimension.y }, font_size, font_size / spacing, col);
+        if (char_status[i].first == MISSING)
+        {
+            DrawLineEx({ left_most, bottom_y }, { left_most + dimension.x, bottom_y }, 2, RED);
+        }
     }
     float right_most = center + offset;
-    for (int i = empty_i; i < generated_chars.size() && right_most + 2*char_dimension['w'].x <= gameScreenWidth; i++)
+    for (int i = empty_i; i < generated_chars.size() && right_most <= gameScreenWidth + 2 * char_dimension['w'].x; i++)
     {
         string char_str(1, generated_chars[i]);
         Vector2 dimension = char_dimension[generated_chars[i]];
-        DrawTextEx(font, char_str.c_str(), { right_most, bottom_y - dimension.y}, font_size, font_size / spacing, RED);
+        float dist_edge = gameScreenWidth - (right_most + dimension.x);
+        col = future_col;
+        if (dist_edge < fall_off)
+            col.a = 255 * (dist_edge * dist_edge / (fall_off * fall_off));
+         if (char_str != " ")
+            DrawTextEx(font, char_str.c_str(), { right_most, bottom_y - dimension.y }, font_size, font_size / spacing, col);
         right_most += dimension.x;
     }
     EndShaderMode();

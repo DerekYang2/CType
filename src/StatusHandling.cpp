@@ -4,7 +4,13 @@
 
 void update_status(char c)
 {
+    if (c == ' ') { update_space(); return; }
+    
     char status = CORRECT;
+    if (c != generated_chars[empty_i])
+    {
+        status = INCORRECT;
+    }
     char_status.push_back({ status, c });
     io_handler.offset_x += char_dimension[c].x;
     empty_i++;
@@ -12,10 +18,19 @@ void update_status(char c)
 
 void update_space()
 {
-    char status = CORRECT;
-    char_status.push_back({ status, ' ' });
-    io_handler.offset_x += char_dimension[' '].x;
-    empty_i++;
+    if (' ' != generated_chars[empty_i])  // wrong space
+    {
+        char correct = generated_chars[empty_i];
+        char_status.push_back({ MISSING, correct });
+        io_handler.offset_x += char_dimension[correct].x;
+        empty_i++;
+    } else
+    {
+        
+        char_status.push_back({ CORRECT, ' ' });
+        io_handler.offset_x += char_dimension[' '].x;
+        empty_i++;
+    }
 }
 
 void update_backspace()

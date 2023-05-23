@@ -25,11 +25,7 @@ void IOHandler::update()
         } else if (key_pressed == KEY_BACKSPACE)
         {
             update_backspace();
-        } else if (key_pressed == KEY_SPACE)  // requires special handling
-        {
-            update_space();
-            handled_press[' '] = true;
-        }
+        } 
         key_pressed = GetKeyPressed();
     }
 
