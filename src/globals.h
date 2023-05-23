@@ -37,17 +37,18 @@ extern vector<pair<char, char>> char_status;
 
 // Init mt19937 with random seed
 extern mt19937 rng;
-extern Font font, line_font; // Font: UI font, line_font: font for the line of text
-extern float font_spacing, line_spacing;
-
+extern Font font; // Font: UI font
+extern float font_spacing;
+extern Shader shader;
+extern Vector2 char_dimension[CHAR_MAX + 1];
 // COLORS
 extern const Color main_color;
 #define add_rgb(c, v) Color(c.r + v, c.g + v, c.b + v, 255)
 
 extern char convertKey(int key);
 extern int convertChar(char c);
-extern void DrawTextAlign(char c, float x, float y, float font_size, Color col = BLACK, int alignment = LEFT_ALIGN, int y_align = TOP_ALIGN, bool is_line = false);
-extern void DrawTextAlign(string str, float x, float y, float font_size, Color col = BLACK, int x_align = LEFT_ALIGN, int y_align = TOP_ALIGN, bool is_line = false);
+extern void DrawTextAlign(char c, float x, float y, float font_size, Color col = BLACK, int alignment = LEFT_ALIGN, int y_align = TOP_ALIGN);
+extern void DrawTextAlign(string str, float x, float y, float font_size, Color col = BLACK, int x_align = LEFT_ALIGN, int y_align = TOP_ALIGN);
 extern void DrawText(string font_name, string text, float x, float y, float font_size, Color col = BLACK);
 extern void DrawTextCenter(string font_name, string text, float x, float y, float font_size, Color col = BLACK);
 extern void DrawLabel(string text, int x, int y, int fontSize, Color label_col, Color text_col = WHITE);

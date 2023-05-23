@@ -1,15 +1,13 @@
 #include "globals.h"
 
-void DrawTextAlign(char c, float x, float y, float font_size, Color col, int x_align, int y_align, bool is_line)
+void DrawTextAlign(char c, float x, float y, float font_size, Color col, int x_align, int y_align)
 {
-    return DrawTextAlign(string(1, c), x, y, font_size, col, x_align, y_align, is_line);
+    return DrawTextAlign(string(1, c), x, y, font_size, col, x_align, y_align);
 }
 
-void DrawTextAlign(string str, float x, float y, float font_size, Color col, int x_align, int y_align, bool is_line)
+void DrawTextAlign(string str, float x, float y, float font_size, Color col, int x_align, int y_align)
 {
-    float spacing = is_line ? line_spacing : font_spacing;
-    Font this_font = is_line ? line_font : font;
-    Vector2 text_size = MeasureTextEx(this_font, str.c_str(), font_size, font_size / spacing);
+    Vector2 text_size = MeasureTextEx(font, str.c_str(), font_size, font_size / font_spacing);
     float txtw = text_size.x;
     float txth = text_size.y;
 
@@ -37,7 +35,7 @@ void DrawTextAlign(string str, float x, float y, float font_size, Color col, int
     }
 
     // Draw the text
-    DrawTextEx(this_font, str.c_str(), { x + x_offset, y + y_offset }, font_size, font_size / spacing, col);
+    DrawTextEx(font, str.c_str(), { x + x_offset, y + y_offset }, font_size, font_size / font_spacing, col);
 }
 
 void DrawText(string font_name, string text, float x, float y, float font_size, Color col)
