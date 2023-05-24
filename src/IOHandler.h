@@ -1,6 +1,6 @@
 #pragma once
 #include "TextDrawer.h"
-#define inactive_time 2
+#define inactive_time 1
 struct IOHandler {
     int inactive_frames = 0;
     int back_frames = 0;

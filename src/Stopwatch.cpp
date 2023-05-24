@@ -1,5 +1,9 @@
 #include "Stopwatch.h"
-#include "raylib.h"
+Stopwatch::Stopwatch()
+{
+    tinit = -1e9;
+}
+
 void Stopwatch::start()
 {
     tinit = GetTime();

@@ -1,16 +1,23 @@
 #include "IOHandler.h"
 #include "StatusHandling.h"
+
 IOHandler::IOHandler()
 {
     back_frames = offset_x = offset_vel = vel_target = 0;
     inactive_frames = inactive_time * 60;
 }
 
+/**
+ * NOTE: strange behavior with autohotkey correct, pressing space right too quickly after wrong word doesn't work
+ * Example: "porblem" should become "problem ", but results in "proble m"
+ * for some reason, space comes before 'm'
+*/
 void IOHandler::update()
 {
     bool active = false;
     int key_pressed = GetKeyPressed();
     fill(handled_press, handled_press + CHAR_MAX + 1, false);
+    
     while (key_pressed)  // IF PRESSED
     {
         active = true;

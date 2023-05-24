@@ -1,9 +1,10 @@
 #ifndef _STOPWATCH_H
 #define _STOPWATCH_H
+#include "raylib.h"
 class Stopwatch
 {
 public:
-    double tinit = -1e9;
+    double tinit;
     Stopwatch();
     void start();
     double ms();

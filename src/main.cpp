@@ -19,6 +19,7 @@
 #include "nfd_wrapper.h"
 #include "globals.h"
 #include "UIAlloc.h"
+#include "Button.h"
 #include "segoeui.h"
 #include "ObjectMacros.h"
 #include "StopWatch.h"
@@ -96,7 +97,7 @@ int main(void)
     //println(open_file("png,jpg;psd"));
 
     // Enable config flags for resizable window and vertical synchro
-    SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT | FLAG_MSAA_4X_HINT);
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_MSAA_4X_HINT);
     InitWindow(windowWidth, windowHeight, "Typing Test");
     SetWindowMinSize(320, 240);
 
@@ -137,6 +138,7 @@ int main(void)
         BeginTextureMode(target);
         ClearBackground(RAYWHITE);  // Clear render texture background color
         draw_text();
+        DrawFPS(0, 0);
         EndTextureMode();
 
         // Draw render texture onto real screen
