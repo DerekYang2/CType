@@ -2,7 +2,7 @@
 #define _GLOBALSH_
 #include "raylibcustom.h"
 #include <fstream>
-
+#include "Word.h"
 #define shader_path "./fonts/sdf.fs"
 // Window Variables
 extern const int windowWidth, windowHeight;
@@ -34,7 +34,8 @@ extern string generated_chars;
 #define EXTRA 3
 #define FUTURE 4
 extern vector<pair<char, char>> char_status;
-
+extern vector<Word> words;
+extern int word_i;
 // Init mt19937 with random seed
 extern mt19937 rng;
 extern Font font; // Font: UI font

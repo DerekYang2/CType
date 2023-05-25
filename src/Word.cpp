@@ -3,13 +3,28 @@
 
 Word::Word(std::string w) {
     word = w;
+    typed = "";
+    idx = 0;
 }
 
-bool Word::is_correct() {
-    return correct;
-}
-
-int Word::index()
+int Word::length()
 {
-    return idx;
+    return word.size();
+}
+
+bool Word::correct()
+{
+    return word == typed;
+}
+
+void Word::add(char c)
+{
+    idx++;
+    typed += c;
+}
+
+void Word::pop()
+{
+    idx--;
+    typed.pop_back();
 }

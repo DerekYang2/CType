@@ -53,7 +53,9 @@ void TextDrawer::draw()
 {
     float left_most = center + offset;
     BeginShaderMode(shader);    // Activate SDF font shader    
-    const Color future_col = rgb(105, 105, 105);
+    Color future_col = BLACK;
+    const float a_offset = 100;
+    future_col.a = a_offset;
     const float fall_off = 200;
     Color col;
     for (int i = char_status.size() - 1; i >= 0 && left_most >= 0; i--)
@@ -68,8 +70,10 @@ void TextDrawer::draw()
             col = BLACK;
         else if (char_status[i].first == INCORRECT)
             col = RED;
+        else  // extra word 
+            col = RED, col.a = a_offset;
         if (left_most < fall_off)
-            col.a = 255 * (left_most * left_most / (fall_off * fall_off));
+            col.a = a_offset * (left_most * left_most / (fall_off * fall_off));
         
         if (char_str != " ")
             DrawTextEx(font, char_str.c_str(), { left_most, bottom_y - dimension.y }, font_size, font_size / spacing, col);
@@ -86,7 +90,7 @@ void TextDrawer::draw()
         float dist_edge = gameScreenWidth - (right_most + dimension.x);
         col = future_col;
         if (dist_edge < fall_off)
-            col.a = 255 * (dist_edge * dist_edge / (fall_off * fall_off));
+            col.a = a_offset * (dist_edge * dist_edge / (fall_off * fall_off));
          if (char_str != " ")
             DrawTextEx(font, char_str.c_str(), { right_most, bottom_y - dimension.y }, font_size, font_size / spacing, col);
         right_most += dimension.x;

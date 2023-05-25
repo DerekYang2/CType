@@ -1,12 +1,12 @@
 #pragma once
 #include <string>
 struct Word {
-    bool correct = false;
     int idx = 0;
 public:
-    std::string word; // word
+    std::string word, typed ; // word, user typed
     Word(std::string w);
-    bool is_correct();
-    int index();  // current empty index
-        
+    int length();
+    bool correct();
+    void add(char c);
+    void pop();
 };

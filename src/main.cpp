@@ -47,6 +47,8 @@ string generated_chars = "";
  * first = 3 -> store incorrect char, extra typed
 */
 vector<pair<char, char>> char_status;
+vector<Word> words;
+int word_i = 0;
 
 // Init mt19937 with random seed
 mt19937 rng(std::chrono::system_clock::now().time_since_epoch().count());
@@ -79,7 +81,7 @@ void draw_text()
     if (stored_vel.size() > 1000)
         stored_vel.pop_front();
     for (int x_pos = stored_vel.size()-1; x_pos >= 0; x_pos--) 
-        DrawRectangleRec(formatRect(Rectangle(x_pos, 100 - 5*stored_vel[x_pos], 1, 5*stored_vel[x_pos])), RED);
+        DrawRectangleRec(formatRect(Rectangle(x_pos, 100 - 10*stored_vel[x_pos], 1, 10*stored_vel[x_pos])), RED);
     
     drawer.draw();
     if (io_handler.inactive_frames < inactive_time*60 || (io_handler.inactive_frames/30) & 1)  // if active or Inactive, blink half of the time
