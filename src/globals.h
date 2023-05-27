@@ -10,6 +10,10 @@ extern int gameScreenWidth, gameScreenHeight;
 
 // GLOBAL VARS
 extern unordered_set<int> scene_ids[2];
+extern int scene;
+#define START 0
+#define TEST 1
+
 extern Vector2 mouse;
 #define LEFT_ALIGN 0
 #define RIGHT_ALIGN 1
@@ -46,6 +50,7 @@ extern Vector2 char_dimension[CHAR_MAX + 1];
 extern const Color main_color;
 #define add_rgb(c, v) Color(c.r + v, c.g + v, c.b + v, 255)
 
+extern bool IsKeyPressed();
 extern char convertKey(int key);
 extern int convertChar(char c);
 extern void DrawTextAlign(char c, float x, float y, float font_size, Color col = BLACK, int alignment = LEFT_ALIGN, int y_align = TOP_ALIGN);

@@ -1,5 +1,6 @@
 #include "IOHandler.h"
 #include "StatusHandling.h"
+#include "WpmLogger.h"
 
 IOHandler::IOHandler()
 {

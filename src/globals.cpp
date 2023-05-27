@@ -137,6 +137,58 @@ char shiftChar(char original)
     return original;
 }
 
+bool IsKeyPressed()
+{
+    return IsKeyPressed(KEY_APOSTROPHE) ||
+           IsKeyPressed(KEY_COMMA) ||
+           IsKeyPressed(KEY_MINUS) ||
+           IsKeyPressed(KEY_PERIOD) ||
+           IsKeyPressed(KEY_SLASH) ||
+           IsKeyPressed(KEY_ZERO) ||
+           IsKeyPressed(KEY_ONE) ||
+           IsKeyPressed(KEY_TWO) ||
+           IsKeyPressed(KEY_THREE) ||
+           IsKeyPressed(KEY_FOUR) ||
+           IsKeyPressed(KEY_FIVE) ||
+           IsKeyPressed(KEY_SIX) ||
+           IsKeyPressed(KEY_SEVEN) ||
+           IsKeyPressed(KEY_EIGHT) ||
+           IsKeyPressed(KEY_NINE) ||
+           IsKeyPressed(KEY_SEMICOLON) ||
+           IsKeyPressed(KEY_EQUAL) ||
+           IsKeyPressed(KEY_A) ||
+           IsKeyPressed(KEY_B) ||
+           IsKeyPressed(KEY_C) ||
+           IsKeyPressed(KEY_D) ||
+           IsKeyPressed(KEY_E) ||
+           IsKeyPressed(KEY_F) ||
+           IsKeyPressed(KEY_G) ||
+           IsKeyPressed(KEY_H) ||
+           IsKeyPressed(KEY_I) ||
+           IsKeyPressed(KEY_J) ||
+           IsKeyPressed(KEY_K) ||
+           IsKeyPressed(KEY_L) ||
+           IsKeyPressed(KEY_M) ||
+           IsKeyPressed(KEY_N) ||
+           IsKeyPressed(KEY_O) ||
+           IsKeyPressed(KEY_P) ||
+           IsKeyPressed(KEY_Q) ||
+           IsKeyPressed(KEY_R) ||
+           IsKeyPressed(KEY_S) ||
+           IsKeyPressed(KEY_T) ||
+           IsKeyPressed(KEY_U) ||
+           IsKeyPressed(KEY_V) ||
+           IsKeyPressed(KEY_W) ||
+           IsKeyPressed(KEY_X) ||
+           IsKeyPressed(KEY_Y) ||
+           IsKeyPressed(KEY_Z) ||
+           IsKeyPressed(KEY_LEFT_BRACKET) ||
+           IsKeyPressed(KEY_BACKSLASH) ||
+           IsKeyPressed(KEY_RIGHT_BRACKET) ||
+           IsKeyPressed(KEY_GRAVE) ||
+           IsKeyPressed(KEY_SPACE);
+}
+
 char convertKey(int key)
 {
     if (key >= KEY_A && key <= KEY_Z)  // a-z
