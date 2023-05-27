@@ -31,4 +31,10 @@ using namespace std;
 #define substrI(str, start, end) str.substr(start, end - start + 1);  
 // exclusive boundaries
 #define substrE(str, start, end) str.substr(start, end - start);  
+
+#define PRINT_VECTORS_WITH_PARENTHESES
+//#define PRINT_VECTORS_BY_COMPONENT
+
+//#define EQUALITY_OPERATOR_SIMPLE
+#define EQUALITY_OPERATOR_KNUTH
 #endif

@@ -77,4 +77,73 @@ extern vector<string> split_string(string str, char delimiter);
 extern string fileText(string file_path);
 extern void writeText(string file_path, string str);
 
+Vector2 operator+(const Vector2& a, const Vector2& b);
+Vector3 operator+(const Vector3& a, const Vector3& b);
+Vector4 operator+(const Vector4& a, const Vector4& b);
+Vector2& operator+=(Vector2& a, const Vector2& b);
+Vector3& operator+=(Vector3& a, const Vector3& b);
+Vector4& operator+=(Vector4& a, const Vector4& b);
+Matrix operator+(const Matrix& left, const Matrix& right);
+Matrix& operator+=(Matrix& left, const Matrix& right);
+Color operator+(const Color& a, const Color& b);
+Color& operator+=(Color& a, const Color& b);
+
+Vector2& operator-(Vector2& a);
+Vector3& operator-(Vector3& a);
+Vector2 operator-(const Vector2& a, const Vector2& b);
+Vector3 operator-(const Vector3& a, const Vector3& b);
+Vector4 operator-(const Vector4& a, const Vector4& b);
+Vector2& operator-=(Vector2& a, const Vector2& b);
+Vector3& operator-=(Vector3& a, const Vector3& b);
+Vector4& operator-=(Vector4& a, const Vector4& b);
+Matrix operator-(const Matrix& left, const Matrix& right);
+Matrix& operator-=(Matrix& left, const Matrix& right);
+Color operator-(const Color& a, const Color& b);
+Color& operator-=(Color& a, const Color& b);
+
+Vector2 operator*(const Vector2& a, float b);
+Vector2 operator*(float b, const Vector2& a);
+Vector3 operator*(const Vector3& a, float b);
+Vector3 operator*(float b, const Vector3& a);
+Matrix operator*(const Matrix& left, const Matrix& right);
+Matrix& operator*=(Matrix& left, const Matrix& right);
+Vector2& operator*=(Vector2& a, const float b);
+Vector3& operator*=(Vector3& a, const float b);
+Color operator*(const Color& a, const Color& b);
+Color& operator*=(Color& a, const Color& b);
+Color operator*(const Color& a, const float b);
+Color& operator*=(Color& a, const float b);
+
+Vector2 operator/(const Vector2& a, const float b);
+Vector3 operator/(const Vector3& a, const float b);
+Vector2& operator/=(Vector2& a, const float b);
+Vector3& operator/=(Vector3& a, const float b);
+Color operator/(const Color& a, const Color& b);
+Color& operator/=(Color& a, const Color& b);
+Color operator/(const Color& a, const float b);
+Color& operator/=(Color& a, const float b);
+
+// Equality operator overloads
+//
+// Integer equality
+bool operator==(const Color& c1, const Color& c2);
+
+// Float equality for Vector2 and Vector3
+//
+//Comparing float values requires care.  Choose EQUALITY_OPERATOR_SIMPLE, EQUALITY_OPERATOR_KNUTH, or neither in the #defines at the top of the file
+#ifdef EQUALITY_OPERATOR_SIMPLE
+bool operator==(const Vector2& a, const Vector2& b);
+bool operator==(const Vector3& a, const Vector3& b);
+bool operator==(const Vector4& a, const Vector4& b);
+#endif // EQUALITY_OPERATOR_SIMPLE
+
+#ifdef EQUALITY_OPERATOR_KNUTH
+//Takes a conservative approach and only affirms that two vectors are equal if all of their respective components are equal within machine precision.
+#include <limits>
+#include <cmath>
+bool operator==(const Vector2& a, const Vector2& b);
+bool operator==(const Vector3& a, const Vector3& b);
+bool operator==(const Vector4& a, const Vector4& b);
+#endif // EQUALITY_OPERATOR_KNUTH
+
 #endif

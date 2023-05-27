@@ -16,12 +16,12 @@ void update_status(char c)
     {
         status = INCORRECT;
         words[word_i].add(c);
-        wpm_logger.push_char(INCORRECT), empty_i++;
+        empty_i++;
     } else  // correct
     {
         status = CORRECT;
         words[word_i].add(c);
-        wpm_logger.push_char(CORRECT), empty_i++;
+        wpm_logger.push_char(), empty_i++;
     }
     char_status.push_back({ status, c });
     io_handler.offset_x += char_dimension[c].x;
@@ -34,7 +34,8 @@ void update_space()
     {
         char_status.push_back({ CORRECT, ' ' });
         io_handler.offset_x += char_dimension[' '].x;
-        wpm_logger.push_char(CORRECT), empty_i++;
+        wpm_logger.push_char(), empty_i++;
+        words[word_i].seal_word(idx == words[word_i].length());
         word_i++;  // go to next word
     } else if (idx != 0) // cannot press space on first index, if first index then ignore 
     {
@@ -45,14 +46,13 @@ void update_space()
             char correct = generated_chars[i];
             char_status.push_back({ MISSING, correct });
             io_handler.offset_x += char_dimension[correct].x;
-            wpm_logger.push_char(INCORRECT);
         }
         // space is correct 
         char_status.push_back({ CORRECT, ' ' });
         io_handler.offset_x += char_dimension[' '].x;
-        wpm_logger.push_char(INCORRECT);  // technically incorrect space when skipped
         // go to start next word
         empty_i = space_idx + 1;
+        words[word_i].seal_word(false);
         word_i++;
     }
 }
@@ -68,16 +68,16 @@ void update_backspace()
         {
             io_handler.offset_x -= char_dimension[char_status.back().second].x;
             char_status.pop_back();
-            wpm_logger.pop_char();
         }
         empty_i -= del_amt;
         word_i--;
+        words[word_i].unseal_word();  // reset status of word
     } else
     {
         io_handler.offset_x -= char_dimension[char_status.back().second].x;
         char_status.pop_back();
         words[word_i].pop();
         if (words[word_i].idx < words[word_i].length())
-            wpm_logger.pop_char(), empty_i--;
+            empty_i--;
     }
 }

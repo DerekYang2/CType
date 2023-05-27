@@ -28,6 +28,7 @@
 #include "TextDrawer.h"
 #include "IOHandler.h"
 #include "WpmLogger.h"
+#include "BezierPath.h"
 // Init extern variables ------------------------------------------------------------------
 // Window Variables
 const int windowWidth = 1650, windowHeight = 1000;
@@ -81,21 +82,30 @@ void update()
 {
     generate_text(ceil((gameScreenWidth - (drawer.center + drawer.offset)) / char_dimension['i'].x), "english");
     globalFrame++;
-    wpm_logger.update();  
     io_handler.update();
+    wpm_logger.update();  
 }
 
-deque<float> stored_vel;
+deque<float> stored_wpm;
+deque<float> stored_current_wpm;
+
 void draw_text()
 {
-    DrawText(TextFormat("%.0f wpm", wpm_logger.wpm()), 0, 0, 30, BLACK);
     // TEST draw vel
-    stored_vel.push_back(wpm_logger.wpm());
-    if (stored_vel.size() > 1000)
-        stored_vel.pop_front();
+    stored_wpm.push_back(wpm_logger.wpm());
+    if (stored_wpm.size() > 1000)
+        stored_wpm.pop_front();
+    stored_current_wpm.push_back(wpm_logger.current_wpm());
+    if (stored_current_wpm.size() > 1000)
+        stored_current_wpm.pop_front();
+    
+    DrawText(TextFormat("%.0f wpm\n%.0f raw", stored_wpm.back(), stored_current_wpm.back()), 0, 0, 30, BLACK);
     const float scale_f = 2;
-    for (int x_pos = stored_vel.size() - 1; x_pos >= 0; x_pos--)
-        DrawRectangleRec(formatRect(Rectangle(x_pos, 500 - scale_f*stored_vel[x_pos], 1, scale_f*stored_vel[x_pos])), RED);
+    for (int x_pos = stored_wpm.size() - 1; x_pos >= 0; x_pos--)
+        DrawRectangleRec(formatRect(Rectangle(x_pos, 500 - scale_f*stored_wpm[x_pos], 1, scale_f*stored_wpm[x_pos])), RED);
+    for (int x_pos = stored_current_wpm.size() - 1; x_pos >= 0; x_pos--)
+        DrawRectangleRec(formatRect(Rectangle(x_pos, 500 - scale_f*stored_current_wpm[x_pos], 1, 10)), BLUE);
+
     
     drawer.draw();
     if (io_handler.inactive_frames < inactive_time*60 || (io_handler.inactive_frames/30) & 1)  // if active or Inactive, blink half of the time
@@ -123,7 +133,50 @@ void init_test()
     generated_chars = "";
     generate_text(ceil((gameScreenWidth - (drawer.center + drawer.offset)) / char_dimension['i'].x), "english");
 }
+Vector2* point_arr;
+vector<Vector2> init_points;
+int point_count;
+void init_bezier()
+{
+    // bezier test
+    BezierPath bezier;
+    init_points = vector<Vector2>({ { 50, 800 }, {130, 770}, { 200, 700 }, { 300, 500 }, {400, 600} });
+    bezier.Interpolate(init_points, 0.25f);
+    auto points = bezier.GetDrawingPoints1();
+    point_arr = new Vector2[2*points.size()];
+    point_count = 2 * points.size();
+    Vector2 previous = points[0];
+    Vector2 current = { 0 };
+    float thick = 5;
+    for (int i = 1; i < points.size(); i++)
+    {
+        current = points[i];
+        float dy = current.y - previous.y;
+        float dx = current.x-previous.x;
+        float size = 0.5f*thick/sqrtf(dx*dx+dy*dy);
 
+        if (i==1)
+        {
+            point_arr[0].x = previous.x+dy*size;
+            point_arr[0].y = previous.y-dx*size;
+            point_arr[1].x = previous.x-dy*size;
+            point_arr[1].y = previous.y+dx*size;
+        }
+
+        point_arr[2*i+1].x = current.x-dy*size;
+        point_arr[2*i+1].y = current.y+dx*size;
+        point_arr[2*i].x = current.x+dy*size;
+        point_arr[2*i].y = current.y-dx*size;
+        previous = current;
+    }
+}
+
+void draw_curve()
+{
+    for (auto point : init_points) DrawCircle(point.x, point.y, 5, BLUE);
+    //for (int i = 0; i < point_count; i++) DrawCircle(point_arr[i].x, point_arr[i].y, 2, RED);
+    DrawTriangleStrip(point_arr, point_count, BLACK);
+}
 //------------------------------------------------------------------------------------
 // Program main entry point
 //------------------------------------------------------------------------------------
@@ -145,10 +198,16 @@ int main(void)
     
     init();
     init_test();
+    init_bezier();
+    
+    // timer funcs
+    float frame_time = 1;
+    Stopwatch frame_timer;
     //--------------------------------------------------------------------------------------
     // Main game loop
     while (!WindowShouldClose())        // Detect window close button or ESC key
     {
+        frame_timer.start();
         //----------------------------------------------------------------------------------
         // Compute required framebuffer scaling
         float scale = min((float)GetScreenWidth()/gameScreenWidth, (float)GetScreenHeight()/gameScreenHeight);
@@ -178,7 +237,10 @@ int main(void)
         // Draw everything in the render texture, note this will not be rendered on screen, yet
         BeginTextureMode(target);
         ClearBackground(RAYWHITE);  // Clear render texture background color
+        int max_fps = 1000.0/frame_time;
+        DrawText(TextFormat("MAX FPS: %d | ELAPSED TIME: %.2f", max_fps, frame_time), 0, gameScreenHeight - 30, 25, BLACK);
         draw_text();
+        draw_curve();
         EndTextureMode();
 
         // Draw render texture onto real screen
@@ -189,6 +251,8 @@ int main(void)
             DrawTexturePro(target.texture, (Rectangle){ 0.0f, 0.0f, (float)target.texture.width, (float)-target.texture.height },
                            (Rectangle){ (GetScreenWidth() - ((float)gameScreenWidth*scale))*0.5f, (GetScreenHeight() - ((float)gameScreenHeight*scale))*0.5f,
                            (float)gameScreenWidth*scale, (float)gameScreenHeight*scale }, (Vector2){ 0, 0 }, 0.0f, WHITE);
+        if (globalFrame % 30 == 0)
+            frame_time = frame_timer.ms();
         EndDrawing();
         //--------------------------------------------------------------------------------------
     }

@@ -8,15 +8,15 @@
 
 struct WpmLogger {
     Stopwatch watch;
-    int total_wpm, total_good;
+    int total_good;
     int good;  // number of chars typed in correct words
     bool current_good;  // is current word's prefix correct
-    std::deque<float> del_queue;  // {word index, time to delete}
-    vector<bool> contribution;  // contribution of character, should match generated_chars and empty_i
+    list<float> del_queue;  // {word index, time to delete}
+    list<char> contribution;
+    int prev_word_i;
     WpmLogger();
     void start();
-    void push_char(bool correct);  // Only call for every empty_i++
-    void pop_char(); // Only call for every empty_i--
+    void push_char();  // Only call for every good empty_i++
     float current_wpm();
     float wpm();
     void update();
