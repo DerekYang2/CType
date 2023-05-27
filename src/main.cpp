@@ -74,6 +74,7 @@ void start_test()
     // reset variables
     word_i = 0;
     empty_i = 0;
+    wpm_logger.start();
 }
 
 void update()
@@ -117,7 +118,6 @@ void init_test()
 {
     drawer = TextDrawer("RobotoMono.ttf", 40);
     io_handler = IOHandler();
-    wpm_logger.start();
     char_status.clear();
     words.clear();
     generated_chars = "";
