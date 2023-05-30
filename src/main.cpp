@@ -29,12 +29,14 @@
 #include "IOHandler.h"
 #include "WpmLogger.h"
 #include "BezierPath.h"
+#include "Graph.h"
+#include "TestInfo.h"
 // Init extern variables ------------------------------------------------------------------
 // Window Variables
 const int windowWidth = 1650, windowHeight = 1000;
 int gameScreenWidth = 1920, gameScreenHeight = 1080;
 // GLOBAL VARS
-unordered_set<int> scene_ids[2];
+unordered_set<int> scene_ids[5];
 int scene = START;
 Vector2 mouse;
 int globalFrame; // Frames printed in the game scene
@@ -61,7 +63,7 @@ float font_spacing;
 // COLORS
 const Color main_color = rgb(27, 27, 27);
 
-UIAlloc UIObjects(100);
+UIAlloc ui_objects(25);
 Shader shader;
 Vector2 char_dimension[CHAR_MAX + 1];
 
@@ -69,37 +71,85 @@ Vector2 char_dimension[CHAR_MAX + 1];
 TextDrawer drawer;
 IOHandler io_handler;
 WpmLogger wpm_logger;
+TestInfo test_info;
 // END init extern variables ----------------------------------------------------------------
-void start_test()
+int final_wpm;
+float elapsed;
+Graph* graph;
+
+
+void init_test()
 {
+    drawer = TextDrawer("RobotoMono.ttf", 40);
+    io_handler = IOHandler();
+    char_status.clear();
+    words.clear();
     // reset variables
+    elapsed = 0;
     word_i = 0;
     empty_i = 0;
+    wpm_logger.reset();
+    // generate first chars
+    generated_chars = "";
+    generate_text(ceil((gameScreenWidth - (drawer.center + drawer.offset)) / char_dimension['i'].x), "english");
+}
+
+void start_test()
+{
+    test_info.init(10);
     wpm_logger.start();
+    scene = TEST;
+}
+
+void end_test()
+{
+    wpm_logger.end();
+    final_wpm = round(wpm_logger.wpm());
+    scene = END;
+    
+    graph->set_plot(test_info.wpm_record);
+}
+
+void switch_start()
+{
+    scene = START;
+    init_test(); 
 }
 
 void update()
 {
     generate_text(ceil((gameScreenWidth - (drawer.center + drawer.offset)) / char_dimension['i'].x), "english");
-    globalFrame++;
     io_handler.update();
-    wpm_logger.update();  
+    wpm_logger.update();
+    test_info.update();
+    elapsed = wpm_logger.elapsed();
+    if (elapsed >= test_info.time)
+    {
+        end_test();
+    }
+}
+
+void update_end()
+{
+    
 }
 
 deque<float> stored_wpm;
 deque<float> stored_current_wpm;
 
-void draw_text()
+void draw_test()
 {
     // TEST draw vel
     stored_wpm.push_back(wpm_logger.wpm());
     if (stored_wpm.size() > 1000)
         stored_wpm.pop_front();
-    stored_current_wpm.push_back(wpm_logger.current_wpm());
+    stored_current_wpm.push_back(wpm_logger.raw_wpm());
     if (stored_current_wpm.size() > 1000)
         stored_current_wpm.pop_front();
     
     DrawText(TextFormat("%.0f wpm\n%.0f raw", stored_wpm.back(), stored_current_wpm.back()), 0, 0, 30, BLACK);
+    DrawText(string(TextFormat("%.0f sec", round(elapsed))), 0, 100, 30, BLACK);
+    
     const float scale_f = 2;
     for (int x_pos = stored_wpm.size() - 1; x_pos >= 0; x_pos--)
         DrawRectangleRec(formatRect(Rectangle(x_pos, 500 - scale_f*stored_wpm[x_pos], 1, scale_f*stored_wpm[x_pos])), RED);
@@ -114,69 +164,61 @@ void draw_text()
     }
 }
 
+void draw_end()
+{
+    DrawText(to_string(final_wpm) + " wpm", 0, 0, 50, BLACK);
+}
+
+// Font loading function: Segoeui
+void load_base_font(void)
+{
+    string segoe_path = "C:/Windows/Fonts/segoeui.ttf";
+    if (FileExists(segoe_path.c_str()))
+    {
+        font = load_font(segoe_path.c_str());
+        cout << "Font loaded: " << segoe_path << endl;
+    } else
+    {
+        font = { 0 };
+
+        font.baseSize = 256;
+        font.glyphCount = 95;
+        font.glyphPadding = 0;
+
+        // Custom font loading
+        // NOTE: Compressed font image data (DEFLATE), it requires DecompressData() function
+        int fontDataSize_Segoeui = 0;
+        unsigned char* data = DecompressData(fontData_Segoeui, COMPRESSED_DATA_SIZE_FONT_SEGOEUI, &fontDataSize_Segoeui);
+        Image imFont = { data, 4096, 4096, 1, 2 };
+
+        // Load texture from image
+        font.texture = LoadTextureFromImage(imFont);
+        SetTextureFilter(font.texture, TEXTURE_FILTER_BILINEAR);
+
+        UnloadImage(imFont);  // Uncompressed data can be unloaded from memory
+
+        // Assign glyph recs and info data directly
+        // WARNING: This font data must not be unloaded
+        font.recs = fontRecs_Segoeui;
+        font.glyphs = fontGlyphs_Segoeui;
+    }
+    font_spacing = 15;  // Default Font 
+}
+
 void init()
 {
     // create f# shader file if doesn't exist
     create_shader_file();
     // Load SDF required shader (we use default vertex shader)
     shader = LoadShader(0, shader_path);
-
-    font = LoadFont_Segoeui2(), font_spacing = 15;  // Default Font 
+    load_base_font();
+    new_Button(END, 100, 900, 300, 100, "restart", [] { switch_start(); });
+    
+    graph = new Graph(100, 100, 1500, 750, 5);
+    ui_objects.alloc(graph, END);
 }
 
-void init_test()
-{
-    drawer = TextDrawer("RobotoMono.ttf", 40);
-    io_handler = IOHandler();
-    char_status.clear();
-    words.clear();
-    generated_chars = "";
-    generate_text(ceil((gameScreenWidth - (drawer.center + drawer.offset)) / char_dimension['i'].x), "english");
-}
-Vector2* point_arr;
-vector<Vector2> init_points;
-int point_count;
-void init_bezier()
-{
-    // bezier test
-    BezierPath bezier;
-    init_points = vector<Vector2>({ { 50, 800 }, {130, 770}, { 200, 700 }, { 300, 500 }, {400, 600} });
-    bezier.Interpolate(init_points, 0.25f);
-    auto points = bezier.GetDrawingPoints1();
-    point_arr = new Vector2[2*points.size()];
-    point_count = 2 * points.size();
-    Vector2 previous = points[0];
-    Vector2 current = { 0 };
-    float thick = 5;
-    for (int i = 1; i < points.size(); i++)
-    {
-        current = points[i];
-        float dy = current.y - previous.y;
-        float dx = current.x-previous.x;
-        float size = 0.5f*thick/sqrtf(dx*dx+dy*dy);
 
-        if (i==1)
-        {
-            point_arr[0].x = previous.x+dy*size;
-            point_arr[0].y = previous.y-dx*size;
-            point_arr[1].x = previous.x-dy*size;
-            point_arr[1].y = previous.y+dx*size;
-        }
-
-        point_arr[2*i+1].x = current.x-dy*size;
-        point_arr[2*i+1].y = current.y+dx*size;
-        point_arr[2*i].x = current.x+dy*size;
-        point_arr[2*i].y = current.y-dx*size;
-        previous = current;
-    }
-}
-
-void draw_curve()
-{
-    for (auto point : init_points) DrawCircle(point.x, point.y, 5, BLUE);
-    //for (int i = 0; i < point_count; i++) DrawCircle(point_arr[i].x, point_arr[i].y, 2, RED);
-    DrawTriangleStrip(point_arr, point_count, BLACK);
-}
 //------------------------------------------------------------------------------------
 // Program main entry point
 //------------------------------------------------------------------------------------
@@ -198,7 +240,6 @@ int main(void)
     
     init();
     init_test();
-    init_bezier();
     
     // timer funcs
     float frame_time = 1;
@@ -220,27 +261,46 @@ int main(void)
 
         //----------------------------------------------------------------------------------
         // Update
+        globalFrame++;
         if (scene == START)
         {
             if (IsKeyPressed())
             {
                 start_test();
-                scene = TEST;
             }
         }
         if (scene == TEST)
         {
             update();
         }
-        
+        if (scene == END)
+        {
+            update_end();
+        }
+
+        for (const int id : scene_ids[scene])
+        {
+            ui_objects[id]->update();
+        }
         //----------------------------------------------------------------------------------
         // Draw everything in the render texture, note this will not be rendered on screen, yet
         BeginTextureMode(target);
         ClearBackground(RAYWHITE);  // Clear render texture background color
-        int max_fps = 1000.0/frame_time;
+        BeginShaderMode(shader);
+        int max_fps = 1000.0 / frame_time;
         DrawText(TextFormat("MAX FPS: %d | ELAPSED TIME: %.2f", max_fps, frame_time), 0, gameScreenHeight - 30, 25, BLACK);
-        draw_text();
-        draw_curve();
+        if (scene == END)
+        {
+            draw_end();
+        } else
+        {
+            draw_test();
+        }
+        for (const int id : scene_ids[scene])
+        {
+            ui_objects[id]->draw();
+        }
+        EndShaderMode();
         EndTextureMode();
 
         // Draw render texture onto real screen

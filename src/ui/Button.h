@@ -7,17 +7,17 @@ class Button : public UIObject
 {
     Rectangle hitbox;
     bool hover;
-    const std::function<void()> triggerFunc;
+    string img_path;
+    Color default_color, hover_color, click_color;
+    Color stroke_color = rgba(199, 222, 252, 1);
+    std::function<void()> triggerFunc;
     std::function<void(Rectangle)> drawFunc = NULL;
     Stopwatch pressWatch;
     const float delay = 0.15;
     float fontSize;
     string message; //for now
-    Color default_color = main_color, hover_color = main_color, click_color = main_color;
-    Color stroke_color = rgba(199, 222, 252, 1);
     float msg_width, msg_height;
     int stroke = 2;
-    string img_path = "";
 
 public:
     bool flipped = false;

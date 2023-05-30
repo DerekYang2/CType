@@ -1,9 +1,9 @@
 #include "BezierPath.h"
 
-BezierPath::BezierPath()
+BezierPath::BezierPath(int segments)
 {
     controlPoints.clear();
-    SEGMENTS_PER_CURVE = 10;
+    SEGMENTS_PER_CURVE = segments;
     MINIMUM_SQR_DISTANCE = 0.01f;
     DIVISION_THRESHOLD = -0.99f;
 }
@@ -87,7 +87,7 @@ void BezierPath::SamplePoints(std::vector<Vector2> sourcePoints, float minSqrDis
     {
         if (
             (Vector2LengthSqr(potentialSamplePoint - sourcePoints[i]) > minSqrDistance) &&
-            (Vector2LengthSqr(samplePoints.back() - sourcePoints[i]) > maxSqrDistance))
+            (Vector2LengthSqr(samplePoints.back() - sourcePoints[i]) < maxSqrDistance))
         {
             samplePoints.push_back(potentialSamplePoint);
         }
@@ -161,7 +161,7 @@ vector<Vector2> BezierPath::GetDrawingPoints0()
 
     This is a lsightly different inplementation from the one above.
 */
-vector<Vector2> BezierPath::GetDrawingPoints1()
+vector<Vector2> BezierPath::GetDrawingPoints()
 {
     vector<Vector2> drawingPoints;
 
@@ -185,6 +185,38 @@ vector<Vector2> BezierPath::GetDrawingPoints1()
     }
 
     return drawingPoints;
+}
+
+vector<Vector2> BezierPath::GetDrawingPoints(float thickness)
+{
+    auto points = GetDrawingPoints();
+    Vector2 point_arr[2 * points.size()];
+
+    Vector2 previous = points[0];
+    Vector2 current = { 0 };
+    for (int i = 1; i < points.size(); i++)
+    {
+        current = points[i];
+        float dy = current.y - previous.y;
+        float dx = current.x-previous.x;
+        float size = 0.5f*thickness/sqrtf(dx*dx+dy*dy);
+
+        if (i==1)
+        {
+            point_arr[0].x = previous.x+dy*size;
+            point_arr[0].y = previous.y-dx*size;
+            point_arr[1].x = previous.x-dy*size;
+            point_arr[1].y = previous.y+dx*size;
+        }
+
+        point_arr[2*i+1].x = current.x-dy*size;
+        point_arr[2*i+1].y = current.y+dx*size;
+        point_arr[2*i].x = current.x+dy*size;
+        point_arr[2*i].y = current.y-dx*size;
+        previous = current;
+    }
+
+    return vector<Vector2>(point_arr, point_arr + 2 * points.size());
 }
 
 

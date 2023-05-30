@@ -22,6 +22,7 @@
             "type": "process",
             "command": "mingw32-make",
             "args": [
+                "-j7",
                 "all"
             ],
             "options": {
@@ -37,6 +38,7 @@
             "type": "process",
             "command": "mingw32-make",
             "args": [
+                "-j7",
                 "debug"
             ],
             "options": {
@@ -52,6 +54,7 @@
             "type": "process",
             "command": "mingw32-make",
             "args": [
+                "-j7",
                 "final"
             ],
             "options": {

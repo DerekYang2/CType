@@ -4,18 +4,21 @@
 
 WpmLogger::WpmLogger() : watch()
 {
+    reset();
+}
+
+void WpmLogger::reset()
+{
     total_good = 0;
     good = 0;
+    prev_word_i = 0;
+    contribution.clear();
+    contribution.push_back(0); // start with 0 on first word
 }
 
 void WpmLogger::start()
 {
-    total_good = 0;
-    good = 0;
     watch.start();
-    prev_word_i = 0;
-    contribution.clear();
-    contribution.push_back(0); // start with 0 on first word
 }
 
 void WpmLogger::end()
@@ -69,7 +72,7 @@ void WpmLogger::update()
     prev_word_i = word_i;
 }
 
-float WpmLogger::current_wpm()
+float WpmLogger::raw_wpm()
 {
     return 60 * (float)good * 0.2f / (float)SEC_BACK;
 }
@@ -86,3 +89,7 @@ float WpmLogger::wpm()
     return 12 * (float)total_good / elapsed;  // 60 / 5 -> 12
 }
 
+float WpmLogger::elapsed()
+{
+    return watch.s();
+}

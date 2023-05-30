@@ -37,4 +37,5 @@ using namespace std;
 
 //#define EQUALITY_OPERATOR_SIMPLE
 #define EQUALITY_OPERATOR_KNUTH
+
 #endif

@@ -9,10 +9,11 @@ extern const int windowWidth, windowHeight;
 extern int gameScreenWidth, gameScreenHeight;
 
 // GLOBAL VARS
-extern unordered_set<int> scene_ids[2];
+extern unordered_set<int> scene_ids[5];
 extern int scene;
 #define START 0
 #define TEST 1
+#define END 2
 
 extern Vector2 mouse;
 #define LEFT_ALIGN 0
@@ -55,10 +56,10 @@ extern char convertKey(int key);
 extern int convertChar(char c);
 extern void DrawTextAlign(char c, float x, float y, float font_size, Color col = BLACK, int alignment = LEFT_ALIGN, int y_align = TOP_ALIGN);
 extern void DrawTextAlign(string str, float x, float y, float font_size, Color col = BLACK, int x_align = LEFT_ALIGN, int y_align = TOP_ALIGN);
-extern void DrawText(string font_name, string text, float x, float y, float font_size, Color col = BLACK);
-extern void DrawTextCenter(string font_name, string text, float x, float y, float font_size, Color col = BLACK);
+extern void DrawText(string text, float x, float y, float font_size, Color col = BLACK);
+extern void DrawTextCenter(string text, float x, float y, float font_size, Color col = BLACK);
 extern void DrawLabel(string text, int x, int y, int fontSize, Color label_col, Color text_col = WHITE);
-extern void DrawLabel(string font_name, string text, int x, int y, int fontSize, Color label_col, Color text_col = WHITE, bool rounded = true);
+extern void DrawLabel(string text, int x, int y, int fontSize, Color label_col, Color text_col = WHITE, bool rounded = true);
 extern void DrawRectangleBoth(int x, int y, int width, int height, Color color, float strokeWidth, Color strokeColor = BLACK);
 extern Rectangle formatRect(Rectangle r);  // make rectangle width and height positive
 extern char shiftChar(char original);
@@ -67,7 +68,7 @@ extern bool starts_with(std::string str, std::string prefix);
 extern string add_prefix(string name, string prefix);
 extern string remove_prefix(string name, string prefix);
 extern string base_name(string name);
-
+extern Font load_font(string path);
 
 #define rand_int(min, max) (uniform_int_distribution<>(min, max)(rng))
 #define randf(min, max) (uniform_real_distribution<>(min, max)(rng))

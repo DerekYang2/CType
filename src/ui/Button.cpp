@@ -26,7 +26,7 @@ Button::Button(float x, float y, float w, float h, string text, std::function<vo
     }
     Vector2 textSize = MeasureTextEx(font, message.c_str(), fontSize, fontSize / font_spacing);
     msg_width = textSize.x, msg_height = textSize.y * 1.1;
-
+    default_color = main_color;
     hover_color = add_rgb(main_color, 5), click_color = add_rgb(main_color, 10);
 }
 
@@ -75,17 +75,8 @@ void Button::draw()
         else
             DrawRectangleRounded(hitbox, 0.2, 5, hover_color);
 
-        float xdist = hitbox.width / 2 * (1 - (float)pressWatch.s() / delay);
-        float ydist = hitbox.height / 2 * (1 - (float)pressWatch.s() / delay);
-
-        DrawLineEx({ hitbox.x, hitbox.y }, { hitbox.x + xdist, hitbox.y }, 2 * stroke, stroke_color);
-        DrawLineEx({ hitbox.x + hitbox.width - xdist, hitbox.y }, { hitbox.x + hitbox.width, hitbox.y }, 2 * stroke, stroke_color);
-        DrawLineEx({ hitbox.x, hitbox.y + hitbox.height }, { hitbox.x + xdist, hitbox.y + hitbox.height }, 2 * stroke, stroke_color);
-        DrawLineEx({ hitbox.x + hitbox.width - xdist, hitbox.y + hitbox.height }, { hitbox.x + hitbox.width, hitbox.y + hitbox.height }, 2 * stroke, stroke_color);
-        DrawLineEx({ hitbox.x, hitbox.y }, { hitbox.x, hitbox.y + ydist }, 2 * stroke, stroke_color);
-        DrawLineEx({ hitbox.x, hitbox.y + hitbox.height }, { hitbox.x, hitbox.y + hitbox.height - ydist }, 2 * stroke, stroke_color);
-        DrawLineEx({ hitbox.x + hitbox.width, hitbox.y }, { hitbox.x + hitbox.width, hitbox.y + ydist }, 2 * stroke, stroke_color);
-        DrawLineEx({ hitbox.x + hitbox.width, hitbox.y + hitbox.height }, { hitbox.x + hitbox.width, hitbox.y + hitbox.height - ydist }, 2 * stroke, stroke_color);
+        //float xdist = hitbox.width / 2 * (1 - (float)pressWatch.s() / delay);
+        //float ydist = hitbox.height / 2 * (1 - (float)pressWatch.s() / delay);
     }
     if (!message.empty())
     {

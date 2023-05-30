@@ -14,13 +14,15 @@ struct WpmLogger {
     list<float> del_queue;  // {word index, time to delete}
     list<char> contribution;
     int prev_word_i;
+    void reset();
     WpmLogger();
     void start();
     void push_char();  // Only call for every good empty_i++
-    float current_wpm();
+    float raw_wpm();
     float wpm();
     void update();
     void end();
+    float elapsed();
 };
 
 extern WpmLogger wpm_logger;

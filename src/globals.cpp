@@ -38,12 +38,12 @@ void DrawTextAlign(string str, float x, float y, float font_size, Color col, int
     DrawTextEx(font, str.c_str(), { x + x_offset, y + y_offset }, font_size, font_size / font_spacing, col);
 }
 
-void DrawText(string font_name, string text, float x, float y, float font_size, Color col)
+void DrawText(string text, float x, float y, float font_size, Color col)
 {
     DrawTextEx(font, text.c_str(), {x, y}, font_size, font_size/font_spacing, col);
 }
 
-void DrawTextCenter(string font_name, string text, float x, float y, float font_size, Color col)
+void DrawTextCenter(string text, float x, float y, float font_size, Color col)
 {
     Vector2 textSize = MeasureTextEx(font, text.c_str(), font_size, font_size / font_spacing);
     DrawTextEx(font, text.c_str(), {x - textSize.x/2, y - textSize.y/2}, font_size, font_size/font_spacing, col);
@@ -58,7 +58,7 @@ void DrawLabel(string text, int x, int y, int fontSize, Color label_col, Color t
     DrawText(text.c_str(), x + padding, y + padding, fontSize, text_col);
 }
 
-void DrawLabel(string font_name, string text, int x, int y, int fontSize, Color label_col, Color text_col, bool rounded)
+void DrawLabel(string text, int x, int y, int fontSize, Color label_col, Color text_col, bool rounded)
 {
     Vector2 textSize = MeasureTextEx(font, text.c_str(), fontSize, fontSize / font_spacing);
     float padding = fontSize / 5;
@@ -66,7 +66,7 @@ void DrawLabel(string font_name, string text, int x, int y, int fontSize, Color 
         DrawRectangleRounded(Rectangle(x, y, textSize.x + 2 * padding, textSize.y + 2 * padding), 0.15, 5, label_col);
     else
         DrawRectangle(x, y, textSize.x + 2 * padding, textSize.y + 2 * padding, label_col);
-    DrawText(font_name, text.c_str(), x + padding, y + padding, fontSize, text_col);
+    DrawTextEx(font, text.c_str(), {x + padding, y + padding}, fontSize, fontSize/font_spacing, text_col);
 }
 
 // returns the shifted equivalent of keys
@@ -313,6 +313,32 @@ string base_name(string name)
         return prefix;
     }
     return name;
+}
+
+Font load_font(string path)
+{
+    // FONT LOADING -----------------------------------------------
+    string full_path = path;
+
+    // Loading file to memory
+    unsigned int fileSize = 0;
+    unsigned char* fileData = LoadFileData(full_path.c_str(), &fileSize);
+
+    // SDF font generation from TTF font
+    Font ret_font = { 0 };
+    const float font_base = 64;
+    ret_font.baseSize = font_base;
+    ret_font.glyphCount = 95;
+    // Parameters > font size: 16, no glyphs array provided (0), glyphs count: 0 (defaults to 95)
+    ret_font.glyphs = LoadFontData(fileData, fileSize, font_base, 0, 0, FONT_SDF);
+    // Parameters > glyphs count: 95, font size: 16, glyphs padding in image: 0 px, pack method: 1 (Skyline algorythm)
+    Image atlas = GenImageFontAtlas(ret_font.glyphs, &ret_font.recs, 95, font_base, 0, 1);
+    ret_font.texture = LoadTextureFromImage(atlas);
+    UnloadImage(atlas);
+    UnloadFileData(fileData);      // Free memory from loaded file
+
+    SetTextureFilter(ret_font.texture, TEXTURE_FILTER_BILINEAR);    // Required for SDF font  
+    return ret_font;
 }
 
 // overloads

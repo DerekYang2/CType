@@ -17,9 +17,9 @@ REMOVE   := - rm
 CC       := g++
 BIN      := ./build
 OBJ      := ./build/obj
-INCLUDE  := ./src ./include ./include/nfd_src
+INCLUDE  := ./src ./include ./include/nfd_src ./src/ui
 SRC      := ./src
-SRCS     := $(wildcard $(SRC)/*.cpp)
+SRCS     := $(wildcard $(SRC)/*.cpp) $(wildcard $(SRC)/ui/*.cpp)
 OBJS     := $(patsubst $(SRC)/%.cpp,$(OBJ)/%.o,$(SRCS))
 EXE      := $(BIN)/main.exe
 WARNINGS := -Wno-missing-braces -Wno-narrowing -Wno-sign-compare -Wno-char-subscripts
@@ -45,15 +45,25 @@ $(EXE): $(OBJS)
 	@echo LINKING EXE:
 	$(CC) $(IFLAGS) $(LDFLAGS) $^ -o $@ $(LDLIBS)
 
-$(OBJ)/%.o: $(SRC)/%.cpp 
+vpath %.cpp $(SRC)
+
+$(OBJ)/%.o: %.cpp 
 	@echo COMPILING: $<
 	$(CC) $(IFLAGS) $(CFLAGS) -c $< -o $@
+
+vpath %.cpp $(SRC)/ui
+
+$(OBJ)/ui/%.o: %.cpp 
+	@echo COMPILING: $<
+	$(CC) $(IFLAGS) $(CFLAGS) -c $< -o $@
+
 
 run: $(EXE)
 	$<
 
 clean:
 	$(REMOVE) $(OBJ)/*.o
+	$(REMOVE) $(OBJ)/ui/*.o
 	$(REMOVE) $(EXE)
 
 info:

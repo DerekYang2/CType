@@ -5,29 +5,7 @@ TextDrawer::TextDrawer() { }
 
 TextDrawer::TextDrawer(string font_path, float fontSize, float font_spacing)
 {
-    // FONT LOADING -----------------------------------------------
-    string full_path = "fonts/" + font_path;
-    //line_font = LoadFontEx(full_path.c_str(), 256, NULL, 0);
-
-    // Loading file to memory
-    unsigned int fileSize = 0;
-    unsigned char* fileData = LoadFileData(full_path.c_str(), &fileSize);
-
-    // SDF font generation from TTF font
-    font = { 0 };
-    const float font_base = 64;
-    font.baseSize = font_base;
-    font.glyphCount = 95;
-    // Parameters > font size: 16, no glyphs array provided (0), glyphs count: 0 (defaults to 95)
-    font.glyphs = LoadFontData(fileData, fileSize, font_base, 0, 0, FONT_SDF);
-    // Parameters > glyphs count: 95, font size: 16, glyphs padding in image: 0 px, pack method: 1 (Skyline algorythm)
-    Image atlas = GenImageFontAtlas(font.glyphs, &font.recs, 95, font_base, 0, 1);
-    font.texture = LoadTextureFromImage(atlas);
-    UnloadImage(atlas);
-    UnloadFileData(fileData);      // Free memory from loaded file
-
-    SetTextureFilter(font.texture, TEXTURE_FILTER_BILINEAR);    // Required for SDF font   
-
+    font = load_font("fonts/" + font_path);
     spacing = font_spacing;
     font_size = fontSize;
     offset = 0;
@@ -43,6 +21,7 @@ TextDrawer::TextDrawer(string font_path, float fontSize, float font_spacing)
     bottom_y = (gameScreenHeight + cursor_h) / 2;
     
 }
+
 
 void TextDrawer::set_offset(float x)
 {
