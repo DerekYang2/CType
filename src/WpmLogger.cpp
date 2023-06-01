@@ -1,6 +1,6 @@
 #include "WpmLogger.h"
 
-#define SEC_BACK 4
+#define SEC_BACK 5
 
 WpmLogger::WpmLogger() : watch()
 {
@@ -14,6 +14,8 @@ void WpmLogger::reset()
     prev_word_i = 0;
     contribution.clear();
     contribution.push_back(0); // start with 0 on first word
+    del_queue.clear();
+    
 }
 
 void WpmLogger::start()
@@ -74,7 +76,9 @@ void WpmLogger::update()
 
 float WpmLogger::raw_wpm()
 {
-    return 60 * (float)good * 0.2f / (float)SEC_BACK;
+    float elapsed = watch.s();
+    if (elapsed <= 1) return 0;
+    return 12 * (float)good / min(elapsed, (float)SEC_BACK);
 }
 
 /**

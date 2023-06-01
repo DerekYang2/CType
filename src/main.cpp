@@ -96,7 +96,7 @@ void init_test()
 
 void start_test()
 {
-    test_info.init(10);
+    test_info.init(30);
     wpm_logger.start();
     scene = TEST;
 }
@@ -108,6 +108,7 @@ void end_test()
     scene = END;
     
     graph->set_plot(test_info.wpm_record);
+    graph->set_plot(test_info.raw_wpm_record, RAW);
 }
 
 void switch_start()
@@ -214,7 +215,7 @@ void init()
     load_base_font();
     new_Button(END, 100, 900, 300, 100, "restart", [] { switch_start(); });
     
-    graph = new Graph(100, 100, 1500, 750, 5);
+    graph = new Graph(100, 100, 1500, 750, 4);
     ui_objects.alloc(graph, END);
 }
 

@@ -187,9 +187,10 @@ vector<Vector2> BezierPath::GetDrawingPoints()
     return drawingPoints;
 }
 
+
 vector<Vector2> BezierPath::GetDrawingPoints(float thickness)
 {
-    auto points = GetDrawingPoints();
+    auto points = GetDrawingPoints0();
     Vector2 point_arr[2 * points.size()];
 
     Vector2 previous = points[0];
