@@ -17,7 +17,7 @@ REMOVE   := - rm
 CC       := g++
 BIN      := ./build
 OBJ      := ./build/obj
-INCLUDE  := ./src ./include ./include/nfd_src ./src/ui
+INCLUDE  := ./src ./include ./include/nfd_src ./src/ui ./export/assets
 SRC      := ./src
 SRCS     := $(wildcard $(SRC)/*.cpp) $(wildcard $(SRC)/ui/*.cpp)
 OBJS     := $(patsubst $(SRC)/%.cpp,$(OBJ)/%.o,$(SRCS))
@@ -28,7 +28,7 @@ LDFLAGS  := -std=c++20 -L ./lib
 LDLIBS   := -lnfd -lole32 -luuid -lraylib -lopengl32 -lgdi32 -lwinmm
 IFLAGS   := $(foreach dir,$(INCLUDE),-I $(dir)/)
 
-.PHONY: all run clean debug default info 
+.PHONY: all run clean debug default info export
 
 
 all: $(EXE)
@@ -38,6 +38,9 @@ default: all run
 debug: CFLAGS+=-g3
 
 debug: clean all
+
+export:
+	g++ ./export/exporter.cpp -o ./export/exporter.exe -O2 -Wall -Wno-sign-compare -std=c++20 -I ./include -I ./export/assets -L ./lib -lraylib -lopengl32 -lgdi32 -lwinmm && ./export/exporter.exe 
 
 relink: $(CC) $(IFLAGS) $(LDFLAGS) $^ -o $@ $(LDLIBS)
 

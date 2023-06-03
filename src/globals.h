@@ -1,6 +1,7 @@
 #ifndef _GLOBALSH_
 #define _GLOBALSH_
 #include "raylibcustom.h"
+#include "Theme.h"
 #include <fstream>
 #include "Word.h"
 #define shader_path "./fonts/sdf.fs"
@@ -48,7 +49,6 @@ extern float font_spacing;
 extern Shader shader;
 extern Vector2 char_dimension[CHAR_MAX + 1];
 // COLORS
-extern const Color main_color;
 #define add_rgb(c, v) Color(c.r + v, c.g + v, c.b + v, 255)
 
 extern bool IsKeyPressed();

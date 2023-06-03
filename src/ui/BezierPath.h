@@ -20,6 +20,7 @@ public:
     Vector2 CalculateBezierPoint(int curveIndex, float t);
     std::vector<Vector2> GetDrawingPoints0();
     std::vector<Vector2> GetDrawingPoints();
+    vector<Vector2> applyThickness(vector<Vector2>& points, float thickness);
     vector<vector<Vector2>> GetPolygonPoints();
     vector<Vector2> GetDrawingPoints(float thickness);  // array, size
     std::vector<Vector2> FindDrawingPoints(int curveIndex);

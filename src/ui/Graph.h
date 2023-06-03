@@ -12,15 +12,20 @@ class Graph : public UIObject
     vector<Vector2> draw_points[2];  // draw points for triangle strip
     vector<vector<Vector2>> draw_segments;
     Rectangle rect;
+    float max_v;
     float gap;
     float thick;
-    float f;
-    float avg_dist;
+    float grid_y_gap;
+    float time; 
 public:
     Graph(float x, float y, float w, float h, float thick);
-    void set_plot(vector<float> plot_points, int wpm_type = NORMAL);
+    void reset();
+    void config_max(vector<float>& plot_points, int wpm_type = NORMAL);  // call on both lists to calculate the max value 
+    void init_polygon(vector<Vector2>&& curve_p);
+    void set_plot(vector<float>& plot_points, int wpm_type = NORMAL);
     void update() override;
     void draw() override;
+    void set_time(float t);
     float width();
 };
 extern Graph* graph;

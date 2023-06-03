@@ -187,6 +187,35 @@ vector<Vector2> BezierPath::GetDrawingPoints()
     return drawingPoints;
 }
 
+vector<Vector2> BezierPath::applyThickness(vector<Vector2> &points, float thickness)
+{
+    Vector2 point_arr[2 * points.size()];
+
+    Vector2 previous = points[0];
+    Vector2 current = { 0 };
+    for (int i = 1; i < points.size(); i++)
+    {
+        current = points[i];
+        float dy = current.y - previous.y;
+        float dx = current.x-previous.x;
+        float size = 0.5f*thickness/sqrtf(dx*dx+dy*dy);
+
+        if (i==1)
+        {
+            point_arr[0].x = previous.x+dy*size;
+            point_arr[0].y = previous.y-dx*size;
+            point_arr[1].x = previous.x-dy*size;
+            point_arr[1].y = previous.y+dx*size;
+        }
+
+        point_arr[2*i+1].x = current.x-dy*size;
+        point_arr[2*i+1].y = current.y+dx*size;
+        point_arr[2*i].x = current.x+dy*size;
+        point_arr[2*i].y = current.y-dx*size;
+        previous = current;
+    }
+    return vector<Vector2>(point_arr, point_arr + 2 * points.size());
+}
 
 vector<Vector2> BezierPath::GetDrawingPoints(float thickness)
 {

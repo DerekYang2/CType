@@ -18,6 +18,8 @@
 #include <chrono>
 #include "nfd_wrapper.h"
 #include "globals.h"
+#include "Theme.h"
+#include "ResourceInit.h"
 #include "UIAlloc.h"
 #include "Button.h"
 #include "segoeui.h"
@@ -30,8 +32,18 @@
 #include "WpmLogger.h"
 #include "BezierPath.h"
 #include "Graph.h"
+#include "Toggle.h"
+#include "ToggleGroup.h"
 #include "TestInfo.h"
 // Init extern variables ------------------------------------------------------------------
+Theme theme{
+    WHITE, // background
+    rgb(14, 105, 161), // main
+    rgb(61, 78, 92), // sub 
+    BLACK, // text 
+    rgb(255, 0, 0), // error
+    rgb(128, 41, 41) // error_extra
+};
 // Window Variables
 const int windowWidth = 1650, windowHeight = 1000;
 int gameScreenWidth = 1920, gameScreenHeight = 1080;
@@ -60,9 +72,6 @@ mt19937 rng(std::chrono::system_clock::now().time_since_epoch().count());
 Font font; // Font: UI font
 float font_spacing;
 
-// COLORS
-const Color main_color = rgb(27, 27, 27);
-
 UIAlloc ui_objects(25);
 Shader shader;
 Vector2 char_dimension[CHAR_MAX + 1];
@@ -77,6 +86,11 @@ int final_wpm;
 float elapsed;
 Graph* graph;
 
+// UI DIMENSIONS 
+float wpm_width = 300;  // width of wpm text 
+float graph_width = 1400;
+float graph_top = 200;
+float graph_height = 600;
 
 void init_test()
 {
@@ -96,7 +110,7 @@ void init_test()
 
 void start_test()
 {
-    test_info.init(30);
+    test_info.init(15);
     wpm_logger.start();
     scene = TEST;
 }
@@ -106,7 +120,10 @@ void end_test()
     wpm_logger.end();
     final_wpm = round(wpm_logger.wpm());
     scene = END;
-    
+    graph->reset();
+    graph->set_time(test_info.time);
+    graph->config_max(test_info.wpm_record);
+    graph->config_max(test_info.raw_wpm_record, RAW);
     graph->set_plot(test_info.wpm_record);
     graph->set_plot(test_info.raw_wpm_record, RAW);
 }
@@ -167,7 +184,9 @@ void draw_test()
 
 void draw_end()
 {
-    DrawText(to_string(final_wpm) + " wpm", 0, 0, 50, BLACK);
+    Vector2 corner = { 0.5f * (gameScreenWidth - (wpm_width + graph_width)), graph_top };
+    DrawRectangle(corner.x, corner.y, wpm_width, graph_height, BLACK);
+    DrawTextAlign(TextFormat("%d wpm", final_wpm), corner.x, corner.y, 75, WHITE);
 }
 
 // Font loading function: Segoeui
@@ -213,9 +232,11 @@ void init()
     // Load SDF required shader (we use default vertex shader)
     shader = LoadShader(0, shader_path);
     load_base_font();
+    init_raw_data;
     new_Button(END, 100, 900, 300, 100, "restart", [] { switch_start(); });
-    
-    graph = new Graph(100, 100, 1500, 750, 4);
+    //new_Toggle(START, 0, 300, 50, true, "test", "settings_icon");
+    new_ToggleGroup(START, 0, 300, 50, 0, { "15", "30", "60", "120" });
+    graph = new Graph(wpm_width + (gameScreenWidth - (graph_width + wpm_width)) * 0.5f, graph_top, graph_width, graph_height, 4);
     ui_objects.alloc(graph, END);
 }
 
@@ -235,7 +256,7 @@ int main(void)
     SetWindowMinSize(320, 240);
     // Render texture initialization, used to hold the rendering result so we can easily resize it
     RenderTexture2D target = LoadRenderTexture(gameScreenWidth, gameScreenHeight);
-    SetTextureFilter(target.texture, TEXTURE_FILTER_BILINEAR);  // Texture scale filter to use
+    SetTextureFilter(target.texture, TEXTURE_FILTER_TRILINEAR);  // Texture scale filter to use
     SetTargetFPS(60);                   // Set our game to run at 60 frames-per-second
     SetExitKey(KEY_NULL);
     
@@ -321,7 +342,9 @@ int main(void)
     // De-Initialization
     //--------------------------------------------------------------------------------------
     UnloadRenderTexture(target);        // Unload render texture
-    UnloadShader(shader); 
+    for (auto& [path, texture] : textureOf)
+        UnloadTexture(texture);
+    UnloadShader(shader);
     CloseWindow();                      // Close window and OpenGL context
     //--------------------------------------------------------------------------------------
 

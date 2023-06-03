@@ -7,9 +7,7 @@ class Button : public UIObject
 {
     Rectangle hitbox;
     bool hover;
-    string img_path;
-    Color default_color, hover_color, click_color;
-    Color stroke_color = rgba(199, 222, 252, 1);
+    Texture* texture;
     std::function<void()> triggerFunc;
     std::function<void(Rectangle)> drawFunc = NULL;
     Stopwatch pressWatch;
@@ -21,12 +19,11 @@ class Button : public UIObject
 
 public:
     bool flipped = false;
-    Button(float x, float y, float w, float h, string img_path, Color tint, std::function<void()> f);
+    Button(float x, float y, float w, float h, Texture *texture_pointer, std::function<void()> f);
     Button(float x, float y, float w, float h, string text, std::function<void()> f);
     void attachDraw(std::function<void(Rectangle)> f);
     void setPos(float x, float y);
     void update();
-    void setColor(Color defaultCol, Color hoverCol, Color clickCol);
     void setStroke(int strokeWidth);
     void draw() override;
 };

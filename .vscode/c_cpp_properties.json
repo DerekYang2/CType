@@ -4,7 +4,8 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${workspaceFolder}/include/"
+                "${workspaceFolder}/include/",
+                "${workspaceFolder}/export/assets"
             ],
             "defines": [
                 "_DEBUG",
