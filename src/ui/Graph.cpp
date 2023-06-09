@@ -173,7 +173,7 @@ void Graph::draw()
     {
         DrawLine(rect.x, y, rect.x + rect.width, y, rgba(0, 0, 0, 0.2));
         float y_v = max_v * ((rect.y + rect.height) - y) / rect.height;
-        DrawTextAlign(to_string((int)round(y_v)), rect.x - 10, y, 20, rgba(255, 255, 255, 0.4), RIGHT_ALIGN, CENTER_ALIGN);
+        DrawTextAlign(to_string((int)round(y_v)), rect.x - 10, y, 20, rgba(255, 255, 255, 0.4), RIGHT, CENTER);
     }
 
     // Draw x-axis
@@ -184,13 +184,14 @@ void Graph::draw()
     for (float x = rect.x; x <= rect.x + rect.width; x += x_gap)
     {
         DrawLine(x, rect.y, x, rect.y + rect.height, rgba(0, 0, 0, 0.2));
-        DrawTextAlign(to_string(sec), x, rect.y + rect.height + 10, 20, rgba(255, 255, 255, 0.4), CENTER_ALIGN, TOP_ALIGN);
+        DrawTextAlign(to_string(sec), x, rect.y + rect.height + 10, 20, rgba(255, 255, 255, 0.4), CENTER, TOP);
         sec += sec_gap;
     }    
     
     // RAW curve polygon
     for (vector<Vector2>& segment : draw_segments)
         DrawTriangleFan(&segment[0], segment.size(), rgba(0, 0, 0, 0.1));
+    
     // RAW curve
     DrawTriangleStrip(&draw_points[RAW][0], draw_points[RAW].size(), rgba(255, 255, 255, 0.3));
     // NORMAL curve

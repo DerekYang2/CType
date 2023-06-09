@@ -12,6 +12,7 @@ class ToggleGroup : public UIObject {
     float font_size;
     float img_scale;
     float tot_width;
+    bool pressed;
     int selected;
     Stopwatch pressWatch;
     public:
@@ -21,4 +22,8 @@ class ToggleGroup : public UIObject {
     void update() override;
     string get_selected();
     float width();
+    float height();
+    float space_width();
+    void set_pos(float x, float y);
+    bool was_pressed();
 };

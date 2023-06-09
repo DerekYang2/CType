@@ -17,11 +17,11 @@ extern int scene;
 #define END 2
 
 extern Vector2 mouse;
-#define LEFT_ALIGN 0
-#define RIGHT_ALIGN 1
-#define CENTER_ALIGN 2
-#define TOP_ALIGN 0
-#define BOTTOM_ALIGN 1
+#define LEFT 0
+#define RIGHT 1
+#define CENTER 2
+#define TOP 0
+#define BOTTOM 1
 
 extern int globalFrame; // Frames printed in the game scene
 extern unordered_map<string, Texture> textureOf;
@@ -48,19 +48,30 @@ extern Font font; // Font: UI font
 extern float font_spacing;
 extern Shader shader;
 extern Vector2 char_dimension[CHAR_MAX + 1];
+
 // COLORS
-#define add_rgb(c, v) Color(c.r + v, c.g + v, c.b + v, 255)
+#define add_rgb(c, v) Color((c).r + v, (c).g + v, (c).b + v, 255)
+#define multiply_rgb(c, v) Color((c).r * v, (c).g * v, (c).b * v, (c).a)
 
 extern bool IsKeyPressed();
 extern char convertKey(int key);
 extern int convertChar(char c);
-extern void DrawTextAlign(char c, float x, float y, float font_size, Color col = BLACK, int alignment = LEFT_ALIGN, int y_align = TOP_ALIGN);
-extern void DrawTextAlign(string str, float x, float y, float font_size, Color col = BLACK, int x_align = LEFT_ALIGN, int y_align = TOP_ALIGN);
+extern Vector2 MeasureTextEx(string str, float font_size);
+extern void DrawTextAlign(char c, float x, float y, float font_size, Color col = BLACK, int alignment = LEFT, int y_align = TOP);
+extern void DrawTextAlign(string str, float x, float y, float font_size, Color col = BLACK, int x_align = LEFT, int y_align = TOP);
 extern void DrawText(string text, float x, float y, float font_size, Color col = BLACK);
 extern void DrawTextCenter(string text, float x, float y, float font_size, Color col = BLACK);
 extern void DrawLabel(string text, int x, int y, int fontSize, Color label_col, Color text_col = WHITE);
 extern void DrawLabel(string text, int x, int y, int fontSize, Color label_col, Color text_col = WHITE, bool rounded = true);
 extern void DrawRectangleBoth(int x, int y, int width, int height, Color color, float strokeWidth, Color strokeColor = BLACK);
+extern void DrawRectangleAlign(Rectangle r, Color col, int x_align = LEFT, int y_align = TOP);
+extern void DrawRectangleAlign(float x, float y, float width, float height, Color col, int x_align = LEFT, int y_align = TOP);
+extern void DrawRectangleRoundedAlign(Rectangle r, float roundness, int segments, Color col, int x_align, int y_align);
+extern void DrawRectangleRoundedAlign(float x, float y, float width, float height, float roundness, int segments, Color col, int x_align, int y_align);
+extern void DrawCircleSector(float x, float y, float r, float start_angle, float end_angle, Color col);
+extern void DrawRing(float cx, float cy, float innerRadius, float outerRadius, Color color); // Draw ring
+extern void DrawRing(float cx, float cy, float innerRadius, float outerRadius, float startAngle, float endAngle, Color color); // Draw ring
+extern string convertSeconds(float seconds, int max_time);
 extern Rectangle formatRect(Rectangle r);  // make rectangle width and height positive
 extern char shiftChar(char original);
 

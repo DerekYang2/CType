@@ -81,7 +81,7 @@ ToggleGroup::ToggleGroup(float x, float y, float h, int init_idx, vector<string>
 
 void ToggleGroup::draw()
 {
-    DrawRectangle(corner.x, corner.y, tot_width, hitbox[0].height, BLACK);
+    //DrawRectangle(corner.x, corner.y, tot_width, hitbox[0].height, BLACK);
     float x_pos = corner.x;
     if (texture != nullptr)
     {
@@ -89,19 +89,18 @@ void ToggleGroup::draw()
         x_pos += texture->width * img_scale;
     }
 
-    BeginShaderMode(shader);    // Activate SDF font shader    
     for (int i = 0; i < hitbox.size(); i++)
     {
         Color col = (hover[i] || i == selected) ? theme.main : theme.sub;
         if (i == selected && pressWatch.s() < TOGGLE_DELAY) col = theme.sub;  // blink off when click
-        DrawTextAlign(text[i], x_pos, hitbox[i].y + hitbox[i].height * 0.5f, font_size, col, LEFT_ALIGN, CENTER_ALIGN);
+        DrawTextAlign(text[i], x_pos, hitbox[i].y + hitbox[i].height * 0.5f, font_size, col, LEFT, CENTER);
         x_pos += hitbox[i].width;
     }
-    EndShaderMode();
 }
 
 void ToggleGroup::update()
 {
+    pressed = false;
     // just in case collisionrec can result in two hovers
     int hover_idx = -1;
     for (int i = 0; i < hitbox.size(); i++)
@@ -120,6 +119,7 @@ void ToggleGroup::update()
         {
             pressWatch.start();
             selected = i;
+            pressed = true;
         }
     }
 
@@ -133,4 +133,28 @@ string ToggleGroup::get_selected()
 float ToggleGroup::width()
 {
     return tot_width;
+}
+
+float ToggleGroup::height()
+{
+    return hitbox[0].height;
+}
+
+float ToggleGroup::space_width()
+{
+    return MeasureTextEx(font, " ", font_size, font_size / font_spacing).x;
+}
+
+void ToggleGroup::set_pos(float x, float y)
+{
+    float shift_x = x - corner.x, shift_y = y - corner.y;
+    corner.x += shift_x, corner.y += shift_y;
+    for (int i = 0; i < hitbox.size(); i++)
+        hitbox[i].x += shift_x, hitbox[i].y += shift_y;
+    
+}
+
+bool ToggleGroup::was_pressed()
+{
+    return pressed;
 }

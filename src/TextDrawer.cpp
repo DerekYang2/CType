@@ -19,9 +19,27 @@ TextDrawer::TextDrawer(string font_path, float fontSize, float font_spacing)
     center = gameScreenWidth / 2;
     cursor_h = char_dimension['I'].y;
     bottom_y = (gameScreenHeight + cursor_h) / 2;
-    
+    top_y = bottom_y - cursor_h;
 }
 
+TextDrawer::TextDrawer(Font draw_font, float fontSize, float spacing)
+{
+    font = draw_font;
+    spacing = font_spacing;
+    font_size = fontSize;
+    offset = 0;
+    // calculating char dimensions
+    for (char c = ' '; c <= '~'; c++)
+    {
+        string str(1, c);
+        char_dimension[c] = MeasureTextEx(font, str.c_str(), font_size, font_size / spacing);
+    }
+
+    center = gameScreenWidth / 2;
+    cursor_h = char_dimension['I'].y;
+    bottom_y = (gameScreenHeight + cursor_h) / 2;
+    top_y = bottom_y - cursor_h;
+}
 
 void TextDrawer::set_offset(float x)
 {
@@ -31,7 +49,6 @@ void TextDrawer::set_offset(float x)
 void TextDrawer::draw()
 {
     float left_most = center + offset;
-    BeginShaderMode(shader);    // Activate SDF font shader    
     Color future_col = BLACK;
     const float a_offset = 100;
     future_col.a = a_offset;
@@ -74,10 +91,14 @@ void TextDrawer::draw()
             DrawTextEx(font, char_str.c_str(), { right_most, bottom_y - dimension.y }, font_size, font_size / spacing, col);
         right_most += dimension.x;
     }
-    EndShaderMode();
 }
 
 void TextDrawer::draw_cursor()
 {
     DrawRectangleRounded(Rectangle(center, bottom_y - cursor_h, 3, cursor_h), 0.8f, 7, BLACK);
+}
+
+float TextDrawer::get_top_y()
+{
+    return top_y;
 }

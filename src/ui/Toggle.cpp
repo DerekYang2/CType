@@ -46,13 +46,21 @@ Toggle::Toggle(float x, float y, float h, bool initState, string toggle_text, st
     hitbox.width = MeasureTextEx(font, text.c_str(), font_size, font_size / font_spacing).x + texture->width * img_scale;
 }
 
-void Toggle::setPos(float x, float y)
+void Toggle::set_x(float x)
+{
+    hitbox.x = x;
+}
+
+void Toggle::set_pos(float x, float y)
 {
     hitbox.x = x, hitbox.y = y;
-    if (on)
-        cx = hitbox.x + hitbox.width - hitbox.height/2;
-    else
-        cx = hitbox.x + hitbox.height/2;
+    if (text.empty())
+    {
+        if (on)
+            cx = hitbox.x + hitbox.width - hitbox.height / 2;
+        else
+            cx = hitbox.x + hitbox.height / 2;
+    }
 }
 
 void Toggle::flip()
@@ -62,6 +70,7 @@ void Toggle::flip()
         pressWatch.start();
         vx *= -1;
         on ^= true;
+        pressed = true;
     }
 }
 
@@ -71,6 +80,7 @@ void Toggle::set_state(bool state) {
 
 void Toggle::update()
 {
+    pressed = false;
     hover = CheckCollisionPointRec(mouse, hitbox);
     if (hover && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         flip();
@@ -102,12 +112,10 @@ void Toggle::draw()
         DrawCircle(cx, hitbox.y + hitbox.height / 2, rad + hover, WHITE);
     } else
     {
-        BeginShaderMode(shader);    // Activate SDF font shader    
         Color col = (hover || on) ? theme.main : theme.sub;
         if (pressWatch.s() < TOGGLE_DELAY) col = theme.sub;  // blink off when click
         DrawTextureEx(*texture, Vector2(hitbox.x, hitbox.y), 0, img_scale, col);
-        DrawTextAlign(text, hitbox.x + texture->width * img_scale, hitbox.y + hitbox.height * 0.5f, font_size, col, LEFT_ALIGN, CENTER_ALIGN);
-        EndShaderMode();
+        DrawTextAlign(text, hitbox.x + texture->width * img_scale, hitbox.y + hitbox.height * 0.5f, font_size, col, LEFT, CENTER);
     }
 }
 
@@ -121,4 +129,17 @@ float Toggle::height()
     return hitbox.height;
 }
 
+string Toggle::get_text()
+{
+    return text;
+}
 
+bool Toggle::toggled()
+{
+    return on;
+}
+
+bool Toggle::was_pressed()
+{
+    return pressed;
+}

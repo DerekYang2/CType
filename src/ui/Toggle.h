@@ -16,18 +16,23 @@ class Toggle: public UIObject
     Texture* texture;
     float font_size;
     float img_scale;
-    Stopwatch pressWatch;  // store time of last pressed
-
-public:
+    Stopwatch pressWatch;  
+// store time of last pressed
     bool on;
+    bool pressed; 
+public:
     Toggle(float x, float y, float w, float h, bool initState);
     Toggle(float x, float y, float h, bool initState, string toggle_text = "", string img_path = "");
-    void setPos(float x, float y) override;
+    void set_pos(float x, float y) override;
+    void set_x(float x);
     void flip();
     void set_state(bool state);
     void update();
     void draw();
     float width();
     float height();
+    string get_text();
+    bool toggled();
+    bool was_pressed();
 };
 

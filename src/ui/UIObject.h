@@ -8,7 +8,8 @@ public:
     virtual void draw() {}
     virtual void draw_hint() {}
     virtual void update() {}
-    virtual void setPos(float x2, float y2) {
+    virtual void set_pos(float x2, float y2)
+    {
         x = x2;  y = y2;
     }
 };

@@ -34,7 +34,9 @@
 #include "Graph.h"
 #include "Toggle.h"
 #include "ToggleGroup.h"
+#include "SettingBar.h"
 #include "TestInfo.h"
+#include "RectPreview.h"
 // Init extern variables ------------------------------------------------------------------
 Theme theme{
     WHITE, // background
@@ -81,11 +83,19 @@ TextDrawer drawer;
 IOHandler io_handler;
 WpmLogger wpm_logger;
 TestInfo test_info;
+TextGenerator text_gen;
+
+bool drawing_block;
+float drawing_x, drawing_y;
 // END init extern variables ----------------------------------------------------------------
 int final_wpm;
 float elapsed;
 Graph* graph;
-
+SettingBar* setting_bar;
+// test display vars
+int display_wpm_frames = 15;  // frames to update wpm display
+int display_wpm;
+float max_wpm = 0, cur_wpm = 0;
 // UI DIMENSIONS 
 float wpm_width = 300;  // width of wpm text 
 float graph_width = 1400;
@@ -94,7 +104,7 @@ float graph_height = 600;
 
 void init_test()
 {
-    drawer = TextDrawer("RobotoMono.ttf", 40);
+    drawer = TextDrawer(font, 40);
     io_handler = IOHandler();
     char_status.clear();
     words.clear();
@@ -105,14 +115,18 @@ void init_test()
     wpm_logger.reset();
     // generate first chars
     generated_chars = "";
-    generate_text(ceil((gameScreenWidth - (drawer.center + drawer.offset)) / char_dimension['i'].x), "english");
+    text_gen.set_list("english");
+    text_gen.generate_text(ceil((gameScreenWidth - (drawer.center + drawer.offset)) / char_dimension['i'].x));
 }
 
 void start_test()
 {
-    test_info.init(15);
+    test_info.init(stoi(setting_bar->group_selected()));
     wpm_logger.start();
     scene = TEST;
+    display_wpm = 0;
+    cur_wpm = 0;
+    max_wpm = 0;
 }
 
 void end_test()
@@ -134,13 +148,30 @@ void switch_start()
     init_test(); 
 }
 
-void update()
+void update_start()
 {
-    generate_text(ceil((gameScreenWidth - (drawer.center + drawer.offset)) / char_dimension['i'].x), "english");
+    if (IsKeyPressed())
+    {
+        start_test();
+    }
+}
+
+void update_test()
+{
+    text_gen.generate_text(ceil((gameScreenWidth - (drawer.center + drawer.offset)) / char_dimension['i'].x));
     io_handler.update();
     wpm_logger.update();
     test_info.update();
     elapsed = wpm_logger.elapsed();
+
+    cur_wpm = wpm_logger.wpm();
+    max_wpm = max(max_wpm, cur_wpm);
+    
+    if (globalFrame % display_wpm_frames == 0)  // update wpm display
+    {
+        display_wpm = round(cur_wpm);
+    }
+    
     if (elapsed >= test_info.time)
     {
         end_test();
@@ -152,31 +183,66 @@ void update_end()
     
 }
 
-deque<float> stored_wpm;
-deque<float> stored_current_wpm;
+void draw_start()
+{
+    BeginShaderMode(shader);
+    drawer.draw();
+    if (io_handler.inactive_frames < inactive_time*60 || (io_handler.inactive_frames/30) & 1)  // if active or Inactive, blink half of the time
+    {
+        drawer.draw_cursor();
+    }
+    EndShaderMode();
+}
+
+/* deque<float> stored_wpm;
+deque<float> stored_current_wpm; */
 
 void draw_test()
 {
     // TEST draw vel
-    stored_wpm.push_back(wpm_logger.wpm());
+/*     stored_wpm.push_back(wpm_logger.wpm());
     if (stored_wpm.size() > 1000)
         stored_wpm.pop_front();
     stored_current_wpm.push_back(wpm_logger.raw_wpm());
     if (stored_current_wpm.size() > 1000)
-        stored_current_wpm.pop_front();
+        stored_current_wpm.pop_front(); */
     
-    DrawText(TextFormat("%.0f wpm\n%.0f raw", stored_wpm.back(), stored_current_wpm.back()), 0, 0, 30, BLACK);
-    DrawText(string(TextFormat("%.0f sec", round(elapsed))), 0, 100, 30, BLACK);
-    
-    const float scale_f = 2;
+/*     const float scale_f = 2;
     for (int x_pos = stored_wpm.size() - 1; x_pos >= 0; x_pos--)
         DrawRectangleRec(formatRect(Rectangle(x_pos, 500 - scale_f*stored_wpm[x_pos], 1, scale_f*stored_wpm[x_pos])), RED);
     for (int x_pos = stored_current_wpm.size() - 1; x_pos >= 0; x_pos--)
-        DrawRectangleRec(formatRect(Rectangle(x_pos, 500 - scale_f*stored_current_wpm[x_pos], 1, 10)), BLUE);
-
+        DrawRectangleRec(formatRect(Rectangle(x_pos, 500 - scale_f*stored_current_wpm[x_pos], 1, 10)), BLUE); */
+    BeginShaderMode(shader);
     
+    float info_h = char_dimension['I'].y;
+    float info_x = drawer.center, info_y = drawer.get_top_y() - 1.5f * info_h;
+    string time_text = " " + convertSeconds((int)round(test_info.time - elapsed), test_info.time) + " ";
+    float text_width = MeasureTextEx(time_text, drawer.font_size).x;
+    // DRAW TIME
+    DrawTextAlign(time_text, info_x, info_y, drawer.font_size, theme.text, RIGHT, CENTER);
+
+    // DRAW TIME CLOCK
+    float clock_r = char_dimension['0'].y * 0.4f;
+    DrawCircleSector(info_x - text_width - clock_r, info_y, clock_r * 0.86f, 180 - (elapsed / test_info.time) * 360, 180, theme.text);
+    DrawRing(info_x - text_width - clock_r, info_y, clock_r, clock_r * 0.85f, theme.text);
+
+    // DRAW DASHBOARD 
+    float dash_x = info_x + char_dimension[' '].x + clock_r;  // center x of dashboard
+    DrawRing(dash_x, info_y, clock_r, clock_r * 0.85f, 45, 315, theme.text);
+    DrawCircle(dash_x, info_y, clock_r * 0.2f, theme.text);
+    float dash_percent = (cur_wpm / (1.1f * max_wpm + 10));
+    const float gap_a = 45;  // 2 * gap_a  = dashboard gap
+    float angle = (90 + gap_a) + ((450 - gap_a) - (90 + gap_a)) * dash_percent;
+    DrawLineEx({ dash_x - clock_r * 0.4f * cosa(angle), info_y - clock_r * 0.4f * sina(angle) }, { dash_x + clock_r * cosa(angle), info_y + clock_r * sina(angle) }, 2, theme.text);
+    // DRAW WPM
+    string wpm_text = TextFormat("% 3d", display_wpm);
+    DrawTextAlign(wpm_text, dash_x + clock_r, info_y, drawer.font_size, theme.text, LEFT, CENTER);
+    
+    // DRAW TYPING TEST TEXT
     drawer.draw();
-    if (io_handler.inactive_frames < inactive_time*60 || (io_handler.inactive_frames/30) & 1)  // if active or Inactive, blink half of the time
+    
+    EndShaderMode();
+    if (io_handler.inactive_frames < inactive_time * 60 || (io_handler.inactive_frames / 30) & 1)  // if active or Inactive, blink half of the time
     {
         drawer.draw_cursor();
     }
@@ -186,17 +252,18 @@ void draw_end()
 {
     Vector2 corner = { 0.5f * (gameScreenWidth - (wpm_width + graph_width)), graph_top };
     DrawRectangle(corner.x, corner.y, wpm_width, graph_height, BLACK);
+    BeginShaderMode(shader);
     DrawTextAlign(TextFormat("%d wpm", final_wpm), corner.x, corner.y, 75, WHITE);
+    EndShaderMode();
 }
 
 // Font loading function: Segoeui
-void load_base_font(void)
+void load_base_font(string path = "C:/Windows/Fonts/segoeui.ttf")
 {
-    string segoe_path = "C:/Windows/Fonts/segoeui.ttf";
-    if (FileExists(segoe_path.c_str()))
+    if (FileExists(path.c_str()))
     {
-        font = load_font(segoe_path.c_str());
-        cout << "Font loaded: " << segoe_path << endl;
+        font = load_font(path.c_str());
+        cout << "Font loaded: " << path << endl;
     } else
     {
         font = { 0 };
@@ -231,15 +298,21 @@ void init()
     create_shader_file();
     // Load SDF required shader (we use default vertex shader)
     shader = LoadShader(0, shader_path);
-    load_base_font();
+    //test_shader = LoadShader(0, "./fonts/test.fs");
+    load_base_font("./fonts/RobotoMono.ttf");
     init_raw_data;
     new_Button(END, 100, 900, 300, 100, "restart", [] { switch_start(); });
     //new_Toggle(START, 0, 300, 50, true, "test", "settings_icon");
-    new_ToggleGroup(START, 0, 300, 50, 0, { "15", "30", "60", "120" });
+    
+    Toggle* test = new Toggle(0, 300, 50, true, "test", "settings_icon");
+    ToggleGroup* test_group = new ToggleGroup(0, 300, 50, 0, { "15", "30", "60", "120" });
+    //new_ToggleGroup(START, 0, 300, 50, 0, { "15", "30", "60", "120" });
+    setting_bar = new SettingBar(gameScreenWidth / 2, 300, { test }, test_group);
+    ui_objects.alloc(setting_bar, START);
+    
     graph = new Graph(wpm_width + (gameScreenWidth - (graph_width + wpm_width)) * 0.5f, graph_top, graph_width, graph_height, 4);
     ui_objects.alloc(graph, END);
 }
-
 
 //------------------------------------------------------------------------------------
 // Program main entry point
@@ -256,7 +329,7 @@ int main(void)
     SetWindowMinSize(320, 240);
     // Render texture initialization, used to hold the rendering result so we can easily resize it
     RenderTexture2D target = LoadRenderTexture(gameScreenWidth, gameScreenHeight);
-    SetTextureFilter(target.texture, TEXTURE_FILTER_TRILINEAR);  // Texture scale filter to use
+    SetTextureFilter(target.texture, TEXTURE_FILTER_BILINEAR);  // Texture scale filter to use
     SetTargetFPS(60);                   // Set our game to run at 60 frames-per-second
     SetExitKey(KEY_NULL);
     
@@ -284,16 +357,15 @@ int main(void)
         //----------------------------------------------------------------------------------
         // Update
         globalFrame++;
+        update_rect_preview();
+        // must be if instead of of else if so start transitions into test directly
         if (scene == START)
         {
-            if (IsKeyPressed())
-            {
-                start_test();
-            }
+            update_start();
         }
         if (scene == TEST)
         {
-            update();
+            update_test();
         }
         if (scene == END)
         {
@@ -308,20 +380,25 @@ int main(void)
         // Draw everything in the render texture, note this will not be rendered on screen, yet
         BeginTextureMode(target);
         ClearBackground(RAYWHITE);  // Clear render texture background color
-        BeginShaderMode(shader);
         int max_fps = 1000.0 / frame_time;
         DrawText(TextFormat("MAX FPS: %d | ELAPSED TIME: %.2f", max_fps, frame_time), 0, gameScreenHeight - 30, 25, BLACK);
-        if (scene == END)
+        if (scene == START)
         {
-            draw_end();
-        } else
+            draw_start();
+        } else if (scene == TEST)
         {
             draw_test();
+        } else if (scene == END)
+        {
+            draw_end();
         }
+
+        BeginShaderMode(shader);    // Activate SDF font shader    
         for (const int id : scene_ids[scene])
         {
             ui_objects[id]->draw();
         }
+        draw_rect_preview();
         EndShaderMode();
         EndTextureMode();
 

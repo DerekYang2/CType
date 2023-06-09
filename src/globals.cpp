@@ -15,21 +15,21 @@ void DrawTextAlign(string str, float x, float y, float font_size, Color col, int
     float y_offset = 0;
 
     // Handle x-alignment
-    if (x_align == CENTER_ALIGN)
+    if (x_align == CENTER)
     {
         x_offset = -txtw / 2;
     }
-    else if (x_align == RIGHT_ALIGN)
+    else if (x_align == RIGHT)
     {
         x_offset = -txtw;
     }
 
     // Handle y-alignment
-    if (y_align == CENTER_ALIGN)
+    if (y_align == CENTER)
     {
         y_offset = -txth / 2;
     }
-    else if (y_align == BOTTOM_ALIGN)
+    else if (y_align == BOTTOM)
     {
         y_offset = -txth;
     }
@@ -204,10 +204,134 @@ int convertChar(char c)
     return c;
 }
 
+Vector2 MeasureTextEx(string str, float font_size)
+{
+    return MeasureTextEx(font, str.c_str(), font_size, font_size / font_spacing);
+}
+
 void DrawRectangleBoth(int x, int y, int width, int height, Color color, float strokeWidth, Color strokeColor)
 {
     DrawRectangle(x, y, width, height, color);
     DrawRectangleLinesEx(Rectangle(x, y, width, height), strokeWidth, strokeColor);
+}
+
+void DrawRectangleAlign(Rectangle r, Color col, int x_align, int y_align)
+{
+    float x_offset = 0;
+    float y_offset = 0;
+
+    // Handle x-alignment
+    if (x_align == CENTER)
+    {
+        x_offset = -r.width / 2;
+    }
+    else if (x_align == RIGHT)
+    {
+        x_offset = -r.width;
+    }
+
+    // Handle y-alignment
+    if (y_align == CENTER)
+    {
+        y_offset = -r.height / 2;
+    }
+    else if (y_align == BOTTOM)
+    {
+        y_offset = -r.height;
+    }
+    DrawRectangle(r.x + x_offset, r.y + y_offset, r.width, r.height, col);
+}
+
+void DrawRectangleAlign(float x, float y, float width, float height, Color col, int x_align, int y_align)
+{
+    float x_offset = 0;
+    float y_offset = 0;
+
+    // Handle x-alignment
+    if (x_align == CENTER)
+    {
+        x_offset = -width / 2;
+    }
+    else if (x_align == RIGHT)
+    {
+        x_offset = -width;
+    }
+
+    // Handle y-alignment
+    if (y_align == CENTER)
+    {
+        y_offset = -height / 2;
+    }
+    else if (y_align == BOTTOM)
+    {
+        y_offset = -height;
+    }
+    DrawRectangle(x + x_offset, y + y_offset, width, height, col);
+}
+
+void DrawRectangleRoundedAlign(Rectangle r, float roundness, int segments, Color col, int x_align, int y_align)
+{
+    float x_offset = 0;
+    float y_offset = 0;
+
+    // Handle x-alignment
+    if (x_align == CENTER)
+    {
+        x_offset = -r.width / 2;
+    }
+    else if (x_align == RIGHT)
+    {
+        x_offset = -r.width;
+    }
+
+    // Handle y-alignment
+    if (y_align == CENTER)
+    {
+        y_offset = -r.height / 2;
+    }
+    else if (y_align == BOTTOM)
+    {
+        y_offset = -r.height;
+    }
+    DrawRectangleRounded({r.x + x_offset, r.y + y_offset, r.width, r.height}, roundness, segments, col);
+}
+
+void DrawRectangleRoundedAlign(float x, float y, float width, float height, float roundness, int segments, Color col, int x_align, int y_align)
+{
+    return DrawRectangleRoundedAlign({ x, y, width, height }, roundness, segments, col, x_align, y_align);
+}
+
+void DrawCircleSector(float x, float y, float r, float start_angle, float end_angle, Color col)
+{
+    int segments = (abs(start_angle - end_angle) / 360) * (2 * PI * r / 3);  // 3 pixels per iteration
+    DrawCircleSector({ x, y }, r, start_angle, end_angle, segments, col);
+}
+
+void DrawRing(float cx, float cy, float innerRadius, float outerRadius, Color color)
+{
+    int segments = (2 * PI * outerRadius / 2);  // 2 pixels per iteration
+    DrawRing({ cx, cy }, innerRadius, outerRadius, 0, 360, segments, color);
+}
+
+void DrawRing(float cx, float cy, float innerRadius, float outerRadius, float startAngle, float endAngle, Color color)
+{
+    int segments = (abs(startAngle - endAngle) / 360) * (2 * PI * outerRadius / 2);  // 2 pixels per iteration
+    DrawRing({ cx, cy }, innerRadius, outerRadius, startAngle, endAngle, segments, color);
+}
+
+string convertSeconds(float seconds, int max_time)
+{
+    bool h_include = (max_time >= 3600); // need to include hours 
+    bool m_include = (max_time >= 60); // need to include minutes
+    int s = round(seconds);
+    int h = s / 3600;
+    int m = (s / 60) % 60;
+    s %= 60;
+    
+    if (!h_include && !m_include)  // have seconds pad by space, not zeroes 
+        return TextFormat("%2d", s);
+    else
+        return string(h_include ? TextFormat("%02d:", h) : "") + (m_include ? TextFormat("%02d:", m) : "") + TextFormat("%02d", s);
 }
 
 Rectangle formatRect(Rectangle r)  // make rectangle width and height positive

@@ -23,7 +23,8 @@ using namespace std;
 #define ceil_div(num, denom) (((num) + (denom) - 1) / (denom))
 #define unix_time std::chrono::system_clock::to_time_t(std::chrono::system_clock::now())
 #define rgba(r, g, b, a) Color(r, g, b, 255*(a))
-
+#define cosa(x) (cosf(rad(x)))
+#define sina(x) (sinf(rad(x)))
 // String funcs ------------------------------------------------------------------
 
 #define is_digit(c) ((c) >= '0' && (c) <= '9')

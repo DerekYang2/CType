@@ -1,8 +1,5 @@
 #include "WordList.h"
-string get_random_word(string list_name)
-{
-    return word_list[list_name][rand_int(0, word_list[list_name].size()-1)];
-}
+
 unordered_map<string, vector<string>> word_list({
 {
     "english",
