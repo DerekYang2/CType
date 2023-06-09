@@ -96,6 +96,7 @@ SettingBar* setting_bar;
 int display_wpm_frames = 15;  // frames to update wpm display
 int display_wpm;
 float max_wpm = 0, cur_wpm = 0;
+float restart_alpha = 0;
 // UI DIMENSIONS 
 float wpm_width = 300;  // width of wpm text 
 float graph_width = 1400;
@@ -150,14 +151,21 @@ void switch_start()
 
 void update_start()
 {
+    if (restart_alpha > 0)
+    {
+        restart_alpha -= 1.f / 60;
+        restart_alpha = max(restart_alpha, 0.f);
+    }
     if (IsKeyPressed(KEY_TAB))  // restart test 
     {
         init_test();
+        restart_alpha = 1;
         return;
     }
     if (IsKeyPressed())
     {
         start_test();
+        restart_alpha = 0;
     }
 } 
 
@@ -184,6 +192,7 @@ void update_test()
     if (IsKeyPressed(KEY_TAB))  // restart test
     {
         switch_start();
+        restart_alpha = 1;
     }
 }
 
@@ -200,6 +209,9 @@ void draw_start()
     {
         drawer.draw_cursor();
     }
+    Color text_color = theme.main;
+    text_color.a = restart_alpha * 255;
+    DrawTextAlign("Restarted", gameScreenWidth/2, 450, 30, text_color, CENTER);
     EndShaderMode();
 }
 
