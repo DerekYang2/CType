@@ -135,7 +135,7 @@ void end_test()
     final_wpm = round(wpm_logger.wpm());
     scene = END;
     graph->reset();
-    graph->set_time(test_info.time);
+    graph->set_time(elapsed);
     graph->config_max(test_info.wpm_record);
     graph->config_max(test_info.raw_wpm_record, RAW);
     graph->set_plot(test_info.wpm_record);
@@ -150,11 +150,16 @@ void switch_start()
 
 void update_start()
 {
+    if (IsKeyPressed(KEY_TAB))  // restart test 
+    {
+        init_test();
+        return;
+    }
     if (IsKeyPressed())
     {
         start_test();
     }
-}
+} 
 
 void update_test()
 {
@@ -175,6 +180,10 @@ void update_test()
     if (elapsed >= test_info.time)
     {
         end_test();
+    }
+    if (IsKeyPressed(KEY_TAB))  // restart test
+    {
+        switch_start();
     }
 }
 
