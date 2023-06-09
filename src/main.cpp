@@ -20,9 +20,9 @@
 #include "globals.h"
 #include "Theme.h"
 #include "ResourceInit.h"
+#include "RobotoMono.h"
 #include "UIAlloc.h"
 #include "Button.h"
-#include "segoeui.h"
 #include "ObjectMacros.h"
 #include "StopWatch.h"
 #include "ShaderEmbed.h"
@@ -277,38 +277,31 @@ void draw_end()
     DrawTextAlign(TextFormat("%d wpm", final_wpm), corner.x, corner.y, 75, WHITE);
     EndShaderMode();
 }
-
-// Font loading function: Segoeui
-void load_base_font(string path = "C:/Windows/Fonts/segoeui.ttf")
+//NOTE: C:/Windows/Fonts/segoeui.ttf - SEGOE UI PATH
+// Font loading function
+void load_base_font(string path = "default")
 {
-    if (FileExists(path.c_str()))
+    if (path == "default" || !FileExists(path.c_str()))
+    {
+        // FONT LOADING USING STATIC CHAR ARRAY
+        string full_path = path;
+        // SDF font generation from TTF font
+        font = { 0 };
+        const float font_base = 64;
+        font.baseSize = font_base;
+        font.glyphCount = 95;
+        // Parameters > font size: 16, no glyphs array provided (0), glyphs count: 0 (defaults to 95)
+        font.glyphs = LoadFontData(RobotoMono_DATA, RobotoMono_size, font_base, 0, 0, FONT_SDF);
+        // Parameters > glyphs count: 95, font size: 16, glyphs padding in image: 0 px, pack method: 1 (Skyline algorythm)
+        Image atlas = GenImageFontAtlas(font.glyphs, &font.recs, 95, font_base, 0, 1);
+        font.texture = LoadTextureFromImage(atlas);
+        UnloadImage(atlas);
+
+        SetTextureFilter(font.texture, TEXTURE_FILTER_BILINEAR);    // Required for SDF font  
+    } else 
     {
         font = load_font(path.c_str());
         cout << "Font loaded: " << path << endl;
-    } else
-    {
-        font = { 0 };
-
-        font.baseSize = 256;
-        font.glyphCount = 95;
-        font.glyphPadding = 0;
-
-        // Custom font loading
-        // NOTE: Compressed font image data (DEFLATE), it requires DecompressData() function
-        int fontDataSize_Segoeui = 0;
-        unsigned char* data = DecompressData(fontData_Segoeui, COMPRESSED_DATA_SIZE_FONT_SEGOEUI, &fontDataSize_Segoeui);
-        Image imFont = { data, 4096, 4096, 1, 2 };
-
-        // Load texture from image
-        font.texture = LoadTextureFromImage(imFont);
-        SetTextureFilter(font.texture, TEXTURE_FILTER_BILINEAR);
-
-        UnloadImage(imFont);  // Uncompressed data can be unloaded from memory
-
-        // Assign glyph recs and info data directly
-        // WARNING: This font data must not be unloaded
-        font.recs = fontRecs_Segoeui;
-        font.glyphs = fontGlyphs_Segoeui;
     }
     font_spacing = 15;  // Default Font 
 }
@@ -320,7 +313,7 @@ void init()
     // Load SDF required shader (we use default vertex shader)
     shader = LoadShader(0, shader_path);
     //test_shader = LoadShader(0, "./fonts/test.fs");
-    load_base_font("./fonts/RobotoMono.ttf");
+    load_base_font("default");
     init_raw_data;
     new_Button(END, 100, 900, 300, 100, "restart", [] { switch_start(); });
     //new_Toggle(START, 0, 300, 50, true, "test", "settings_icon");

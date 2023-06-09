@@ -43,8 +43,30 @@ bool should_recompile(string name)
     return false;
 }
 
+
+void export_raw_font(string path_name)
+{
+    // Loading file to memory
+    unsigned int fileSize = 0;
+    unsigned char* fileData = LoadFileData(("./fonts/" + path_name + ".ttf").c_str(), &fileSize);
+    ofstream ofs;
+    ofs.open("./export/assets/" + path_name + ".h", ofstream::out | ofstream::trunc);  //header file
+    ofs << "#pragma once\n";
+    ofs << "#define " << path_name << "_size " << fileSize << '\n';
+    ofs << "static unsigned char " + path_name + "_DATA[] = {";
+    for (int i = 0; i < fileSize - 1; i++)
+    {
+        ofs << (int)fileData[i] << ",";
+    }
+    ofs << (int)fileData[fileSize - 1] << "};\n";
+    ofs.close();
+}
+
 int main()
 {
+    // Comment out if not using
+    export_raw_font("RobotoMono");
+    
     ofstream ofs;
     ofs.open("./src/ResourceInit.h", ofstream::out | ofstream::trunc);  //header file
 
