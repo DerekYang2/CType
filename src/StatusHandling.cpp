@@ -12,16 +12,19 @@ void update_status(char c)
     {
         status = EXTRA;
         words[word_i].add(c);
+        wpm_logger.push_error();
     } else if (c != generated_chars[empty_i]) // normal incorrect
     {
         status = INCORRECT;
         words[word_i].add(c);
+        wpm_logger.push_error();
         empty_i++;
     } else  // correct
     {
         status = CORRECT;
         words[word_i].add(c);
-        wpm_logger.push_char(), empty_i++;
+        wpm_logger.push_char();
+        empty_i++;
     }
     char_status.push_back({ status, c });
     io_handler.offset_x += char_dimension[c].x;
@@ -41,7 +44,7 @@ void update_space()
     {
         // JUMP TO NEXT WORD
         int space_idx = empty_i + words[word_i].length() - idx;
-        for (int i = empty_i; i < space_idx; i++)  // fill missing 
+        for (int i = empty_i; i < space_idx; i++)  // fill missing spaces
         {
             char correct = generated_chars[i];
             char_status.push_back({ MISSING, correct });
@@ -50,6 +53,7 @@ void update_space()
         // space is correct 
         char_status.push_back({ CORRECT, ' ' });
         io_handler.offset_x += char_dimension[' '].x;
+        wpm_logger.push_error();  // this space correct, but from incorrect press -> error
         // go to start next word
         empty_i = space_idx + 1;
         words[word_i].seal_word(false);

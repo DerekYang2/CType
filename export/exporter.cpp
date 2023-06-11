@@ -52,7 +52,7 @@ void export_raw_font(string path_name)
     ofstream ofs;
     ofs.open("./export/assets/" + path_name + ".h", ofstream::out | ofstream::trunc);  //header file
     ofs << "#pragma once\n";
-    ofs << "#define " << path_name << "_size " << fileSize << '\n';
+    ofs << "#define " << path_name << "_SIZE " << fileSize << '\n';
     ofs << "static unsigned char " + path_name + "_DATA[] = {";
     for (int i = 0; i < fileSize - 1; i++)
     {

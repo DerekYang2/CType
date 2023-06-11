@@ -43,8 +43,8 @@ void SettingBar::draw()
     Color col = multiply_rgb(theme.background, 0.7f);
     float padding = 2 * space_width;  // also equal to y padding
     float x_pad = padding - space_width; // x already has some padding
-    DrawRectangleRoundedAlign(cx, cy, tot_width + 2 * x_pad, h + 2 * padding, 0.5f, h/3, col, CENTER, CENTER); 
-    DrawRectangleRoundedAlign(separator_x, cy, space_width * 0.6f, h + padding, 0.5f, h/3, multiply_rgb(theme.sub, 1.1f), CENTER, CENTER);
+    DrawRectangleRoundedAlign(cx, cy, tot_width + 2 * x_pad, h + 2 * padding, 0.4f, h/5, col, CENTER, CENTER); 
+    DrawRectangleRoundedAlign(separator_x, cy, space_width * 0.6f, h + padding, 0.4f, h/5, multiply_rgb(theme.sub, 1.1f), CENTER, CENTER);
     for (auto& [label, toggle] : toggle_map)
         toggle->draw();
     toggle_group->draw();

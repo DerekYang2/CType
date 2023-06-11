@@ -47,8 +47,9 @@ Theme theme{
     rgb(128, 41, 41) // error_extra
 };
 // Window Variables
-const int windowWidth = 1650, windowHeight = 1000;
 int gameScreenWidth = 1920, gameScreenHeight = 1080;
+int windowWidth = gameScreenWidth, windowHeight = gameScreenHeight;
+
 // GLOBAL VARS
 unordered_set<int> scene_ids[5];
 int scene = START;
@@ -88,6 +89,9 @@ TextGenerator text_gen;
 bool drawing_block;
 float drawing_x, drawing_y;
 // END init extern variables ----------------------------------------------------------------
+// render textures
+RenderTexture2D target;
+
 int final_wpm;
 float elapsed;
 Graph* graph;
@@ -141,6 +145,7 @@ void end_test()
     graph->config_max(test_info.raw_wpm_record, RAW);
     graph->set_plot(test_info.wpm_record);
     graph->set_plot(test_info.raw_wpm_record, RAW);
+    graph->set_error(test_info.error_record);
 }
 
 void switch_start()
@@ -175,7 +180,7 @@ void update_test()
     io_handler.update();
     wpm_logger.update();
     test_info.update();
-    elapsed = wpm_logger.elapsed();
+    elapsed = wpm_logger.get_elapsed();
 
     cur_wpm = wpm_logger.wpm();
     max_wpm = max(max_wpm, cur_wpm);
@@ -217,6 +222,7 @@ void draw_start()
 
 /* deque<float> stored_wpm;
 deque<float> stored_current_wpm; */
+Shader test_shader;
 
 void draw_test()
 {
@@ -241,7 +247,7 @@ void draw_test()
     float text_width = MeasureTextEx(time_text, drawer.font_size).x;
     // DRAW TIME
     DrawTextAlign(time_text, info_x, info_y, drawer.font_size, theme.text, RIGHT, CENTER);
-
+    
     // DRAW TIME CLOCK
     float clock_r = char_dimension['0'].y * 0.4f;
     DrawCircleSector(info_x - text_width - clock_r, info_y, clock_r * 0.86f, 180 - (elapsed / test_info.time) * 360, 180, theme.text);
@@ -274,7 +280,7 @@ void draw_end()
     Vector2 corner = { 0.5f * (gameScreenWidth - (wpm_width + graph_width)), graph_top };
     DrawRectangle(corner.x, corner.y, wpm_width, graph_height, BLACK);
     BeginShaderMode(shader);
-    DrawTextAlign(TextFormat("%d wpm", final_wpm), corner.x, corner.y, 75, WHITE);
+    DrawTextAlign(TextFormat("%d wpm", final_wpm), corner.x, corner.y, 75, rgb(32, 32, 32));
     EndShaderMode();
 }
 //NOTE: C:/Windows/Fonts/segoeui.ttf - SEGOE UI PATH
@@ -291,7 +297,7 @@ void load_base_font(string path = "default")
         font.baseSize = font_base;
         font.glyphCount = 95;
         // Parameters > font size: 16, no glyphs array provided (0), glyphs count: 0 (defaults to 95)
-        font.glyphs = LoadFontData(RobotoMono_DATA, RobotoMono_size, font_base, 0, 0, FONT_SDF);
+        font.glyphs = LoadFontData(RobotoMono_DATA, RobotoMono_SIZE, font_base, 0, 0, FONT_SDF);
         // Parameters > glyphs count: 95, font size: 16, glyphs padding in image: 0 px, pack method: 1 (Skyline algorythm)
         Image atlas = GenImageFontAtlas(font.glyphs, &font.recs, 95, font_base, 0, 1);
         font.texture = LoadTextureFromImage(atlas);
@@ -303,23 +309,20 @@ void load_base_font(string path = "default")
         font = load_font(path.c_str());
         cout << "Font loaded: " << path << endl;
     }
-    font_spacing = 15;  // Default Font 
+    font_spacing = 12;  // Default Font 
 }
 
 void init()
 {
-    // create f# shader file if doesn't exist
-    create_shader_file();
-    // Load SDF required shader (we use default vertex shader)
-    shader = LoadShader(0, shader_path);
+    load_sdf_shader();
     //test_shader = LoadShader(0, "./fonts/test.fs");
     load_base_font("default");
     init_raw_data;
     new_Button(END, 100, 900, 300, 100, "restart", [] { switch_start(); });
     //new_Toggle(START, 0, 300, 50, true, "test", "settings_icon");
-    
-    Toggle* test = new Toggle(0, 300, 50, true, "test", "settings_icon");
-    ToggleGroup* test_group = new ToggleGroup(0, 300, 50, 0, { "15", "30", "60", "120" });
+    float bar_h = 25;
+    Toggle* test = new Toggle(0, 300, bar_h, true, "test", "settings_icon");
+    ToggleGroup* test_group = new ToggleGroup(0, 300, bar_h, 0, { "5", "15", "30", "60", "120" });
     //new_ToggleGroup(START, 0, 300, 50, 0, { "15", "30", "60", "120" });
     setting_bar = new SettingBar(gameScreenWidth / 2, 300, { test }, test_group);
     ui_objects.alloc(setting_bar, START);
@@ -340,16 +343,25 @@ int main(void)
     // Enable config flags for resizable window and vertical synchro
     SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_MSAA_4X_HINT);
     InitWindow(windowWidth, windowHeight, "Typing Test");
+    MaximizeWindow();
     SetWindowMinSize(320, 240);
     // Render texture initialization, used to hold the rendering result so we can easily resize it
-    RenderTexture2D target = LoadRenderTexture(gameScreenWidth, gameScreenHeight);
+    target = LoadRenderTexture(gameScreenWidth, gameScreenHeight);
     SetTextureFilter(target.texture, TEXTURE_FILTER_BILINEAR);  // Texture scale filter to use
+    
     SetTargetFPS(60);                   // Set our game to run at 60 frames-per-second
     SetExitKey(KEY_NULL);
     
     init();
     init_test();
-    
+
+/*     // example shader init
+    int textLoc = GetShaderLocation(test_shader, "texture0");
+    int vecLoc = GetShaderLocation(test_shader, "resolution");
+    SetShaderValueTexture(test_shader, textLoc, target.texture);
+    static const float arr[2] = { gameScreenWidth , gameScreenHeight };
+    SetShaderValue(test_shader, vecLoc, arr, SHADER_UNIFORM_VEC2); */
+
     // timer funcs
     float frame_time = 1;
     Stopwatch frame_timer;
@@ -413,17 +425,17 @@ int main(void)
             ui_objects[id]->draw();
         }
         draw_rect_preview();
+
         EndShaderMode();
         EndTextureMode();
 
         // Draw render texture onto real screen
         BeginDrawing();
-            ClearBackground(BLACK);     // Clear screen background
-
-            // Draw render texture to screen, properly scaled
-            DrawTexturePro(target.texture, (Rectangle){ 0.0f, 0.0f, (float)target.texture.width, (float)-target.texture.height },
+        ClearBackground(BLACK);     // Clear screen background
+        // Draw render texture to screen, properly scaled
+        DrawTexturePro(target.texture, (Rectangle){ 0.0f, 0.0f, (float)target.texture.width, (float)-target.texture.height },
                            (Rectangle){ (GetScreenWidth() - ((float)gameScreenWidth*scale))*0.5f, (GetScreenHeight() - ((float)gameScreenHeight*scale))*0.5f,
-                           (float)gameScreenWidth*scale, (float)gameScreenHeight*scale }, (Vector2){ 0, 0 }, 0.0f, WHITE);
+                           (float)gameScreenWidth*scale, (float)gameScreenHeight*scale}, (Vector2){ 0, 0 }, 0.0f, WHITE);
         if (globalFrame % 30 == 0)
             frame_time = frame_timer.ms();
         EndDrawing();

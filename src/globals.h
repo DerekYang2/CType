@@ -6,7 +6,7 @@
 #include "Word.h"
 #define shader_path "./fonts/sdf.fs"
 // Window Variables
-extern const int windowWidth, windowHeight;
+extern int windowWidth, windowHeight;
 extern int gameScreenWidth, gameScreenHeight;
 
 // GLOBAL VARS

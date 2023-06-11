@@ -10,6 +10,7 @@ ToggleGroup::ToggleGroup(float x, float y, float h, int init_idx, vector<string>
     texture = nullptr;
     
     text = deque<string>(text_list.begin(), text_list.end());
+    text[0] = " " + text[0];
     for (int i = 0; i < text.size(); i++)
         text[i] = " " + text[i] + " ";
     
@@ -49,6 +50,7 @@ ToggleGroup::ToggleGroup(float x, float y, float h, int init_idx, vector<string>
     img_scale = h / texture->height;
     
     text = deque<string>(text_list.begin(), text_list.end());
+    text[0] = " " + text[0];
     for (int i = 0; i < text.size(); i++)
         text[i] = " " + text[i] + " ";
     

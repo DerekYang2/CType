@@ -6,6 +6,7 @@ struct TestInfo {
     int time;
     // wpm graph info
     vector<float> wpm_record, raw_wpm_record;
+    vector<int> error_record;
     float sec_per_check;  // seconds per check
     TestInfo();
     void init(int test_time);

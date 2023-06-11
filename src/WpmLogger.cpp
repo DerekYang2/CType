@@ -9,13 +9,15 @@ WpmLogger::WpmLogger() : watch()
 
 void WpmLogger::reset()
 {
+    elapsed = 0;
     total_good = 0;
     good = 0;
+    error = 0;
     prev_word_i = 0;
     contribution.clear();
     contribution.push_back(0); // start with 0 on first word
     del_queue.clear();
-    
+    error_del_queue.clear();
 }
 
 void WpmLogger::start()
@@ -26,27 +28,44 @@ void WpmLogger::start()
 void WpmLogger::end()
 {
     watch.freeze();
+    elapsed = watch.s();
 }
 
 void WpmLogger::push_char()
 {
-    float elapsed = watch.s();
     // Update the number of correctly typed characters
     if (words[word_i].current_correct())
     {
         good++;
         del_queue.push_back(elapsed + SEC_BACK);  // when to delete this char's contribution
+    } else
+    {
+        error++;
+        error_del_queue.push_back(elapsed + error_time);  // when to delete this char's contribution
     }
+}
+
+void WpmLogger::push_error()
+{
+    error++;
+    error_del_queue.push_back(elapsed + error_time);  // when to delete this char's contribution
 }
 
 void WpmLogger::update()
 {
-    while (!del_queue.empty() && del_queue.front() <= watch.s())  // time reached
+    elapsed = watch.s();  // update elapsed
+    
+    while (!del_queue.empty() && del_queue.front() <= elapsed)  // time reached
     {
         del_queue.pop_front();
         good--;
     }
-    
+    while (!error_del_queue.empty() && error_del_queue.front() <= elapsed)  // time reached
+    {
+        error_del_queue.pop_front();
+        error--;
+    }
+
     // update total_good 
     if (word_i < prev_word_i)  // deleted
     {
@@ -76,7 +95,6 @@ void WpmLogger::update()
 
 float WpmLogger::raw_wpm()
 {
-    float elapsed = watch.s();
     if (elapsed <= 1) return 0;
     return 12 * (float)good / min(elapsed, (float)SEC_BACK);
 }
@@ -88,12 +106,16 @@ float WpmLogger::raw_wpm()
 */
 float WpmLogger::wpm()
 {
-    float elapsed = watch.s();
     if (elapsed <= 1) return 0;  // too early
     return 12 * (float)total_good / elapsed;  // 60 / 5 -> 12
 }
 
-float WpmLogger::elapsed()
+int WpmLogger::current_errors()
 {
-    return watch.s();
+    return error;
+}
+
+float WpmLogger::get_elapsed()
+{
+    return elapsed;
 }

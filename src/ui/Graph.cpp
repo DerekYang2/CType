@@ -14,14 +14,16 @@ void Graph::reset()
         points[t].clear();
         draw_points[t].clear();
     }
+    errors.clear();
     draw_segments.clear();
-    max_v = 0;
+    max_v = 20;  // cannot be smaller than 20
+    max_err = 0;
 }
 
 void Graph::config_max(vector<float>& plot_points, int wpm_type)
 {
     float min_val = INT_MAX, max_val = INT_MIN;
-    for (float v : plot_points)
+    for (float& v : plot_points)
     {
         min_val = min(min_val, v), max_val = max(max_val, v);
     }
@@ -113,16 +115,28 @@ void Graph::set_plot(vector<float>& plot_points, int wpm_type)
         points[wpm_type].push_back({ x_pos, rect.y + rect.height * (1.f - plot_points[i] / max_v) });
         x_pos += gap;
     }
-    
+    bool zero_jump = false;
+    if (wpm_type == NORMAL)
+    {
+        for (int i = 1; i < plot_points.size() - 1; i++)
+        {
+            if (plot_points[i-1] <= 0.01 && plot_points[i] >= 1 && plot_points[i+1] <= 0.01)
+            {
+                zero_jump = true;
+                break;
+            }
+        }
+    }
+
     // calculate root mean square dist 
     float avg_dist = 0;
     for (int i = 1; i < points[wpm_type].size(); i++)
         avg_dist += Vector2DistanceSqr(points[wpm_type][i], points[wpm_type][i - 1]);
     avg_dist /= points[wpm_type].size(), avg_dist = sqrt(avg_dist);
     
-    float f = 0.9;
-    float scale = 0.1 + (f - 0.1) * (avg_dist - 10) / 300;
-    
+    float f = 9.f;
+    float scale = 0.1 + (f - 0.1) * (sqrt(abs(avg_dist - 10))) / 300;
+    if (zero_jump) scale = 0.2f;
     // calculate bezier curve array
     BezierPath bezier(iter_f(plot_points.size()));
     bezier.Interpolate(points[wpm_type], scale);
@@ -139,7 +153,12 @@ void Graph::set_plot(vector<float>& plot_points, int wpm_type)
         init_polygon(bezier.GetDrawingPoints());  // curve points
     } else
     {
-        draw_points[wpm_type] = bezier.GetDrawingPoints(thick);
+        draw_points[wpm_type] = bezier.GetDrawingPoints();
+        // make sure curve doesn't cross out of the bottom 
+        for (int i = 0; i < draw_points[wpm_type].size(); i++)
+            if (draw_points[wpm_type][i].y > rect.y + rect.height)
+                draw_points[wpm_type][i].y = rect.y + rect.height;
+        draw_points[wpm_type] = bezier.applyThickness(draw_points[wpm_type], thick);
     }
 
     if (wpm_type == NORMAL)  // only need to do once
@@ -159,6 +178,23 @@ void Graph::set_plot(vector<float>& plot_points, int wpm_type)
     }
 }
 
+void Graph::set_error(vector<int>& error_list)
+{
+    gap = rect.width / (error_list.size() - 1);
+    max_err = 0;
+    for (int &err: error_list)
+        max_err = max(max_err, err);
+    max_err++;  // just a bit of space at top
+    max_err = (int)round(ceil((float)max_err / 10) * 10);  // round up to nearest 10 multiple
+    // transform points into rectangle graph
+    float x_pos = rect.x;
+    for (int i = 0; i < error_list.size(); i++)
+    {
+        errors.push_back({ x_pos, rect.y + rect.height * (1.f - (float)error_list[i] / max_err) });
+        x_pos += gap;
+    }
+}
+
 void Graph::update()
 {
 
@@ -172,10 +208,18 @@ void Graph::draw()
     for (float y = rect.y + rect.height; y >= rect.y; y -= grid_y_gap)
     {
         DrawLine(rect.x, y, rect.x + rect.width, y, rgba(0, 0, 0, 0.2));
+        // wpm
         float y_v = max_v * ((rect.y + rect.height) - y) / rect.height;
         DrawTextAlign(to_string((int)round(y_v)), rect.x - 10, y, 20, rgba(255, 255, 255, 0.4), RIGHT, CENTER);
     }
 
+    float err_y_gap = rect.height / (10);
+    for (float y = rect.y + rect.height; y >= rect.y; y -= err_y_gap)
+    {
+         // errors
+        float y_v = max_err * ((rect.y + rect.height) - y) / rect.height;
+        DrawTextAlign(to_string((int)y_v), rect.x + rect.width + 10, y, 20, rgba(255, 255, 255, 0.4), LEFT, CENTER);
+    }
     // Draw x-axis
     int sec_gap = round(time / 15);
     if (sec_gap < 1) sec_gap = 1;
@@ -196,10 +240,13 @@ void Graph::draw()
     DrawTriangleStrip(&draw_points[RAW][0], draw_points[RAW].size(), rgba(255, 255, 255, 0.3));
     // NORMAL curve
     DrawTriangleStrip(&draw_points[NORMAL][0], draw_points[NORMAL].size(), RED);
+    // error points 
+    for (Vector2& p : errors)
+        DrawCircleV(p, 3, RED);
 
     if (IsKeyDown(KEY_SPACE))
     {
-        for (Vector2& p : points[RAW])
+        for (Vector2& p : points[NORMAL])
         {
             DrawCircleV(p, 3, BLUE);
         }
