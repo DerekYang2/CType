@@ -6,6 +6,7 @@
 	],
 	"settings": {
 		"files.associations": {
+			"*.h": "cpp",
 			"cmath": "cpp",
 			"chrono": "cpp",
 			"random": "cpp",
@@ -94,7 +95,8 @@
 			"thread": "cpp",
 			"typeindex": "cpp",
 			"typeinfo": "cpp",
-			"variant": "cpp"
+			"variant": "cpp",
+			"*.frag": "cpp"
 		},
 		"VsCodeTaskButtons.tasks": [
 			{

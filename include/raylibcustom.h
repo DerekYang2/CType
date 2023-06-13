@@ -25,6 +25,7 @@ using namespace std;
 #define rgba(r, g, b, a) Color(r, g, b, 255*(a))
 #define cosa(x) (cosf(rad(x)))
 #define sina(x) (sinf(rad(x)))
+#define t_s(x) (to_string(x))
 // String funcs ------------------------------------------------------------------
 
 #define is_digit(c) ((c) >= '0' && (c) <= '9')

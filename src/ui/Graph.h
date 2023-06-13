@@ -15,7 +15,6 @@ class Graph : public UIObject
     Rectangle rect;
     float max_v;
     int max_err;
-    float gap;
     float thick;
     float grid_y_gap;
     float time; 
@@ -25,7 +24,7 @@ public:
     void config_max(vector<float>& plot_points, int wpm_type = NORMAL);  // call on both lists to calculate the max value 
     void init_polygon(vector<Vector2>&& curve_p);
     void set_plot(vector<float>& plot_points, int wpm_type = NORMAL);
-    void set_error(vector<int>& error_list);
+    void set_error(vector<float> & error_list);
     void update() override;
     void draw() override;
     void set_time(float t);

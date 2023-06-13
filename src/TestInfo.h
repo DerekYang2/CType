@@ -11,5 +11,6 @@ struct TestInfo {
     TestInfo();
     void init(int test_time);
     void update();
+    void update_graph(Graph *graph);
 };
 extern TestInfo test_info;

@@ -23,7 +23,7 @@ void update_status(char c)
     {
         status = CORRECT;
         words[word_i].add(c);
-        wpm_logger.push_char();
+        wpm_logger.push_char(true);
         empty_i++;
     }
     char_status.push_back({ status, c });
@@ -37,8 +37,9 @@ void update_space()
     {
         char_status.push_back({ CORRECT, ' ' });
         io_handler.offset_x += char_dimension[' '].x;
-        wpm_logger.push_char(), empty_i++;
-        words[word_i].seal_word(idx == words[word_i].length());
+        bool is_good = idx == words[word_i].length();  // not an extra space 
+        wpm_logger.push_char(is_good), empty_i++;   // if space is in the correct position, total good char++ (affects accuracy and raw)
+        words[word_i].seal_word(is_good);
         word_i++;  // go to next word
     } else if (idx != 0) // cannot press space on first index, if first index then ignore 
     {

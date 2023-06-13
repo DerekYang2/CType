@@ -37,7 +37,9 @@ default: all run
 
 debug: CFLAGS+=-g3
 
-debug: clean all
+debug: clean 
+
+debug: all
 
 export:
 	g++ ./export/exporter.cpp -o ./export/exporter.exe -O2 -Wall -Wno-sign-compare -std=c++20 -I ./include -I ./export/assets -L ./lib -lraylib -lopengl32 -lgdi32 -lwinmm && ./export/exporter.exe 

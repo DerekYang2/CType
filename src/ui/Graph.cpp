@@ -64,12 +64,32 @@ void Graph::init_polygon(vector<Vector2> &&curve_p)
                     draw_segments.back().push_back(curve_p[j]);
                 }
                 st = i - 1;
+            } else if (curve_p[i-1].x - curve_p[st].x >= 300) // too wide
+            {
+                draw_segments.push_back(vector<Vector2>());
+                draw_segments.back().push_back({ curve_p[st].x, rect.y + rect.height });
+                draw_segments.back().push_back({ curve_p[i - 1].x, rect.y + rect.height });
+                for (int j = i - 1; j >= st; j--)
+                {
+                    draw_segments.back().push_back(curve_p[j]);
+                }
+                st = i - 1;
             }
         } else
         {
             if (curve_p[i].y >= curve_p[i-1].y)  // decreasing
             {
                 decreasing = true;
+                draw_segments.push_back(vector<Vector2>());
+                draw_segments.back().push_back({curve_p[i-1].x, rect.y + rect.height});
+                for (int j = i-1; j >= st; j--)
+                {
+                    draw_segments.back().push_back(curve_p[j]);
+                }
+                draw_segments.back().push_back({ curve_p[st].x, rect.y + rect.height });
+                st = i - 1;
+            } else if (curve_p[i-1].x - curve_p[st].x >= 300) // too wide
+            {
                 draw_segments.push_back(vector<Vector2>());
                 draw_segments.back().push_back({curve_p[i-1].x, rect.y + rect.height});
                 for (int j = i-1; j >= st; j--)
@@ -106,7 +126,7 @@ void Graph::init_polygon(vector<Vector2> &&curve_p)
 void Graph::set_plot(vector<float>& plot_points, int wpm_type)
 {
     assert(!plot_points.empty());
-    gap = rect.width / (plot_points.size() - 1);
+    float gap = rect.width / (plot_points.size() - 1);
     
     // transform points into rectangle graph
     float x_pos = rect.x;
@@ -178,20 +198,38 @@ void Graph::set_plot(vector<float>& plot_points, int wpm_type)
     }
 }
 
-void Graph::set_error(vector<int>& error_list)
+void Graph::set_error(vector<float>& error_list)
 {
-    gap = rect.width / (error_list.size() - 1);
+    // calculate error list 
+    float err_dist = 10;
+    float t_gap = err_dist * (time-1) / rect.width;
+    int err_i = 0;
+    //for (auto& x : error_list) cout << x << ","; cout << endl;
+    vector<int> err_amt;
+    // trim out all errors less than t = 1
+    while (err_i < error_list.size() && error_list[err_i] < 1)
+        err_i++;
+    for (float t = 1; t + t_gap <= time; t += t_gap)
+    {
+        int error_amt = 0;
+        while (err_i < error_list.size() && t <= error_list[err_i] && error_list[err_i] < t + t_gap)
+            error_amt++, err_i++;
+        err_amt.push_back(error_amt);
+    }
+    
     max_err = 0;
-    for (int &err: error_list)
+    for (int &err: err_amt)
         max_err = max(max_err, err);
     max_err++;  // just a bit of space at top
-    max_err = (int)round(ceil((float)max_err / 10) * 10);  // round up to nearest 10 multiple
+    if (max_err > 5)
+        max_err = (int)round(ceil((float)max_err / 10) * 10);  // round up to nearest 10 multiple
     // transform points into rectangle graph
     float x_pos = rect.x;
-    for (int i = 0; i < error_list.size(); i++)
+    for (int i = 0; i < err_amt.size(); i++)
     {
-        errors.push_back({ x_pos, rect.y + rect.height * (1.f - (float)error_list[i] / max_err) });
-        x_pos += gap;
+        if (err_amt[i] > 0)
+            errors.push_back({ x_pos, rect.y + rect.height * (1.f - (float)err_amt[i] / max_err) });
+        x_pos += err_dist;
     }
 }
 
@@ -202,23 +240,25 @@ void Graph::update()
 
 void Graph::draw()
 {
-    DrawRectangleRec(rect, rgb(70, 70, 70));
+    Color line_col = rgba(0, 0, 0, 0.3);
+    DrawRectangleLinesEx(rect, 1, line_col);
 
     // DRAW y-grid
     for (float y = rect.y + rect.height; y >= rect.y; y -= grid_y_gap)
     {
-        DrawLine(rect.x, y, rect.x + rect.width, y, rgba(0, 0, 0, 0.2));
+        if (y > rect.y && y < rect.y + rect.height) // no need to redraw
+            DrawLine(rect.x, y, rect.x + rect.width, y, line_col);
         // wpm
         float y_v = max_v * ((rect.y + rect.height) - y) / rect.height;
-        DrawTextAlign(to_string((int)round(y_v)), rect.x - 10, y, 20, rgba(255, 255, 255, 0.4), RIGHT, CENTER);
+        DrawTextAlign(t_s((int)round(y_v)), rect.x - 10, y, 20, theme.sub, RIGHT, CENTER);
     }
 
-    float err_y_gap = rect.height / (10);
+    float err_y_gap = max_err <= 5 ? (rect.height / max_err) : (rect.height / (10));
     for (float y = rect.y + rect.height; y >= rect.y; y -= err_y_gap)
     {
          // errors
         float y_v = max_err * ((rect.y + rect.height) - y) / rect.height;
-        DrawTextAlign(to_string((int)y_v), rect.x + rect.width + 10, y, 20, rgba(255, 255, 255, 0.4), LEFT, CENTER);
+        DrawTextAlign(t_s((int)y_v), rect.x + rect.width + 10, y, 20, theme.sub, LEFT, CENTER);
     }
     // Draw x-axis
     int sec_gap = round(time / 15);
@@ -227,19 +267,20 @@ void Graph::draw()
     int sec = 1;
     for (float x = rect.x; x <= rect.x + rect.width; x += x_gap)
     {
-        DrawLine(x, rect.y, x, rect.y + rect.height, rgba(0, 0, 0, 0.2));
-        DrawTextAlign(to_string(sec), x, rect.y + rect.height + 10, 20, rgba(255, 255, 255, 0.4), CENTER, TOP);
+        if (x > rect.x && x < rect.x + rect.width)  // no need to redraw
+            DrawLine(x, rect.y, x, rect.y + rect.height, line_col);
+        DrawTextAlign(t_s(sec), x, rect.y + rect.height + 10, 20, theme.sub, CENTER, TOP);
         sec += sec_gap;
     }    
     
     // RAW curve polygon
     for (vector<Vector2>& segment : draw_segments)
-        DrawTriangleFan(&segment[0], segment.size(), rgba(0, 0, 0, 0.1));
+        DrawTriangleFan(&segment[0], segment.size(), rgba(0, 0, 0, 0.15));
     
     // RAW curve
-    DrawTriangleStrip(&draw_points[RAW][0], draw_points[RAW].size(), rgba(255, 255, 255, 0.3));
+    DrawTriangleStrip(&draw_points[RAW][0], draw_points[RAW].size(), theme.sub);
     // NORMAL curve
-    DrawTriangleStrip(&draw_points[NORMAL][0], draw_points[NORMAL].size(), RED);
+    DrawTriangleStrip(&draw_points[NORMAL][0], draw_points[NORMAL].size(), theme.main);
     // error points 
     for (Vector2& p : errors)
         DrawCircleV(p, 3, RED);

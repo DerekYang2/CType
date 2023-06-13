@@ -9,26 +9,27 @@
 struct WpmLogger {
     Stopwatch watch;
     float elapsed;
-    int total_good;
-    int good;  // number of chars typed in correct words
-    int error;  // number of char errors
-    float error_time;  // current error is last error_time seconds
+    int total_good;  // number of correct chars typed in any situation
+    int total_typed;
+    int good; // number of chars typed in correct words (normal)
+    int raw_good;  // number of chars typed in correct words (instant, last 5 sec)
     bool current_good;  // is current word's prefix correct
     list<float> del_queue;  // delete time
-    list<float> error_del_queue;  // delete time
+    vector<float> error_log;
     list<char> contribution;
     int prev_word_i;
     void reset();
     WpmLogger();
     void start();
     void push_error();  // Call for bad empty_i++
-    void push_char();  // Only call for every good empty_i++
-    float raw_wpm();
-    float wpm();
+    void push_char(bool good_char);  // Only call for every good empty_i++
+    float instant_wpm();  // instantaneous wpm (last 5 sec)
+    float wpm(); // normal wpm
+    float raw_wpm();  // do not count errors
+    float accuracy();
     void update();
     void end();
     float get_elapsed();
-    int current_errors();
 };
 
 extern WpmLogger wpm_logger;

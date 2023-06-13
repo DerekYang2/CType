@@ -34,6 +34,7 @@
 #include "Graph.h"
 #include "Toggle.h"
 #include "ToggleGroup.h"
+#include "TextPanelV.h"
 #include "SettingBar.h"
 #include "TestInfo.h"
 #include "RectPreview.h"
@@ -93,8 +94,11 @@ float drawing_x, drawing_y;
 RenderTexture2D target;
 
 int final_wpm;
+int final_raw_wpm;
+int final_accuracy;
 float elapsed;
 Graph* graph;
+TextPanelV* end_stats;
 SettingBar* setting_bar;
 // test display vars
 int display_wpm_frames = 15;  // frames to update wpm display
@@ -103,7 +107,7 @@ float max_wpm = 0, cur_wpm = 0;
 float restart_alpha = 0;
 // UI DIMENSIONS 
 float wpm_width = 300;  // width of wpm text 
-float graph_width = 1400;
+float graph_width = 1300;
 float graph_top = 200;
 float graph_height = 600;
 
@@ -138,14 +142,37 @@ void end_test()
 {
     wpm_logger.end();
     final_wpm = round(wpm_logger.wpm());
+    final_raw_wpm = round(wpm_logger.raw_wpm());
+    final_accuracy = round(100 * wpm_logger.accuracy());
+    // calculate char statuses 
+    int correct = 0, incorrect = 0, missing = 0, extra = 0;
+    for (auto &[status, c] : char_status)
+    {
+        switch (status)
+        {
+        case CORRECT:
+            correct++;
+            break;
+        case INCORRECT:
+            incorrect++;
+            break;
+        case MISSING:
+            missing++; 
+            break;
+        case EXTRA:
+            extra++;
+            break;
+        }
+    }
     scene = END;
-    graph->reset();
-    graph->set_time(elapsed);
-    graph->config_max(test_info.wpm_record);
-    graph->config_max(test_info.raw_wpm_record, RAW);
-    graph->set_plot(test_info.wpm_record);
-    graph->set_plot(test_info.raw_wpm_record, RAW);
-    graph->set_error(test_info.error_record);
+    test_info.update_graph(graph);
+    end_stats->init({ {"wpm", 50}, {"acc", 50}, {"raw", 25}, {"characters", 25}},
+                    {
+                        {t_s(final_wpm), 100},
+                        {TextFormat("%d%%", final_accuracy), 100},
+                        {t_s(final_raw_wpm), 50},
+                        {TextFormat("%d/%d/%d/%d", correct, incorrect, missing, extra), 50}
+                    });
 }
 
 void switch_start()
@@ -230,7 +257,7 @@ void draw_test()
 /*     stored_wpm.push_back(wpm_logger.wpm());
     if (stored_wpm.size() > 1000)
         stored_wpm.pop_front();
-    stored_current_wpm.push_back(wpm_logger.raw_wpm());
+    stored_current_wpm.push_back(wpm_logger.instant_wpm());
     if (stored_current_wpm.size() > 1000)
         stored_current_wpm.pop_front(); */
     
@@ -277,11 +304,12 @@ void draw_test()
 
 void draw_end()
 {
-    Vector2 corner = { 0.5f * (gameScreenWidth - (wpm_width + graph_width)), graph_top };
-    DrawRectangle(corner.x, corner.y, wpm_width, graph_height, BLACK);
-    BeginShaderMode(shader);
-    DrawTextAlign(TextFormat("%d wpm", final_wpm), corner.x, corner.y, 75, rgb(32, 32, 32));
-    EndShaderMode();
+    //Vector2 corner = { 0.5f * (gameScreenWidth - (wpm_width + graph_width)), graph_top };
+    //DrawRectangle(corner.x, corner.y, wpm_width, graph_height, BLACK);
+    //BeginShaderMode(shader);
+    //DrawTextAlign(TextFormat("%d wpm", final_wpm), corner.x, corner.y, 75, rgb(32, 32, 32));
+    
+    //EndShaderMode();
 }
 //NOTE: C:/Windows/Fonts/segoeui.ttf - SEGOE UI PATH
 // Font loading function
@@ -315,10 +343,10 @@ void load_base_font(string path = "default")
 void init()
 {
     load_sdf_shader();
-    //test_shader = LoadShader(0, "./fonts/test.fs");
+    //test_shader = LoadShader(0, "./fonts/test2.frag");
     load_base_font("default");
     init_raw_data;
-    new_Button(END, 100, 900, 300, 100, "restart", [] { switch_start(); });
+    // STARTING UI ---------------------------------------------------------------
     //new_Toggle(START, 0, 300, 50, true, "test", "settings_icon");
     float bar_h = 25;
     Toggle* test = new Toggle(0, 300, bar_h, true, "test", "settings_icon");
@@ -326,9 +354,11 @@ void init()
     //new_ToggleGroup(START, 0, 300, 50, 0, { "15", "30", "60", "120" });
     setting_bar = new SettingBar(gameScreenWidth / 2, 300, { test }, test_group);
     ui_objects.alloc(setting_bar, START);
-    
-    graph = new Graph(wpm_width + (gameScreenWidth - (graph_width + wpm_width)) * 0.5f, graph_top, graph_width, graph_height, 4);
-    ui_objects.alloc(graph, END);
+
+    // ENDING UI ---------------------------------------------------------------
+    new_Button(END, 100, 900, 300, 100, "restart", [] { switch_start(); });
+    graph = new Graph(wpm_width + (gameScreenWidth - (graph_width + wpm_width)) * 0.5f, graph_top, graph_width, graph_height, 4), ui_objects.alloc(graph, END);
+    end_stats = new TextPanelV(0.5f * (gameScreenWidth - (wpm_width + graph_width)), graph_top, wpm_width, graph_height), ui_objects.alloc(end_stats, END);
 }
 
 //------------------------------------------------------------------------------------
@@ -341,7 +371,7 @@ int main(void)
      * TECHNICAL INITIALIZATION
     */
     // Enable config flags for resizable window and vertical synchro
-    SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_MSAA_4X_HINT);
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(windowWidth, windowHeight, "Typing Test");
     MaximizeWindow();
     SetWindowMinSize(320, 240);
@@ -355,13 +385,13 @@ int main(void)
     init();
     init_test();
 
-/*     // example shader init
-    int textLoc = GetShaderLocation(test_shader, "texture0");
+    // example shader init
+/*     int textLoc = GetShaderLocation(test_shader, "texture0");
     int vecLoc = GetShaderLocation(test_shader, "resolution");
     SetShaderValueTexture(test_shader, textLoc, target.texture);
     static const float arr[2] = { gameScreenWidth , gameScreenHeight };
-    SetShaderValue(test_shader, vecLoc, arr, SHADER_UNIFORM_VEC2); */
-
+    SetShaderValue(test_shader, vecLoc, arr, SHADER_UNIFORM_VEC2);
+    bool shader_on = false; */
     // timer funcs
     float frame_time = 1;
     Stopwatch frame_timer;
@@ -402,6 +432,7 @@ int main(void)
         {
             ui_objects[id]->update();
         }
+        //shader_on = IsKeyDown(KEY_ENTER);
         //----------------------------------------------------------------------------------
         // Draw everything in the render texture, note this will not be rendered on screen, yet
         BeginTextureMode(target);
@@ -432,10 +463,13 @@ int main(void)
         // Draw render texture onto real screen
         BeginDrawing();
         ClearBackground(BLACK);     // Clear screen background
+        //if (shader_on) BeginShaderMode(test_shader);
         // Draw render texture to screen, properly scaled
         DrawTexturePro(target.texture, (Rectangle){ 0.0f, 0.0f, (float)target.texture.width, (float)-target.texture.height },
                            (Rectangle){ (GetScreenWidth() - ((float)gameScreenWidth*scale))*0.5f, (GetScreenHeight() - ((float)gameScreenHeight*scale))*0.5f,
-                           (float)gameScreenWidth*scale, (float)gameScreenHeight*scale}, (Vector2){ 0, 0 }, 0.0f, WHITE);
+                           (float)gameScreenWidth* scale, (float)gameScreenHeight* scale
+        }, (Vector2) { 0, 0 }, 0.0f, WHITE);
+        //if (shader_on) EndShaderMode();
         if (globalFrame % 30 == 0)
             frame_time = frame_timer.ms();
         EndDrawing();
