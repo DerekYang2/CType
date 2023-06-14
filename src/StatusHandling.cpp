@@ -6,7 +6,7 @@
 void update_status(char c)
 {
     if (c == ' ') { update_space(); return; }
-    
+    if (words[word_i].typed.size() >= max_word_length + 10) return;  // word too long
     char status;
     if (generated_chars[empty_i] == ' ')  // adding extra 
     {

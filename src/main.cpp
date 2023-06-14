@@ -96,6 +96,7 @@ RenderTexture2D target;
 int final_wpm;
 int final_raw_wpm;
 int final_accuracy;
+int max_word_length;
 float elapsed;
 Graph* graph;
 TextPanelV* end_stats;
@@ -166,12 +167,13 @@ void end_test()
     }
     scene = END;
     test_info.update_graph(graph);
-    end_stats->init({ {"wpm", 50}, {"acc", 50}, {"raw", 25}, {"characters", 25}},
+    end_stats->init({ {"wpm", 50}, {"acc", 50}, {"raw", 25}, {"characters", 25}, {"test type", 25}, {"", 0}},
                     {
                         {t_s(final_wpm), 100},
                         {TextFormat("%d%%", final_accuracy), 100},
                         {t_s(final_raw_wpm), 50},
-                        {TextFormat("%d/%d/%d/%d", correct, incorrect, missing, extra), 50}
+                        {TextFormat("%d/%d/%d/%d", correct, incorrect, missing, extra), 50},
+                        {"time " + t_s(test_info.time), 25}, {text_gen.list, 25}
                     });
 }
 
@@ -194,7 +196,7 @@ void update_start()
         restart_alpha = 1;
         return;
     }
-    if (IsKeyPressed())
+    if (IsKeyPressed() && !IsKeyPressed(KEY_SPACE))  // press any key except for space to start
     {
         start_test();
         restart_alpha = 0;

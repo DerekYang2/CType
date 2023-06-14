@@ -27,9 +27,10 @@ void Graph::config_max(vector<float>& plot_points, int wpm_type)
     {
         min_val = min(min_val, v), max_val = max(max_val, v);
     }
+    min_val = max(min_val, max_val * 0.05f);  // keep max_val at least * 1.05
     if (wpm_type == NORMAL)
     {
-        max_v = max(max_v, min_val + max_val); // same distance from 0-min and max-top
+        max_v = max(max_v, max_val + min_val); // same distance from 0-min and max-top
     } else {
         max_v = max(max_v, max_val * 1.05f); // if raw, max_v is just max value with a bit of padding
     }
@@ -221,7 +222,7 @@ void Graph::set_error(vector<float>& error_list)
     for (int &err: err_amt)
         max_err = max(max_err, err);
     max_err++;  // just a bit of space at top
-    if (max_err > 5)
+    if (max_err > 9)
         max_err = (int)round(ceil((float)max_err / 10) * 10);  // round up to nearest 10 multiple
     // transform points into rectangle graph
     float x_pos = rect.x;
@@ -253,7 +254,7 @@ void Graph::draw()
         DrawTextAlign(t_s((int)round(y_v)), rect.x - 10, y, 20, theme.sub, RIGHT, CENTER);
     }
 
-    float err_y_gap = max_err <= 5 ? (rect.height / max_err) : (rect.height / (10));
+    float err_y_gap = max_err <= 9 ? (rect.height / max_err) : (rect.height / (10));
     for (float y = rect.y + rect.height; y >= rect.y; y -= err_y_gap)
     {
          // errors

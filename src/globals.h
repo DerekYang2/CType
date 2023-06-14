@@ -23,7 +23,9 @@ extern int globalFrame; // Frames printed in the game scene
 extern unordered_map<string, Texture> textureOf;
 extern int empty_i;  // position of the first empty position in generated_chars
 extern string generated_chars;
+extern int max_word_length;
 /**
+ * 
  * STATUS:
  * first = 0 -> store correct char
  * first = 1 -> store incorrect char, typed

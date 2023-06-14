@@ -12,6 +12,10 @@ void TextGenerator::set_list(string list_name)
     idx = 0;
     // initial shuffle
     shuffle(word_list[list].begin(), word_list[list].end(), rng);
+    // update longest word
+    max_word_length = 0;
+    for (auto& word : word_list[list])
+        max_word_length = max(max_word_length, (int)word.length());
 }
 
 string TextGenerator::get_word()
