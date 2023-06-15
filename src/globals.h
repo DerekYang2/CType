@@ -9,7 +9,7 @@
 // Window Variables
 extern int windowWidth, windowHeight;
 extern int gameScreenWidth, gameScreenHeight;
-
+extern bool mouse_focus;
 // GLOBAL VARS
 extern unordered_set<int> scene_ids[5];
 extern int scene;

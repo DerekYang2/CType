@@ -50,6 +50,7 @@ Theme theme{
 // Window Variables
 int gameScreenWidth = 1920, gameScreenHeight = 1080;
 int windowWidth = gameScreenWidth, windowHeight = gameScreenHeight;
+bool mouse_focus = true;
 
 // GLOBAL VARS
 unordered_set<int> scene_ids[5];
@@ -111,6 +112,8 @@ float wpm_width = 300;  // width of wpm text
 float graph_width = 1300;
 float graph_top = 200;
 float graph_height = 600;
+int mouse_frames;
+
 
 void init_test()
 {
@@ -407,11 +410,37 @@ int main(void)
         float scale = min((float)GetScreenWidth()/gameScreenWidth, (float)GetScreenHeight()/gameScreenHeight);
 
         // Update virtual mouse (clamped mouse value behind game screen)
+        Vector2 old_mouse = mouse;
         Vector2 real_mouse = GetMousePosition();
-        mouse.x = (real_mouse.x - (GetScreenWidth() - (gameScreenWidth*scale))*0.5f)/scale;
+        mouse.x = (real_mouse.x - (GetScreenWidth() - (gameScreenWidth * scale)) * 0.5f) / scale;
         mouse.y = (real_mouse.y - (GetScreenHeight() - (gameScreenHeight*scale))*0.5f)/scale;
         mouse = Vector2Clamp(mouse, (Vector2){ 0, 0 }, (Vector2){ (float)gameScreenWidth, (float)gameScreenHeight });
 
+        if (scene == TEST || scene == END)
+        {
+            if (mouse == old_mouse)
+            {
+                mouse_frames--;
+                mouse_frames = max(0, mouse_frames);
+            }
+            if (mouse != old_mouse)
+            {
+                if (!mouse_focus)  // refocus mouse
+                {
+                    mouse_focus = true;
+                    ShowCursor();
+                }
+                mouse_frames = 5 * 60;
+            }
+            if (mouse_focus && mouse_frames <= 0)  // unfocus mouse
+            {
+                mouse_focus = false;
+                HideCursor();
+            }
+        } else
+        {
+            mouse_focus = true; 
+        }
         //----------------------------------------------------------------------------------
         // Update
         globalFrame++;

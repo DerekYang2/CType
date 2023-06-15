@@ -256,10 +256,25 @@ void Graph::set_error(vector<float>& error_list)
 
 void Graph::update()
 {
-    show_hint = CheckCollisionPointRec(mouse, rect);
+    show_hint = CheckCollisionPointRec(mouse, rect) && mouse_focus;
+    errors_hint = 0;
+    const float min_dist = 8;  // minmimum distance to display error
     if (show_hint)
     {
-        
+        if (errors.empty())
+        {
+            errors_hint = 0;
+        } else
+        {
+            Vector2 closest = {INT_MAX, errors[0].y};
+            for (auto& [x_pos, ypos] : errors)
+            {
+                if (abs(x_pos - mouse.x) < closest.x)
+                    closest = { abs(x_pos - mouse.x), ypos };
+            }
+            if (closest.x <= min_dist)
+                errors_hint = max_err * (1 - (closest.y - rect.y) / rect.height);
+        }
     }
 }
 
@@ -316,6 +331,7 @@ void Graph::draw()
         it = LUTy[NORMAL].find((int)round(mouse.x));
         if (it != LUTy[NORMAL].end())
             DrawCircle(mouse.x, it->second, 5, theme.main);
+        DrawTextAlign(t_s(errors_hint), mouse.x, mouse.y, 20, RED, RIGHT, BOTTOM);
     }
     
     // error points 
