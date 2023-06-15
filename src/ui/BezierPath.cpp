@@ -323,3 +323,23 @@ Vector2 BezierPath::CalculateBezierPoint(float t, Vector2 p0, Vector2 p1, Vector
     return p;
 
 }
+
+void BezierPath::fill_LUT(unordered_map<int, float> &lut)
+{
+    lut.clear();
+    auto points = GetDrawingPoints0();
+    lut.insert({ points[0].x, points[0].y });
+    for (int i = 1; i < points.size(); i++)
+    {
+        int x_l = round(points[i - 1].x);
+        int x_r = round(points[i].x);
+        for (int x = x_l + 1; x <= x_r; x++)  // do not include x_l, done on previous iteration
+        {
+            if (!lut.contains(x))
+            {
+                lut[x] = points[i - 1].y + (x - points[i - 1].x) * (points[i].y - points[i - 1].y) / (points[i].x - points[i - 1].x);
+            }
+        }
+    }
+}
+

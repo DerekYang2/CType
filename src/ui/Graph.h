@@ -12,15 +12,21 @@ class Graph : public UIObject
                     draw_points[2],  // draw points for triangle strip 
                     errors;
     vector<vector<Vector2>> draw_segments;
+    unordered_map<int, float> LUTy[2];  // lookup table for y values 
     Rectangle rect;
     float max_v;
     int max_err;
     float thick;
     float grid_y_gap;
-    float time; 
-public:
+    float time;
+    // graph hints
+    bool show_hint;
+    int wpm_hint, instant_hint, errors_hint;
+    
+    public:
     Graph(float x, float y, float w, float h, float thick);
     void reset();
+    void fillLUT(int wpm_type);
     void config_max(vector<float>& plot_points, int wpm_type = NORMAL);  // call on both lists to calculate the max value 
     void init_polygon(vector<Vector2>&& curve_p);
     void set_plot(vector<float>& plot_points, int wpm_type = NORMAL);

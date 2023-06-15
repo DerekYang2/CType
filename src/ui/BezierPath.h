@@ -26,4 +26,5 @@ public:
     std::vector<Vector2> FindDrawingPoints(int curveIndex);
     int FindDrawingPoints(int curveIndex, float t0, float t1, std::vector<Vector2> pointList, int insertionIndex);
     Vector2 CalculateBezierPoint(float t, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3);
+    void fill_LUT(unordered_map<int, float> &lut);
 };

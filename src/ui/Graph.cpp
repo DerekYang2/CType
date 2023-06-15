@@ -13,11 +13,30 @@ void Graph::reset()
     {
         points[t].clear();
         draw_points[t].clear();
+        LUTy[t].clear();
     }
     errors.clear();
     draw_segments.clear();
     max_v = 20;  // cannot be smaller than 20
     max_err = 0;
+}
+
+void Graph::fillLUT(int wpm_type)
+{
+    LUTy[wpm_type].clear();
+    LUTy[wpm_type].insert({ draw_points[wpm_type][0].x, draw_points[wpm_type][0].y });
+    for (int i = 1; i < draw_points[wpm_type].size(); i++)
+    {
+        int x_l = round(draw_points[wpm_type][i - 1].x);
+        int x_r = round(draw_points[wpm_type][i].x);
+        for (int x = x_l + 1; x <= x_r; x++)  // do not include x_l, done on previous iteration
+        {
+            if (!LUTy[wpm_type].contains(x))
+            {
+                LUTy[wpm_type][x] = draw_points[wpm_type][i - 1].y + (x - draw_points[wpm_type][i - 1].x) * (draw_points[wpm_type][i].y - draw_points[wpm_type][i - 1].y) / (draw_points[wpm_type][i].x - draw_points[wpm_type][i - 1].x);
+            }
+        }
+    }
 }
 
 void Graph::config_max(vector<float>& plot_points, int wpm_type)
@@ -161,7 +180,7 @@ void Graph::set_plot(vector<float>& plot_points, int wpm_type)
     // calculate bezier curve array
     BezierPath bezier(iter_f(plot_points.size()));
     bezier.Interpolate(points[wpm_type], scale);
-
+    
     if (wpm_type == RAW)
     {
         draw_points[wpm_type] = bezier.GetDrawingPoints();
@@ -169,7 +188,7 @@ void Graph::set_plot(vector<float>& plot_points, int wpm_type)
         for (int i = 0; i < draw_points[wpm_type].size(); i++)
             if (draw_points[wpm_type][i].y > rect.y + rect.height)
                 draw_points[wpm_type][i].y = rect.y + rect.height;
-        
+        fillLUT(wpm_type);
         draw_points[wpm_type] = bezier.applyThickness(draw_points[wpm_type], thick);
         init_polygon(bezier.GetDrawingPoints());  // curve points
     } else
@@ -179,6 +198,7 @@ void Graph::set_plot(vector<float>& plot_points, int wpm_type)
         for (int i = 0; i < draw_points[wpm_type].size(); i++)
             if (draw_points[wpm_type][i].y > rect.y + rect.height)
                 draw_points[wpm_type][i].y = rect.y + rect.height;
+        fillLUT(wpm_type);
         draw_points[wpm_type] = bezier.applyThickness(draw_points[wpm_type], thick);
     }
 
@@ -236,7 +256,11 @@ void Graph::set_error(vector<float>& error_list)
 
 void Graph::update()
 {
-
+    show_hint = CheckCollisionPointRec(mouse, rect);
+    if (show_hint)
+    {
+        
+    }
 }
 
 void Graph::draw()
@@ -282,6 +306,18 @@ void Graph::draw()
     DrawTriangleStrip(&draw_points[RAW][0], draw_points[RAW].size(), theme.sub);
     // NORMAL curve
     DrawTriangleStrip(&draw_points[NORMAL][0], draw_points[NORMAL].size(), theme.main);
+
+    // curve points
+    if (show_hint)
+    {
+        auto it = LUTy[RAW].find((int)round(mouse.x));
+        if (it != LUTy[RAW].end())
+            DrawCircle(mouse.x, it->second, 5, theme.sub);
+        it = LUTy[NORMAL].find((int)round(mouse.x));
+        if (it != LUTy[NORMAL].end())
+            DrawCircle(mouse.x, it->second, 5, theme.main);
+    }
+    
     // error points 
     for (Vector2& p : errors)
         DrawCircleV(p, 3, RED);
@@ -293,6 +329,9 @@ void Graph::draw()
             DrawCircleV(p, 3, BLUE);
         }
     }
+
+    
+
 }
 
 void Graph::set_time(float t)
