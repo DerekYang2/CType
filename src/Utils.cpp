@@ -137,6 +137,24 @@ char shiftChar(char original)
     return original;
 }
 
+float MeasureFontSize(string text, float width, float height)
+{
+    float fontSize;
+    int maxFit = 2;
+    float padding = 0;
+    while (true)  //find the max font size that fits
+    {
+        Vector2 textSize = MeasureTextEx(font, text.c_str(), maxFit, maxFit / font_spacing);
+        if (textSize.x + 2 * padding <= width && textSize.y + 2 * padding <= height)
+        {
+            fontSize = maxFit;
+        } else
+            break;
+        maxFit++;
+    }
+    return fontSize;
+}
+
 bool IsKeyPressed()
 {
     return IsKeyPressed(KEY_APOSTROPHE) ||

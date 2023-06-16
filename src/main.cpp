@@ -114,7 +114,7 @@ float graph_width = 1300;
 float graph_top = 200;
 float graph_height = 600;
 int mouse_frames;
-
+float scale;
 
 void init_test()
 {
@@ -141,6 +141,7 @@ void start_test()
     display_wpm = 0;
     cur_wpm = 0;
     max_wpm = 0;
+    mouse_frames = 0;  // make disappear
 }
 
 void end_test()
@@ -172,12 +173,16 @@ void end_test()
     }
     scene = END;
     test_info.update_graph(graph);
+
+    // character status can get too wide 
+    string char_status = TextFormat("%d/%d/%d/%d", correct, incorrect, missing, extra);
+
     end_stats->init({ {"wpm", 50}, {"acc", 50}, {"raw", 25}, {"characters", 25}, {"consistency", 25}, {"test type", 25}, {"", 0} },
                     {
                         {t_s(final_wpm), 100},
                         {TextFormat("%d%%", final_accuracy), 100},
                         {t_s(final_raw_wpm), 50},
-                        {TextFormat("%d/%d/%d/%d", correct, incorrect, missing, extra), 50},
+                        {char_status, min(50.f, MeasureFontSize(char_status, wpm_width - 50))},
                         {TextFormat("%d%%", consistency), 50},
                         {"time " + t_s(test_info.time), 25}, {text_gen.list, 25}
                     });
@@ -187,6 +192,42 @@ void switch_start()
 {
     scene = START;
     init_test(); 
+}
+
+void update_mouse()
+{
+    // Update virtual mouse (clamped mouse value behind game screen)
+    Vector2 old_mouse = mouse;
+    Vector2 real_mouse = GetMousePosition();
+    mouse.x = (real_mouse.x - (GetScreenWidth() - (gameScreenWidth * scale)) * 0.5f) / scale;
+    mouse.y = (real_mouse.y - (GetScreenHeight() - (gameScreenHeight*scale))*0.5f)/scale;
+    mouse = Vector2Clamp(mouse, (Vector2){ 0, 0 }, (Vector2){ (float)gameScreenWidth, (float)gameScreenHeight });
+
+    if (scene == TEST || scene == END)
+    {
+        if (mouse == old_mouse)
+        {
+            mouse_frames--;
+            mouse_frames = max(0, mouse_frames);
+        }
+        if (mouse != old_mouse)
+        {
+            if (!mouse_focus)  // refocus mouse
+            {
+                mouse_focus = true;
+                ShowCursor();
+            }
+            mouse_frames = 5 * 60;
+        }
+        if (mouse_focus && mouse_frames <= 0)  // unfocus mouse
+        {
+            mouse_focus = false;
+            HideCursor();
+        }
+    } else
+    {
+        mouse_focus = true; 
+    }
 }
 
 void update_start()
@@ -410,41 +451,8 @@ int main(void)
         frame_timer.start();
         //----------------------------------------------------------------------------------
         // Compute required framebuffer scaling
-        float scale = min((float)GetScreenWidth()/gameScreenWidth, (float)GetScreenHeight()/gameScreenHeight);
-
-        // Update virtual mouse (clamped mouse value behind game screen)
-        Vector2 old_mouse = mouse;
-        Vector2 real_mouse = GetMousePosition();
-        mouse.x = (real_mouse.x - (GetScreenWidth() - (gameScreenWidth * scale)) * 0.5f) / scale;
-        mouse.y = (real_mouse.y - (GetScreenHeight() - (gameScreenHeight*scale))*0.5f)/scale;
-        mouse = Vector2Clamp(mouse, (Vector2){ 0, 0 }, (Vector2){ (float)gameScreenWidth, (float)gameScreenHeight });
-
-        if (scene == TEST || scene == END)
-        {
-            if (mouse == old_mouse)
-            {
-                mouse_frames--;
-                mouse_frames = max(0, mouse_frames);
-            }
-            if (mouse != old_mouse)
-            {
-                if (!mouse_focus)  // refocus mouse
-                {
-                    mouse_focus = true;
-                    ShowCursor();
-                }
-                mouse_frames = 5 * 60;
-            }
-            if (mouse_focus && mouse_frames <= 0)  // unfocus mouse
-            {
-                mouse_focus = false;
-                HideCursor();
-            }
-        } else
-        {
-            mouse_focus = true; 
-        }
-        //----------------------------------------------------------------------------------
+        scale = min((float)GetScreenWidth()/gameScreenWidth, (float)GetScreenHeight()/gameScreenHeight);
+        update_mouse();
         // Update
         globalFrame++;
         update_rect_preview();

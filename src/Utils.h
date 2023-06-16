@@ -37,6 +37,7 @@ extern void DrawRing(float cx, float cy, float innerRadius, float outerRadius, f
 extern string convertSeconds(float seconds, int max_time);
 extern Rectangle formatRect(Rectangle r);  // make rectangle width and height positive
 extern char shiftChar(char original);
+extern float MeasureFontSize(string str, float width, float height = INT_MAX);
 
 extern bool starts_with(std::string str, std::string prefix);
 extern string add_prefix(string name, string prefix);

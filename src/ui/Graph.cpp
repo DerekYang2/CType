@@ -273,7 +273,7 @@ void Graph::update()
                     closest = { abs(x_pos - mouse.x), ypos };
             }
             if (closest.x <= min_dist)
-                errors_hint = max_err * (1 - (closest.y - rect.y) / rect.height);
+                errors_hint = round(max_err * (1 - (closest.y - rect.y) / rect.height));
         }
     }
 }
