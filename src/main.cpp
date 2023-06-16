@@ -98,6 +98,7 @@ int final_wpm;
 int final_raw_wpm;
 int final_accuracy;
 int max_word_length;
+int consistency;
 float elapsed;
 Graph* graph;
 TextPanelV* end_stats;
@@ -148,6 +149,7 @@ void end_test()
     final_wpm = round(wpm_logger.wpm());
     final_raw_wpm = round(wpm_logger.raw_wpm());
     final_accuracy = round(100 * wpm_logger.accuracy());
+    consistency = round(100 * (1 - test_info.variation()));
     // calculate char statuses 
     int correct = 0, incorrect = 0, missing = 0, extra = 0;
     for (auto &[status, c] : char_status)
@@ -170,12 +172,13 @@ void end_test()
     }
     scene = END;
     test_info.update_graph(graph);
-    end_stats->init({ {"wpm", 50}, {"acc", 50}, {"raw", 25}, {"characters", 25}, {"test type", 25}, {"", 0}},
+    end_stats->init({ {"wpm", 50}, {"acc", 50}, {"raw", 25}, {"characters", 25}, {"consistency", 25}, {"test type", 25}, {"", 0} },
                     {
                         {t_s(final_wpm), 100},
                         {TextFormat("%d%%", final_accuracy), 100},
                         {t_s(final_raw_wpm), 50},
                         {TextFormat("%d/%d/%d/%d", correct, incorrect, missing, extra), 50},
+                        {TextFormat("%d%%", consistency), 50},
                         {"time " + t_s(test_info.time), 25}, {text_gen.list, 25}
                     });
 }

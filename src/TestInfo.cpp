@@ -29,13 +29,40 @@ void TestInfo::update()
     }
 }
 
+// coefficient of variation mapped between 0 and 1
+float TestInfo::variation()
+{
+    /**
+     * technically cov(raw_wpm)/cov(worst case sample)
+     * worst case sample of half 0, half max wpm gives cov of 1, so return cov(raw_wpm)/1 
+     */
+    return get_cov(raw_wpm_record);
+}
+
+float TestInfo::get_cov(vector<float>& sample)
+{
+    float mean = 0;
+    for (auto& x : sample)
+        mean += x;
+    mean /= sample.size();
+    
+    float stdev = 0;
+    for (auto& x : sample)
+        stdev += (x - mean) * (x - mean);
+    stdev /= sample.size();
+    stdev = sqrt(stdev);
+
+    float coef_var = stdev / mean;
+    return coef_var;
+}
+
 void TestInfo::update_graph(Graph* graph)
 {
     graph->reset();
     graph->set_time(time);
     graph->config_max(wpm_record);
     graph->config_max(raw_wpm_record, RAW);
-    graph->set_plot(wpm_record);
+    graph->set_plot(wpm_record, NORMAL);
     graph->set_plot(raw_wpm_record, RAW);
     graph->set_error(wpm_logger.error_log);
 }
