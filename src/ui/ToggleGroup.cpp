@@ -107,7 +107,7 @@ void ToggleGroup::update()
     int hover_idx = -1;
     for (int i = 0; i < hitbox.size(); i++)
     {
-        if (CheckCollisionPointRec(mouse, hitbox[i])) hover_idx = i;
+        if (CheckCollisionPointRec({mouse.x, mouse.y - offset_y}, hitbox[i])) hover_idx = i;
     }
     for (int i = 0; i < hitbox.size(); i++)
         if (i != hover_idx)
@@ -127,9 +127,23 @@ void ToggleGroup::update()
 
 }
 
+void ToggleGroup::set_offset(float y)
+{
+    offset_y = y;
+}
+
 string ToggleGroup::get_selected()
 {
-    return text[selected];
+    string str = text[selected];
+        // Trim leading spaces
+    str.erase(str.begin(), std::find_if(str.begin(), str.end(), [](int ch) {
+        return !std::isspace(ch);
+    }));
+    // Trim trailing spaces
+    str.erase(std::find_if(str.rbegin(), str.rend(), [](int ch) {
+        return !std::isspace(ch);
+    }).base(), str.end());
+    return str;
 }
 
 float ToggleGroup::width()
@@ -159,4 +173,9 @@ void ToggleGroup::set_pos(float x, float y)
 bool ToggleGroup::was_pressed()
 {
     return pressed;
+}
+
+float ToggleGroup::get_font_size()
+{
+    return font_size;
 }

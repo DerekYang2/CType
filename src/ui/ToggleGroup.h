@@ -11,6 +11,7 @@ class ToggleGroup : public UIObject {
     string init_message;
     float font_size;
     float img_scale;
+    float offset_y;
     float tot_width;
     bool pressed;
     int selected;
@@ -20,10 +21,12 @@ class ToggleGroup : public UIObject {
     ToggleGroup(float x, float y, float h, int init_idx, vector<string> text_list, string init_msg, string img_path);
     void draw() override;
     void update() override;
+    void set_offset(float y);
     string get_selected();
     float width();
     float height();
     float space_width();
     void set_pos(float x, float y);
     bool was_pressed();
+    float get_font_size();
 };

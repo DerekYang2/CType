@@ -38,6 +38,7 @@
 #include "SettingBar.h"
 #include "TestInfo.h"
 #include "RectPreview.h"
+#include "Settings.h"
 // Init extern variables ------------------------------------------------------------------
 Theme theme{
     WHITE, // background
@@ -77,7 +78,7 @@ mt19937 rng(std::chrono::system_clock::now().time_since_epoch().count());
 Font font; // Font: UI font
 float font_spacing;
 
-UIAlloc ui_objects(25);
+UIAlloc ui_objects(30);
 Shader shader;
 Vector2 char_dimension[CHAR_MAX + 1];
 
@@ -90,7 +91,9 @@ TextGenerator text_gen;
 
 bool drawing_block;
 float drawing_x, drawing_y;
+
 // END init extern variables ----------------------------------------------------------------
+
 // render textures
 RenderTexture2D target;
 
@@ -191,7 +194,12 @@ void end_test()
 void switch_start()
 {
     scene = START;
-    init_test(); 
+    init_test();
+}
+
+void switch_settings()
+{
+    scene = SETTINGS;
 }
 
 void update_mouse()
@@ -224,9 +232,13 @@ void update_mouse()
             mouse_focus = false;
             HideCursor();
         }
-    } else
+    } else if (scene == START || scene == SETTINGS)
     {
-        mouse_focus = true; 
+        if (!mouse_focus)
+        {
+            mouse_focus = true;
+            ShowCursor();
+        }
     }
 }
 
@@ -236,6 +248,11 @@ void update_start()
     {
         restart_alpha -= 1.f / 60;
         restart_alpha = max(restart_alpha, 0.f);
+    }
+    if (IsKeyPressed(KEY_ESCAPE))
+    {
+        switch_settings();
+        return;
     }
     if (IsKeyPressed(KEY_TAB))  // restart test 
     {
@@ -316,31 +333,33 @@ void draw_test()
     for (int x_pos = stored_current_wpm.size() - 1; x_pos >= 0; x_pos--)
         DrawRectangleRec(formatRect(Rectangle(x_pos, 500 - scale_f*stored_current_wpm[x_pos], 1, 10)), BLUE); */
     BeginShaderMode(shader);
-    
-    float info_h = char_dimension['I'].y;
-    float info_x = drawer.center, info_y = drawer.get_top_y() - 1.5f * info_h;
-    string time_text = " " + convertSeconds((int)round(test_info.time - elapsed), test_info.time) + " ";
-    float text_width = MeasureTextEx(time_text, drawer.font_size).x;
-    // DRAW TIME
-    DrawTextAlign(time_text, info_x, info_y, drawer.font_size, theme.text, RIGHT, CENTER);
-    
-    // DRAW TIME CLOCK
-    float clock_r = char_dimension['0'].y * 0.4f;
-    DrawCircleSector(info_x - text_width - clock_r, info_y, clock_r * 0.86f, 180 - (elapsed / test_info.time) * 360, 180, theme.text);
-    DrawRing(info_x - text_width - clock_r, info_y, clock_r, clock_r * 0.85f, theme.text);
 
-    // DRAW DASHBOARD 
-    float dash_x = info_x + char_dimension[' '].x + clock_r;  // center x of dashboard
-    DrawRing(dash_x, info_y, clock_r, clock_r * 0.85f, 45, 315, theme.text);
-    DrawCircle(dash_x, info_y, clock_r * 0.2f, theme.text);
-    float dash_percent = (cur_wpm / (1.1f * max_wpm + 10));
-    const float gap_a = 45;  // 2 * gap_a  = dashboard gap
-    float angle = (90 + gap_a) + ((450 - gap_a) - (90 + gap_a)) * dash_percent;
-    DrawLineEx({ dash_x - clock_r * 0.4f * cosa(angle), info_y - clock_r * 0.4f * sina(angle) }, { dash_x + clock_r * cosa(angle), info_y + clock_r * sina(angle) }, 2, theme.text);
-    // DRAW WPM
-    string wpm_text = TextFormat("% 3d", display_wpm);
-    DrawTextAlign(wpm_text, dash_x + clock_r, info_y, drawer.font_size, theme.text, LEFT, CENTER);
-    
+    if (show_wpm->get_selected() == "on")
+    {
+        float info_h = char_dimension['I'].y;
+        float info_x = drawer.center, info_y = drawer.get_top_y() - 1.5f * info_h;
+        string time_text = " " + convertSeconds((int)round(test_info.time - elapsed), test_info.time) + " ";
+        float text_width = MeasureTextEx(time_text, drawer.font_size).x;
+        // DRAW TIME
+        DrawTextAlign(time_text, info_x, info_y, drawer.font_size, theme.text, RIGHT, CENTER);
+
+        // DRAW TIME CLOCK
+        float clock_r = char_dimension['0'].y * 0.4f;
+        DrawCircleSector(info_x - text_width - clock_r, info_y, clock_r * 0.86f, 180 - (elapsed / test_info.time) * 360, 180, theme.text);
+        DrawRing(info_x - text_width - clock_r, info_y, clock_r, clock_r * 0.85f, theme.text);
+
+        // DRAW DASHBOARD 
+        float dash_x = info_x + char_dimension[' '].x + clock_r;  // center x of dashboard
+        DrawRing(dash_x, info_y, clock_r, clock_r * 0.85f, 45, 315, theme.text);
+        DrawCircle(dash_x, info_y, clock_r * 0.2f, theme.text);
+        float dash_percent = (cur_wpm / (1.1f * max_wpm + 10));
+        const float gap_a = 45;  // 2 * gap_a  = dashboard gap
+        float angle = (90 + gap_a) + ((450 - gap_a) - (90 + gap_a)) * dash_percent;
+        DrawLineEx({ dash_x - clock_r * 0.4f * cosa(angle), info_y - clock_r * 0.4f * sina(angle) }, { dash_x + clock_r * cosa(angle), info_y + clock_r * sina(angle) }, 2, theme.text);
+        // DRAW WPM
+        string wpm_text = TextFormat("% 3d", display_wpm);
+        DrawTextAlign(wpm_text, dash_x + clock_r, info_y, drawer.font_size, theme.text, LEFT, CENTER);
+    }
     // DRAW TYPING TEST TEXT
     drawer.draw();
     
@@ -408,6 +427,7 @@ void init()
     new_Button(END, 100, 900, 300, 100, "restart", [] { switch_start(); });
     graph = new Graph(wpm_width + (gameScreenWidth - (graph_width + wpm_width)) * 0.5f, graph_top, graph_width, graph_height, 4), ui_objects.alloc(graph, END);
     end_stats = new TextPanelV(0.5f * (gameScreenWidth - (wpm_width + graph_width)), graph_top, wpm_width, graph_height), ui_objects.alloc(end_stats, END);
+    init_settings();
 }
 
 //------------------------------------------------------------------------------------
@@ -457,9 +477,13 @@ int main(void)
         globalFrame++;
         update_rect_preview();
         // must be if instead of of else if so start transitions into test directly
+
         if (scene == START)
         {
             update_start();
+        } else if (scene == SETTINGS)
+        {
+            update_settings();
         }
         if (scene == TEST)
         {
@@ -478,7 +502,7 @@ int main(void)
         //----------------------------------------------------------------------------------
         // Draw everything in the render texture, note this will not be rendered on screen, yet
         BeginTextureMode(target);
-        ClearBackground(RAYWHITE);  // Clear render texture background color
+        ClearBackground(theme.background);  // Clear render texture background color
         int max_fps = 1000.0 / frame_time;
         DrawText(TextFormat("MAX FPS: %d | ELAPSED TIME: %.2f", max_fps, frame_time), 0, gameScreenHeight - 30, 25, BLACK);
         if (scene == START)
@@ -490,6 +514,9 @@ int main(void)
         } else if (scene == END)
         {
             draw_end();
+        } else if (scene == SETTINGS)
+        {
+            draw_settings();
         }
 
         BeginShaderMode(shader);    // Activate SDF font shader    

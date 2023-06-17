@@ -16,6 +16,7 @@ extern int scene;
 #define START 0
 #define TEST 1
 #define END 2
+#define SETTINGS 3
 
 extern Vector2 mouse;
 
