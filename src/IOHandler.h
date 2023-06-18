@@ -1,5 +1,7 @@
 #pragma once
 #include "TextDrawer.h"
+#include "StatusHandling.h"
+#include "WpmLogger.h"
 #define inactive_time 1
 struct IOHandler {
     int inactive_frames = 0;

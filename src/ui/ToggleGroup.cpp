@@ -39,6 +39,8 @@ ToggleGroup::ToggleGroup(float x, float y, float h, int init_idx, vector<string>
         tot_width += hitbox.back().width;
         x_pos += hitbox.back().width;
     }
+
+    offset_y = 0;
 }
 
 ToggleGroup::ToggleGroup(float x, float y, float h, int init_idx, vector<string> text_list, string init_msg, string img_path) 
@@ -79,6 +81,8 @@ ToggleGroup::ToggleGroup(float x, float y, float h, int init_idx, vector<string>
         tot_width += hitbox.back().width;
         x_pos += hitbox.back().width;
     }
+
+    offset_y = 0;
 }
 
 void ToggleGroup::draw()

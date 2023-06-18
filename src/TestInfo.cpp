@@ -32,11 +32,32 @@ void TestInfo::update()
 // coefficient of variation mapped between 0 and 1
 float TestInfo::variation()
 {
+    int n = raw_wpm_record.size();
+    float mean = 0;
+    for (auto& x : raw_wpm_record)
+        mean += x;
+    mean /= n;
+
+    if (mean < 1e-5)  // if mean is 0, return variance of 0
+        return 0.f;
+
+    float max_raw = *max_element(raw_wpm_record.begin(), raw_wpm_record.end());
+    
+    vector<float> sample_worst;
+    float sum_remain = mean * n;
+    for (int i = 0; i < n; i++)
+    {
+        sample_worst.push_back(min(sum_remain, max_raw));
+        sum_remain -= sample_worst.back();
+    }
+    float cov_raw = get_cov(raw_wpm_record);
+    float cov_worst = get_cov(sample_worst);
+    cout << cov_raw << " " << cov_worst << endl;
     /**
      * technically cov(raw_wpm)/cov(worst case sample)
      * worst case sample of half 0, half max wpm gives cov of 1, so return cov(raw_wpm)/1 
      */
-    return get_cov(raw_wpm_record);
+    return cov_raw / cov_worst;
 }
 
 float TestInfo::get_cov(vector<float>& sample)
@@ -45,6 +66,9 @@ float TestInfo::get_cov(vector<float>& sample)
     for (auto& x : sample)
         mean += x;
     mean /= sample.size();
+    
+    if (mean < 1e-5)  // assume 0
+        return 0.0;     // mean of 0, in such context, assume full data set 0 is 0 "variance"
     
     float stdev = 0;
     for (auto& x : sample)

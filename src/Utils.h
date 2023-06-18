@@ -3,6 +3,8 @@
 #include <fstream>
 #include "Theme.h"
 
+extern int GetCodepointNext(const char* text, int* codepointSize);
+
 extern Font font;
 extern float font_spacing;
 
@@ -15,6 +17,10 @@ extern float font_spacing;
 #define CENTER 2
 #define TOP 0
 #define BOTTOM 1
+
+// override draw text ex with custom spacing
+extern void DrawTextEx(Font font, string text, Vector2 position, float fontSize, float spacing, Color tint, float line_spacing = 1.f);
+extern Vector2 MeasureTextEx(Font font, string text, float fontSize, float spacing, float line_spacing = 1.f);
 
 extern bool IsKeyPressed();
 extern char convertKey(int key);

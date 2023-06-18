@@ -1,4 +1,137 @@
 #include "Utils.h"
+// Get next codepoint in a byte sequence and bytes processed
+int GetCodepointNext(const char *text, int *codepointSize)
+{
+    const char *ptr = text;
+    int codepoint = 0x3f;       // Codepoint (defaults to '?')
+    *codepointSize = 1;
+
+    // Get current codepoint and bytes processed
+    if (0xf0 == (0xf8 & ptr[0]))
+    {
+        // 4 byte UTF-8 codepoint
+        if(((ptr[1] & 0xC0) ^ 0x80) || ((ptr[2] & 0xC0) ^ 0x80) || ((ptr[3] & 0xC0) ^ 0x80)) { return codepoint; } //10xxxxxx checks
+        codepoint = ((0x07 & ptr[0]) << 18) | ((0x3f & ptr[1]) << 12) | ((0x3f & ptr[2]) << 6) | (0x3f & ptr[3]);
+        *codepointSize = 4;
+    }
+    else if (0xe0 == (0xf0 & ptr[0]))
+    {
+        // 3 byte UTF-8 codepoint */
+        if(((ptr[1] & 0xC0) ^ 0x80) || ((ptr[2] & 0xC0) ^ 0x80)) { return codepoint; } //10xxxxxx checks
+        codepoint = ((0x0f & ptr[0]) << 12) | ((0x3f & ptr[1]) << 6) | (0x3f & ptr[2]);
+        *codepointSize = 3;
+    }
+    else if (0xc0 == (0xe0 & ptr[0]))
+    {
+        // 2 byte UTF-8 codepoint
+        if((ptr[1] & 0xC0) ^ 0x80) { return codepoint; } //10xxxxxx checks
+        codepoint = ((0x1f & ptr[0]) << 6) | (0x3f & ptr[1]);
+        *codepointSize = 2;
+    }
+    else if (0x00 == (0x80 & ptr[0]))
+    {
+        // 1 byte UTF-8 codepoint
+        codepoint = ptr[0];
+        *codepointSize = 1;
+    }
+
+    return codepoint;
+}
+// Draw text using Font
+// NOTE: chars spacing is NOT proportional to fontSize
+void DrawTextEx(Font font, string text, Vector2 position, float fontSize, float spacing, Color tint, float line_spacing)
+{
+    if (font.texture.id == 0) font = GetFontDefault();  // Security check in case of not valid font
+
+    int size = text.length();
+    
+    int textOffsetY = 0;            // Offset between lines (on linebreak '\n')
+    float textOffsetX = 0.0f;       // Offset X to next character to draw
+
+    float scaleFactor = fontSize/font.baseSize;         // Character quad scaling factor
+
+    for (int i = 0; i < size;)
+    {
+        // Get next codepoint from byte string and glyph index in font
+        int codepointByteCount = 0;
+        int codepoint = GetCodepointNext(&text[i], &codepointByteCount);
+        int index = GetGlyphIndex(font, codepoint);
+
+        if (codepoint == '\n')
+        {
+            // NOTE: Fixed line spacing of 1.5 line-height
+            // TODO: Support custom line spacing defined by user
+            textOffsetY += (int)(font.baseSize  * line_spacing * scaleFactor);
+            textOffsetX = 0.0f;
+        }
+        else
+        {
+            if ((codepoint != ' ') && (codepoint != '\t'))
+            {
+                DrawTextCodepoint(font, codepoint, (Vector2){ position.x + textOffsetX, position.y + textOffsetY }, fontSize, tint);
+            }
+
+            if (font.glyphs[index].advanceX == 0) textOffsetX += ((float)font.recs[index].width*scaleFactor + spacing);
+            else textOffsetX += ((float)font.glyphs[index].advanceX*scaleFactor + spacing);
+        }
+
+        i += codepointByteCount;   // Move text bytes counter to next codepoint
+    }
+}
+
+// Measure string size for Font
+Vector2 MeasureTextEx(Font font, string text, float fontSize, float spacing, float line_spacing)
+{
+    Vector2 textSize = { 0 };
+
+    if ((font.texture.id == 0) || (text.empty())) return textSize;
+
+    int size = text.length();       // Get size in bytes of text
+    int tempByteCounter = 0;        // Used to count longer text line num chars
+    int byteCounter = 0;
+
+    float textWidth = 0.0f;
+    float tempTextWidth = 0.0f;     // Used to count longer text line width
+
+    float textHeight = (float)font.baseSize;
+    float scaleFactor = fontSize/(float)font.baseSize;
+
+    int letter = 0;                 // Current character
+    int index = 0;                  // Index position in sprite font
+
+    for (int i = 0; i < size;)
+    {
+        byteCounter++;
+
+        int next = 0;
+        letter = GetCodepointNext(&text[i], &next);
+        index = GetGlyphIndex(font, letter);
+
+        i += next;
+
+        if (letter != '\n')
+        {
+            if (font.glyphs[index].advanceX != 0) textWidth += font.glyphs[index].advanceX;
+            else textWidth += (font.recs[index].width + font.glyphs[index].offsetX);
+        }
+        else
+        {
+            if (tempTextWidth < textWidth) tempTextWidth = textWidth;
+            byteCounter = 0;
+            textWidth = 0;
+            textHeight += ((float)font.baseSize*line_spacing); 
+        }
+
+        if (tempByteCounter < byteCounter) tempByteCounter = byteCounter;
+    }
+
+    if (tempTextWidth < textWidth) tempTextWidth = textWidth;
+
+    textSize.x = tempTextWidth*scaleFactor + (float)((tempByteCounter - 1)*spacing); // Adds chars spacing to measure
+    textSize.y = textHeight*scaleFactor;
+
+    return textSize;
+}
 
 void DrawTextAlign(char c, float x, float y, float font_size, Color col, int x_align, int y_align)
 {
@@ -7,7 +140,7 @@ void DrawTextAlign(char c, float x, float y, float font_size, Color col, int x_a
 
 void DrawTextAlign(string str, float x, float y, float font_size, Color col, int x_align, int y_align)
 {
-    Vector2 text_size = MeasureTextEx(font, str.c_str(), font_size, font_size / font_spacing);
+    Vector2 text_size = MeasureTextEx(str, font_size);
     float txtw = text_size.x;
     float txth = text_size.y;
 
@@ -35,12 +168,12 @@ void DrawTextAlign(string str, float x, float y, float font_size, Color col, int
     }
 
     // Draw the text
-    DrawTextEx(font, str.c_str(), { x + x_offset, y + y_offset }, font_size, font_size / font_spacing, col);
+    DrawTextEx(font, str, { x + x_offset, y + y_offset }, font_size, font_size / font_spacing, col, 1.0f);
 }
 
 void DrawText(string text, float x, float y, float font_size, Color col)
 {
-    DrawTextEx(font, text.c_str(), {x, y}, font_size, font_size/font_spacing, col);
+    DrawTextEx(font, text.c_str(), {x, y}, font_size, font_size/font_spacing, col, 1.0f);
 }
 
 void DrawTextCenter(string text, float x, float y, float font_size, Color col)
@@ -139,12 +272,12 @@ char shiftChar(char original)
 
 float MeasureFontSize(string text, float width, float height)
 {
-    float fontSize;
+    float fontSize = 0;
     int maxFit = 2;
     float padding = 0;
     while (true)  //find the max font size that fits
     {
-        Vector2 textSize = MeasureTextEx(font, text.c_str(), maxFit, maxFit / font_spacing);
+        Vector2 textSize = MeasureTextEx(font, text, maxFit, maxFit / font_spacing);
         if (textSize.x + 2 * padding <= width && textSize.y + 2 * padding <= height)
         {
             fontSize = maxFit;
@@ -224,7 +357,7 @@ int convertChar(char c)
 
 Vector2 MeasureTextEx(string str, float font_size)
 {
-    return MeasureTextEx(font, str.c_str(), font_size, font_size / font_spacing);
+    return MeasureTextEx(font, str, font_size, font_size / font_spacing);
 }
 
 void DrawRectangleBoth(int x, int y, int width, int height, Color color, float strokeWidth, Color strokeColor)

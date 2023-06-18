@@ -1,10 +1,11 @@
 #include "TextDrawer.h"
 #include "globals.h"
-
+#define side_padding 200
 TextDrawer::TextDrawer() { }
 
-TextDrawer::TextDrawer(string font_path, float fontSize, float font_spacing)
+TextDrawer::TextDrawer(string font_path, float fontSize, float font_spacing) 
 {
+    padding = side_padding;
     font = load_font("fonts/" + font_path);
     spacing = font_spacing;
     font_size = fontSize;
@@ -20,10 +21,15 @@ TextDrawer::TextDrawer(string font_path, float fontSize, float font_spacing)
     cursor_h = char_dimension['I'].y;
     bottom_y = (gameScreenHeight + cursor_h) / 2;
     top_y = bottom_y - cursor_h;
+    if (!is_tape_mode)
+        top_y -= 1.5f * char_dimension['I'].y;
+
+    newlines.push_back(-1);  // before first char
 }
 
 TextDrawer::TextDrawer(Font draw_font, float fontSize, float spacing)
 {
+    padding = side_padding;
     font = draw_font;
     spacing = font_spacing;
     font_size = fontSize;
@@ -39,6 +45,10 @@ TextDrawer::TextDrawer(Font draw_font, float fontSize, float spacing)
     cursor_h = char_dimension['I'].y;
     bottom_y = (gameScreenHeight + cursor_h) / 2;
     top_y = bottom_y - cursor_h;
+    if (!is_tape_mode)
+        top_y -= 1.5f * char_dimension['I'].y;
+    
+    newlines.push_back(-1);  // before first char
 }
 
 void TextDrawer::set_offset(float x)
@@ -46,56 +56,198 @@ void TextDrawer::set_offset(float x)
     offset = x;
 }
 
-void TextDrawer::draw()
+int TextDrawer::next_foldpoint()
 {
-    float left_most = center + offset;
-    Color future_col = BLACK;
-    const float a_offset = 100;
-    future_col.a = a_offset;
-    const float fall_off = 200;
-    Color col;
-    for (int i = char_status.size() - 1; i >= 0 && left_most >= 0; i--)
+    // Draw current row
+    float x_pos = padding;
+    int prev_space = newlines.back();
+    for (int i = newlines.back() + 1; i < char_status.size(); i++)
     {
         string char_str(1, char_status[i].second);
         Vector2 dimension = char_dimension[char_status[i].second];
-        left_most -= dimension.x;
-
-        if (left_most > center || char_status[i].first == MISSING)
-            col = future_col;
-        else if (char_status[i].first == CORRECT)
-            col = BLACK;
-        else if (char_status[i].first == INCORRECT)
-            col = RED;
-        else  // extra word 
-            col = RED, col.a = a_offset;
-        if (left_most < fall_off)
-            col.a = a_offset * (left_most * left_most / (fall_off * fall_off));
-        
-        if (char_str != " ")
-            DrawTextEx(font, char_str.c_str(), { left_most, bottom_y - dimension.y }, font_size, font_size / spacing, col);
-        if (char_status[i].first == MISSING)
+        // check remaining 
+        float remain = gameScreenWidth - padding - (x_pos + dimension.x);
+        if (remain <= 0 && char_str != " ")  // need to fold 
         {
-            DrawLineEx({ left_most, bottom_y }, { left_most + dimension.x, bottom_y }, 2, RED);
+            return prev_space;
         }
+        if (char_str == " ") prev_space = i;
+        x_pos += dimension.x;
     }
-    float right_most = center + offset;
-    for (int i = empty_i; i < generated_chars.size() && right_most <= gameScreenWidth + 2 * char_dimension['w'].x; i++)
+
+    int extra_i = 1;
+    // search in future
+    for (int i = empty_i; i < generated_chars.size(); i++)
     {
         string char_str(1, generated_chars[i]);
         Vector2 dimension = char_dimension[generated_chars[i]];
-        float dist_edge = gameScreenWidth - (right_most + dimension.x);
-        col = future_col;
-        if (dist_edge < fall_off)
-            col.a = a_offset * (dist_edge * dist_edge / (fall_off * fall_off));
-         if (char_str != " ")
-            DrawTextEx(font, char_str.c_str(), { right_most, bottom_y - dimension.y }, font_size, font_size / spacing, col);
-        right_most += dimension.x;
+        // check remaining 
+        float remain = gameScreenWidth - padding - (x_pos + dimension.x);
+        if (remain <= 0 && char_str != " ")  // need to fold 
+        {
+            return prev_space;
+        }
+        if (char_str == " ") prev_space = char_status.size() - 1 + extra_i;
+        x_pos += dimension.x;
+        extra_i++;
+    }
+    assert(false);
+}
+
+void TextDrawer::draw()
+{
+    if (is_tape_mode)
+    {
+        float left_most = center + offset;
+        const float a_offset = 100;
+        const float fall_off = padding;
+        Color col;
+        for (int i = char_status.size() - 1; i >= 0 && left_most >= 0; i--)
+        {
+            string char_str(1, char_status[i].second);
+            Vector2 dimension = char_dimension[char_status[i].second];
+            left_most -= dimension.x;
+
+            if (left_most > center || char_status[i].first == MISSING)
+                col = theme.sub;
+            else if (char_status[i].first == CORRECT)
+                col = theme.text;
+            else if (char_status[i].first == INCORRECT)
+                col = theme.error;
+            else  // extra word 
+                col = theme.error_extra;
+            if (left_most < fall_off)
+                col.a = a_offset * (left_most * left_most / (fall_off * fall_off));
+
+            if (char_str != " ")
+                DrawTextEx(font, char_str.c_str(), { left_most, bottom_y - dimension.y }, font_size, font_size / spacing, col);
+            if (char_status[i].first == MISSING)
+            {
+                DrawLineEx({ left_most, bottom_y }, { left_most + dimension.x, bottom_y }, 2, RED);
+            }
+        }
+        float right_most = center + offset;
+        for (int i = empty_i; i < generated_chars.size() && right_most <= gameScreenWidth + 2 * char_dimension['w'].x; i++)
+        {
+            string char_str(1, generated_chars[i]);
+            Vector2 dimension = char_dimension[generated_chars[i]];
+            float dist_edge = gameScreenWidth - (right_most + dimension.x);
+            col = theme.sub; 
+            if (dist_edge < fall_off)
+                col.a = a_offset * (dist_edge * dist_edge / (fall_off * fall_off));
+            if (char_str != " ")
+                DrawTextEx(font, char_str.c_str(), { right_most, bottom_y - dimension.y }, font_size, font_size / spacing, col);
+            right_most += dimension.x;
+        }
+        cursor_pos = { center, bottom_y - cursor_h };
+
+    } else
+    {
+        // check if past foldpoint (deletions) 
+        if (newlines.size() > 1 && (int)char_status.size() - 1 <= newlines.back())  // if not first row, move back up
+        {
+            newlines.pop_back();
+        }
+        int foldpoint = next_foldpoint();
+        // calculate next foldpoint 
+        if ((int)char_status.size() - 1 >= foldpoint)  // char status has reached the foldpoint
+        {
+            newlines.push_back(foldpoint - 1);  // newline is right before foldpoint
+            // calculate new foldpoint
+            foldpoint = next_foldpoint();
+        }
+
+        float current_bottom = bottom_y - 1.5f * char_dimension['I'].y;
+        // draw previous row
+        if (newlines.size() >= 2)
+        {
+            Color col;
+            float x_pos = padding;
+            for (int i = newlines[newlines.size() - 2] + 1; i <= newlines[newlines.size() - 1]; i++)
+            {
+                string char_str(1, char_status[i].second);
+                Vector2 dimension = char_dimension[char_status[i].second];
+                if (char_status[i].first == MISSING)
+                    col = theme.sub;
+                else if (char_status[i].first == CORRECT)
+                    col = theme.text;
+                else if (char_status[i].first == INCORRECT)
+                    col = theme.error;
+                else  // extra word 
+                    col = theme.error_extra;
+
+                if (char_str != " ")
+                    DrawTextAlign(char_status[i].second, x_pos, current_bottom, font_size, col, LEFT, BOTTOM);
+                if (char_status[i].first == MISSING)
+                {
+                    DrawLineEx({ x_pos, current_bottom }, { x_pos + dimension.x, current_bottom }, 2, RED);
+                }
+                if (!(char_str == " " && i == newlines[newlines.size() - 2] + 1))  // do not draw first space
+                    x_pos += dimension.x;
+            }
+        }
+
+        // Draw current row
+        current_bottom = bottom_y;
+        Color col;
+        float x_pos = padding;
+        for (int i = newlines.back() + 1; i < char_status.size(); i++)
+        {
+            string char_str(1, char_status[i].second);
+            Vector2 dimension = char_dimension[char_status[i].second];
+
+            if (char_status[i].first == MISSING)
+                col = theme.sub;
+            else if (char_status[i].first == CORRECT)
+                col = theme.text;
+            else if (char_status[i].first == INCORRECT)
+                col = theme.error;
+            else  // extra word 
+                col = theme.error_extra;
+
+            if (char_str != " ")
+                DrawTextAlign(char_status[i].second, x_pos, current_bottom, font_size, col, LEFT, BOTTOM);
+            if (char_status[i].first == MISSING)
+            {
+                DrawLineEx({ x_pos, current_bottom }, { x_pos + dimension.x, current_bottom }, 2, RED);
+            }
+            if (!(char_str == " " && i == newlines.back() + 1))  // do not draw if first space
+                x_pos += dimension.x;
+        }
+        cursor_pos = {x_pos, current_bottom - cursor_h};
+
+        int foldpoint_relative = empty_i + foldpoint - ((int)char_status.size());
+        // Draw remaining current row
+        for (int i = empty_i; i < foldpoint_relative; i++)
+        {
+            string char_str(1, generated_chars[i]);
+            Vector2 dimension = char_dimension[generated_chars[i]];
+            if (char_str != " ")
+                DrawTextAlign(char_str, x_pos, current_bottom, font_size, theme.sub, LEFT, BOTTOM);
+            x_pos += dimension.x;
+        }
+
+        // Draw next row 
+        current_bottom = bottom_y + 1.5f * char_dimension['I'].y;
+        x_pos = padding;
+        for (int i = foldpoint_relative; i < generated_chars.size(); i++)
+        {
+            string char_str(1, generated_chars[i]);
+            Vector2 dimension = char_dimension[generated_chars[i]];
+            // check if in padding range
+            if (x_pos + dimension.x > gameScreenWidth - padding)
+                break;
+            if (char_str != " ")
+                DrawTextAlign(char_str, x_pos, current_bottom, font_size, theme.sub, LEFT, BOTTOM);
+            if (!(char_str == " " && i == foldpoint_relative))  // do not draw if first space
+                x_pos += dimension.x;
+        }
     }
 }
 
 void TextDrawer::draw_cursor()
 {
-    DrawRectangleRounded(Rectangle(center, bottom_y - cursor_h, 3, cursor_h), 0.8f, 7, BLACK);
+    DrawRectangleRounded(Rectangle(cursor_pos.x, cursor_pos.y, 3, cursor_h), 0.8f, 7, BLACK);
 }
 
 float TextDrawer::get_top_y()

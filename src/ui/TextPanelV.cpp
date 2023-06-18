@@ -63,10 +63,10 @@ void TextPanelV::draw()
     {
         if (!labels[i].first.empty())
         {
-            DrawText(labels[i].first, x, y_pos, labels[i].second, theme.sub);
+            DrawTextAlign(labels[i].first, x, y_pos, labels[i].second, theme.sub);
             y_pos += label_h[i];
         }
-        DrawText(values[i].first, x, y_pos, values[i].second, theme.main);
+        DrawTextAlign(values[i].first, x, y_pos, values[i].second, theme.main);
         y_pos += value_h[i];
         if (i + 1 < labels.size() && !labels[i+1].first.empty())  // if next label is not empty
             y_pos += gap;  // gap between labels and values

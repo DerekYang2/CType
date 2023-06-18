@@ -2,26 +2,24 @@
 
 #define SETTING_PADDING 200
 
-// variables 
-TogglePanel* behavior_panel;
-ToggleGroup
-*show_wpm,
-*strict_space;
-
 void init_settings()
 {
     
     float setting_h = 30;
     
-    show_wpm = new ToggleGroup(0, 0, setting_h, 0, { "on", "off" });
+    show_wpm = new ToggleGroup(0, 0, setting_h, 1, { "off", "on" });
     ui_objects.alloc(show_wpm, SETTINGS);
     
-    strict_space = new ToggleGroup(0, 0, setting_h, 1, { "on", "off" });
+    strict_space = new ToggleGroup(0, 0, setting_h, 0, { "off", "on" });
     ui_objects.alloc(strict_space, SETTINGS);
-    
-    behavior_panel = new TogglePanel(SETTING_PADDING, 200, gameScreenWidth - 2 * SETTING_PADDING, { show_wpm, strict_space}, {
+
+    tape_mode = new ToggleGroup(0, 0, setting_h, 0, { "off", "on" });
+    ui_objects.alloc(tape_mode, SETTINGS);
+
+    behavior_panel = new TogglePanel(SETTING_PADDING, 200, gameScreenWidth - 2 * SETTING_PADDING, { show_wpm, strict_space, tape_mode}, {
         {"Show Live WPM", "Displays the live WPM on the test screen."},
-        {"Strict Space", "When disabled, pressing space will jump to the next word."}
+        {"Strict Space", "When disabled, pressing space will jump to the next word."},
+        {"Tape Mode", "Only shows one line which scrolls horizontally."}
     });
     ui_objects.alloc(behavior_panel, SETTINGS);
 }

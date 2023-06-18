@@ -1,6 +1,5 @@
 #include "IOHandler.h"
-#include "StatusHandling.h"
-#include "WpmLogger.h"
+
 
 IOHandler::IOHandler()
 {
@@ -66,7 +65,7 @@ void IOHandler::update()
         inactive_frames++;
 
     // update offset 
-    float wpm = 120;
+    float wpm = 0.8f * max(80.f, wpm_logger.raw_wpm());
     float secperchar = 1.0 / (wpm * 5 / 60);  // predicted seconds to type a char
     vel_target = offset_x / max(1.f, (secperchar * 60));  // cannot divide by anything smaller than 1
     offset_vel += (vel_target - offset_vel) * 0.3f;

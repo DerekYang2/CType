@@ -92,6 +92,13 @@ TextGenerator text_gen;
 bool drawing_block;
 float drawing_x, drawing_y;
 
+// settings UI
+TogglePanel* behavior_panel;
+ToggleGroup
+*show_wpm,
+*strict_space,
+*tape_mode;
+
 // END init extern variables ----------------------------------------------------------------
 
 // render textures
@@ -133,7 +140,11 @@ void init_test()
     // generate first chars
     generated_chars = "";
     text_gen.set_list("english");
-    text_gen.generate_text(ceil((gameScreenWidth - (drawer.center + drawer.offset)) / char_dimension['i'].x));
+    if (is_tape_mode) 
+        text_gen.generate_text(ceil((gameScreenWidth - (drawer.center + drawer.offset)) / char_dimension['i'].x));
+    else
+        text_gen.generate_text(3 * ceil(gameScreenWidth / char_dimension['i'].x));
+    
 }
 
 void start_test()
@@ -180,14 +191,14 @@ void end_test()
     // character status can get too wide 
     string char_status = TextFormat("%d/%d/%d/%d", correct, incorrect, missing, extra);
 
-    end_stats->init({ {"wpm", 50}, {"acc", 50}, {"raw", 25}, {"characters", 25}, {"consistency", 25}, {"test type", 25}, {"", 0} },
+    end_stats->init({ {"wpm", 50}, {"acc", 50}, {"raw", 25}, {"characters", 25}, {"consistency", 25}, {"test type", 25}},
                     {
                         {t_s(final_wpm), 100},
                         {TextFormat("%d%%", final_accuracy), 100},
                         {t_s(final_raw_wpm), 50},
                         {char_status, min(50.f, MeasureFontSize(char_status, wpm_width - 50))},
                         {TextFormat("%d%%", consistency), 50},
-                        {"time " + t_s(test_info.time), 25}, {text_gen.list, 25}
+                        {"time " + t_s(test_info.time) + "\n" + text_gen.list, 25}
                     });
 }
 
@@ -269,7 +280,13 @@ void update_start()
 
 void update_test()
 {
-    text_gen.generate_text(ceil((gameScreenWidth - (drawer.center + drawer.offset)) / char_dimension['i'].x));
+    if (is_tape_mode)
+    {
+        text_gen.generate_text(ceil((gameScreenWidth - (drawer.center + drawer.offset)) / char_dimension['i'].x));
+    } else
+    {
+        text_gen.generate_text(2 * ceil(gameScreenWidth / char_dimension['i'].x));
+    }
     io_handler.update();
     wpm_logger.update();
     test_info.update();
@@ -337,7 +354,12 @@ void draw_test()
     if (show_wpm->get_selected() == "on")
     {
         float info_h = char_dimension['I'].y;
+        
         float info_x = drawer.center, info_y = drawer.get_top_y() - 1.5f * info_h;
+        // TODO: FIX alignment
+        if (!is_tape_mode)
+            info_x = drawer.padding;
+        
         string time_text = " " + convertSeconds((int)round(test_info.time - elapsed), test_info.time) + " ";
         float text_width = MeasureTextEx(time_text, drawer.font_size).x;
         // DRAW TIME

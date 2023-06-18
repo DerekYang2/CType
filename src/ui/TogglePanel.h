@@ -3,7 +3,7 @@
 #include "ToggleGroup.h"
 
 class TogglePanel : public UIObject {
-    float x, y, width, offset_y, toggle_h;
+    float x, y, width, offset_y, toggle_h, gap;
     // font_info
     float font_size;
     vector<pair<float, float>> text_height;

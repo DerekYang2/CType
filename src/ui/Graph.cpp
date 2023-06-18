@@ -174,7 +174,7 @@ void Graph::set_plot(vector<float>& plot_points, int wpm_type)
         avg_dist += Vector2DistanceSqr(points[wpm_type][i], points[wpm_type][i - 1]);
     avg_dist /= points[wpm_type].size(), avg_dist = sqrt(avg_dist);
     
-    float f = 9.f;
+    float f = 8.f;
     float scale = 0.1 + (f - 0.1) * (sqrt(abs(avg_dist - 10))) / 300;
     if (zero_jump) scale = 0.2f;
     // calculate bezier curve array
