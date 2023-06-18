@@ -2,6 +2,7 @@
 #include "globals.h"
 #include "UIObject.h"
 #include "BezierPath.h"
+#include "PiecewiseCubic.h"
 
 #define NORMAL 0
 #define RAW 1

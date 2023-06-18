@@ -46,12 +46,12 @@ void Graph::config_max(vector<float>& plot_points, int wpm_type)
     {
         min_val = min(min_val, v), max_val = max(max_val, v);
     }
-    min_val = max(min_val, max_val * 0.05f);  // keep max_val at least * 1.05
+    min_val = max(min_val, max_val * 0.1f);  // keep max_val at least * 1.1
     if (wpm_type == NORMAL)
     {
         max_v = max(max_v, max_val + min_val); // same distance from 0-min and max-top
     } else {
-        max_v = max(max_v, max_val * 1.05f); // if raw, max_v is just max value with a bit of padding
+        max_v = max(max_v, max_val * 1.1f); // if raw, max_v is just max value with a bit of padding
     }
 }
 
@@ -67,6 +67,7 @@ void Graph::init_polygon(vector<Vector2> &&curve_p)
     }
     draw_segments.clear();
     // get all ranges of strictly increasing/decreasing
+    const float max_contiguous = 100;
     bool decreasing = curve_p[0].y > curve_p[1].y;
     int st = 0;
     for (int i = 1; i < curve_p.size(); i++)
@@ -84,7 +85,7 @@ void Graph::init_polygon(vector<Vector2> &&curve_p)
                     draw_segments.back().push_back(curve_p[j]);
                 }
                 st = i - 1;
-            } else if (curve_p[i-1].x - curve_p[st].x >= 300) // too wide
+            } else if (curve_p[i-1].x - curve_p[st].x >= max_contiguous) // too wide
             {
                 draw_segments.push_back(vector<Vector2>());
                 draw_segments.back().push_back({ curve_p[st].x, rect.y + rect.height });
@@ -108,7 +109,7 @@ void Graph::init_polygon(vector<Vector2> &&curve_p)
                 }
                 draw_segments.back().push_back({ curve_p[st].x, rect.y + rect.height });
                 st = i - 1;
-            } else if (curve_p[i-1].x - curve_p[st].x >= 300) // too wide
+            } else if (curve_p[i-1].x - curve_p[st].x >= max_contiguous) // too wide
             {
                 draw_segments.push_back(vector<Vector2>());
                 draw_segments.back().push_back({curve_p[i-1].x, rect.y + rect.height});
@@ -155,51 +156,30 @@ void Graph::set_plot(vector<float>& plot_points, int wpm_type)
         points[wpm_type].push_back({ x_pos, rect.y + rect.height * (1.f - plot_points[i] / max_v) });
         x_pos += gap;
     }
-    bool zero_jump = false;
-    if (wpm_type == NORMAL)
-    {
-        for (int i = 1; i < plot_points.size() - 1; i++)
-        {
-            if (plot_points[i-1] <= 0.01 && plot_points[i] >= 1 && plot_points[i+1] <= 0.01)
-            {
-                zero_jump = true;
-                break;
-            }
-        }
-    }
-
-    // calculate root mean square dist 
-    float avg_dist = 0;
-    for (int i = 1; i < points[wpm_type].size(); i++)
-        avg_dist += Vector2DistanceSqr(points[wpm_type][i], points[wpm_type][i - 1]);
-    avg_dist /= points[wpm_type].size(), avg_dist = sqrt(avg_dist);
     
-    float f = 8.f;
-    float scale = 0.1 + (f - 0.1) * (sqrt(abs(avg_dist - 10))) / 300;
-    if (zero_jump) scale = 0.2f;
-    // calculate bezier curve array
-    BezierPath bezier(iter_f(plot_points.size()));
-    bezier.Interpolate(points[wpm_type], scale);
+    // calculate interpolation curve array
+    PiecewiseCubic curve(iter_f(plot_points.size()));
+    curve.Interpolate(points[wpm_type]);
     
     if (wpm_type == RAW)
     {
-        draw_points[wpm_type] = bezier.GetDrawingPoints();
+        draw_points[wpm_type] = curve.GetDrawingPoints();
         // make sure curve doesn't cross out of the bottom 
         for (int i = 0; i < draw_points[wpm_type].size(); i++)
             if (draw_points[wpm_type][i].y > rect.y + rect.height)
                 draw_points[wpm_type][i].y = rect.y + rect.height;
         fillLUT(wpm_type);
-        draw_points[wpm_type] = bezier.applyThickness(draw_points[wpm_type], thick);
-        init_polygon(bezier.GetDrawingPoints());  // curve points
+        draw_points[wpm_type] = curve.applyThickness(draw_points[wpm_type], thick);
+        init_polygon(curve.GetDrawingPoints());  // curve points
     } else
     {
-        draw_points[wpm_type] = bezier.GetDrawingPoints();
+        draw_points[wpm_type] = curve.GetDrawingPoints();
         // make sure curve doesn't cross out of the bottom 
         for (int i = 0; i < draw_points[wpm_type].size(); i++)
             if (draw_points[wpm_type][i].y > rect.y + rect.height)
                 draw_points[wpm_type][i].y = rect.y + rect.height;
         fillLUT(wpm_type);
-        draw_points[wpm_type] = bezier.applyThickness(draw_points[wpm_type], thick);
+        draw_points[wpm_type] = curve.applyThickness(draw_points[wpm_type], thick);
     }
 
     if (wpm_type == NORMAL)  // only need to do once
@@ -340,13 +320,12 @@ void Graph::draw()
 
     if (IsKeyDown(KEY_SPACE))
     {
-        for (Vector2& p : points[NORMAL])
+        for (int i = 0; i <= 1; i++)
+        for (Vector2& p : points[i])
         {
-            DrawCircleV(p, 3, BLUE);
+            DrawCircleV(p, 3, GREEN);
         }
     }
-
-    
 
 }
 

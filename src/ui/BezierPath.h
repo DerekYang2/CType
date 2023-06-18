@@ -21,7 +21,6 @@ public:
     std::vector<Vector2> GetDrawingPoints0();
     std::vector<Vector2> GetDrawingPoints();
     vector<Vector2> applyThickness(vector<Vector2>& points, float thickness);
-    vector<vector<Vector2>> GetPolygonPoints();
     vector<Vector2> GetDrawingPoints(float thickness);  // array, size
     std::vector<Vector2> FindDrawingPoints(int curveIndex);
     int FindDrawingPoints(int curveIndex, float t0, float t1, std::vector<Vector2> pointList, int insertionIndex);
