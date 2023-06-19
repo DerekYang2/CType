@@ -67,7 +67,7 @@ int TextDrawer::next_foldpoint()
         Vector2 dimension = char_dimension[char_status[i].second];
         // check remaining 
         float remain = gameScreenWidth - padding - (x_pos + dimension.x);
-        if (remain <= 0 && char_str != " ")  // need to fold 
+        if (remain < 0 && char_str != " ")  // need to fold 
         {
             return prev_space;
         }
@@ -83,7 +83,7 @@ int TextDrawer::next_foldpoint()
         Vector2 dimension = char_dimension[generated_chars[i]];
         // check remaining 
         float remain = gameScreenWidth - padding - (x_pos + dimension.x);
-        if (remain <= 0 && char_str != " ")  // need to fold 
+        if (remain < 0 && char_str != " ")  // need to fold 
         {
             return prev_space;
         }
@@ -228,9 +228,29 @@ void TextDrawer::draw()
         }
 
         // Draw next row 
-        current_bottom = bottom_y + 1.5f * char_dimension['I'].y;
+        // find endpoint 
+        int endpoint = -1;
+        int prev_space = -1;
         x_pos = padding;
         for (int i = foldpoint_relative; i < generated_chars.size(); i++)
+        {
+            string char_str(1, generated_chars[i]);
+            Vector2 dimension = char_dimension[generated_chars[i]];
+            // check remaining 
+            float remain = gameScreenWidth - padding - (x_pos + dimension.x);
+            if (remain < 0)
+            {
+                endpoint = prev_space;
+                break;
+            }
+            if (char_str == " ")
+                prev_space = i;
+            x_pos += dimension.x;
+        }
+        
+        current_bottom = bottom_y + 1.5f * char_dimension['I'].y;
+        x_pos = padding;
+        for (int i = foldpoint_relative; i < endpoint; i++)
         {
             string char_str(1, generated_chars[i]);
             Vector2 dimension = char_dimension[generated_chars[i]];
