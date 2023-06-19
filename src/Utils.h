@@ -11,7 +11,6 @@ extern float font_spacing;
 // COLORS
 #define add_rgb(c, v) Color((c).r + v, (c).g + v, (c).b + v, 255)
 #define multiply_rgb(c, v) Color((c).r * v, (c).g * v, (c).b * v, (c).a)
-#define square(x) ((x) * (x))
 #define LEFT 0
 #define RIGHT 1
 #define CENTER 2

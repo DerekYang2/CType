@@ -236,9 +236,25 @@ void Graph::set_error(vector<float>& error_list)
 
 void Graph::update()
 {
-    show_hint = CheckCollisionPointRec(mouse, rect) && mouse_focus;
+    show_hint = false;
+    const float min_dist = 12;  // minmimum distance to display error
+
+    if (CheckCollisionPointRec(mouse, rect) && mouse_focus)
+    {
+        float normal_y = LUTy[NORMAL][(int)round(mouse.x)];
+        float instant_y = LUTy[RAW][(int)round(mouse.x)];
+        float closest_err_x = INT_MAX;
+        for (auto& [x_p, y_p] : errors)
+        {
+            if (abs(y_p - mouse.y) < min_dist)  // only check x if y is close enough
+                closest_err_x = min(closest_err_x, abs(x_p - mouse.x));
+        }
+        if (min(abs(mouse.y - normal_y), abs(mouse.y - instant_y)) <= 3 * min_dist || (closest_err_x <= min_dist))  // if close to curve or error point
+            show_hint = true;
+    }
+        
     errors_hint = 0;
-    const float min_dist = 8;  // minmimum distance to display error
+    error_index = -1;  // reset to nothing
     if (show_hint)
     {
         if (errors.empty())
@@ -246,16 +262,89 @@ void Graph::update()
             errors_hint = 0;
         } else
         {
-            Vector2 closest = {INT_MAX, errors[0].y};
-            for (auto& [x_pos, ypos] : errors)
+            Vector2 closest = { INT_MAX, errors[0].y };
+            int best_idx = -1;
+            for (int i = 0; i < errors.size(); i++)
             {
-                if (abs(x_pos - mouse.x) < closest.x)
-                    closest = { abs(x_pos - mouse.x), ypos };
+                if (abs(errors[i].x - mouse.x) < closest.x)
+                {
+                    closest = { abs(errors[i].x - mouse.x), errors[i].y };
+                    best_idx = i;
+                }
             }
             if (closest.x <= min_dist)
-                errors_hint = round(max_err * (1 - (closest.y - rect.y) / rect.height));
+            {
+               errors_hint = round(pos_to_value(closest.y, max_err));
+               error_index = best_idx;  
+            }
         }
     }
+}
+
+void Graph::draw_hint()
+{
+
+    float normal_y = LUTy[NORMAL][(int)round(mouse.x)];
+    float instant_y = LUTy[RAW][(int)round(mouse.x)];
+    string time_str = convertSeconds(1 + (time - 1) * (mouse.x - rect.x) / rect.width, time);
+    if (time < 60)
+        time_str = TextFormat("%.1f", 1 + (time - 1) * (mouse.x - rect.x) / rect.width);
+    string wpm_str = t_s((int)round(pos_to_value(normal_y, max_v)));
+    string instant_str = t_s((int)round(pos_to_value(instant_y, max_v)));
+    string error_str = t_s(errors_hint);
+    float hint_fs = 22;
+    float time_h = MeasureTextEx(time_str, hint_fs).y, normal_h = MeasureTextEx(wpm_str, hint_fs).y, instant_h = MeasureTextEx(instant_str, hint_fs).y, error_h = MeasureTextEx(error_str, hint_fs).y;
+    
+    float text_max_w = max({ MeasureTextEx("wpm  " + wpm_str, hint_fs).x, MeasureTextEx("instant  " + instant_str, hint_fs).x, MeasureTextEx("errors  " + error_str, hint_fs).x });
+    float padding = 0.25f * MeasureTextEx("I", hint_fs).y;
+    float box_height = 5 * padding + time_h + normal_h + instant_h + error_h;
+    Vector2 hint_offset;
+    float offset_amt = 2 * padding;
+    Rectangle hint_box = { 0, 0, text_max_w + 2 * padding, box_height};
+    if (mouse.x < rect.x + rect.width * 0.5f)  // left side
+    {
+        hint_offset = { offset_amt, offset_amt };
+        if (normal_y - 1.1f * hint_box.height + hint_offset.y < rect.y) // top-left corner
+        {
+            hint_box.x = mouse.x + hint_offset.x, hint_box.y = normal_y + hint_offset.y;
+        } else // bottom_left corner
+        {
+            hint_offset = { offset_amt, -offset_amt };
+            hint_box.x = mouse.x + hint_offset.x, hint_box.y = normal_y - hint_box.height + hint_offset.y;
+        }
+    } else 
+    {
+        hint_offset = { -offset_amt, offset_amt };
+        if (normal_y - 1.1f * hint_box.height + hint_offset.y < rect.y) // top-right corner
+        {
+            hint_box.x = mouse.x - hint_box.width + hint_offset.x, hint_box.y = normal_y + hint_offset.y;
+        } else // bottom_right corner
+        {
+            hint_offset = { -offset_amt, -offset_amt };
+            hint_box.x = mouse.x - hint_box.width + hint_offset.x, hint_box.y = normal_y - hint_box.height + hint_offset.y;
+        }
+    }
+    // Draw circle points
+    DrawCircle(mouse.x, instant_y, 5, theme.sub);
+    DrawCircle(mouse.x, normal_y, 5, theme.main);
+    
+    DrawRectangleRounded(hint_box, 0.1f, 7, rgba(0, 0, 0, 0.95f));
+    float ypos = padding;
+    DrawTextAlign(time_str, hint_box.x + padding, hint_box.y + ypos, hint_fs, WHITE), ypos += time_h;
+    ypos += padding;
+
+    DrawTextAlign("wpm", hint_box.x + padding, hint_box.y + ypos, hint_fs, WHITE);
+    DrawTextAlign(wpm_str, hint_box.x + hint_box.width - padding, hint_box.y + ypos, hint_fs, WHITE, RIGHT);
+    ypos += normal_h + padding;
+
+    DrawTextAlign("instant", hint_box.x + padding, hint_box.y + ypos, hint_fs, WHITE);
+    DrawTextAlign(instant_str, hint_box.x + hint_box.width - padding, hint_box.y + ypos, hint_fs, WHITE, RIGHT);
+    ypos += instant_h + padding;
+
+    DrawTextAlign("errors", hint_box.x + padding, hint_box.y + ypos, hint_fs, WHITE);
+    DrawTextAlign(error_str, hint_box.x + hint_box.width - padding, hint_box.y + ypos, hint_fs, WHITE, RIGHT);
+    // Draw rectangle 
+    //DrawRectangleRoundedAlign()
 }
 
 void Graph::draw()
@@ -269,16 +358,16 @@ void Graph::draw()
         if (y > rect.y && y < rect.y + rect.height) // no need to redraw
             DrawLine(rect.x, y, rect.x + rect.width, y, line_col);
         // wpm
-        float y_v = max_v * ((rect.y + rect.height) - y) / rect.height;
-        DrawTextAlign(t_s((int)round(y_v)), rect.x - 10, y, 20, theme.sub, RIGHT, CENTER);
+        int y_v = round(pos_to_value(y, max_v));
+        DrawTextAlign(t_s(y_v), rect.x - 10, y, 20, theme.sub, RIGHT, CENTER);
     }
 
     float err_y_gap = max_err <= 9 ? (rect.height / max_err) : (rect.height / (10));
     for (float y = rect.y + rect.height; y >= rect.y; y -= err_y_gap)
     {
          // errors
-        float y_v = max_err * ((rect.y + rect.height) - y) / rect.height;
-        DrawTextAlign(t_s((int)y_v), rect.x + rect.width + 10, y, 20, theme.sub, LEFT, CENTER);
+        int y_v = pos_to_value(y, max_err);
+        DrawTextAlign(t_s(y_v), rect.x + rect.width + 10, y, 20, theme.sub, LEFT, CENTER);
     }
     // Draw x-axis
     int sec_gap = round(time / 15);
@@ -302,21 +391,18 @@ void Graph::draw()
     // NORMAL curve
     DrawTriangleStrip(&draw_points[NORMAL][0], draw_points[NORMAL].size(), theme.main);
 
-    // curve points
     if (show_hint)
-    {
-        auto it = LUTy[RAW].find((int)round(mouse.x));
-        if (it != LUTy[RAW].end())
-            DrawCircle(mouse.x, it->second, 5, theme.sub);
-        it = LUTy[NORMAL].find((int)round(mouse.x));
-        if (it != LUTy[NORMAL].end())
-            DrawCircle(mouse.x, it->second, 5, theme.main);
-        DrawTextAlign(t_s(errors_hint), mouse.x, mouse.y, 20, RED, RIGHT, BOTTOM);
-    }
-    
+        draw_hint();
+
     // error points 
-    for (Vector2& p : errors)
-        DrawCircleV(p, 3, RED);
+    for (int i = 0; i < errors.size(); i++)
+    {
+        float stroke = 4.f;
+        if (i == error_index && show_hint)
+            stroke += sin(rad(globalFrame * 6));
+        DrawRectanglePro({ errors[i].x, errors[i].y, stroke, 3 * stroke }, { stroke * 0.5f, 3 * stroke * 0.5f }, 45, RED);
+        DrawRectanglePro({ errors[i].x, errors[i].y, stroke, 3 * stroke }, { stroke * 0.5f, 3 * stroke * 0.5f }, 45 + 90, RED);
+    }
 
     if (IsKeyDown(KEY_SPACE))
     {
@@ -337,4 +423,9 @@ void Graph::set_time(float t)
 float Graph::width()
 {
     return rect.width;
+}
+
+float Graph::pos_to_value(float position, float max_val)
+{
+    return max_val * ((rect.y + rect.height) - position) / rect.height;
 }

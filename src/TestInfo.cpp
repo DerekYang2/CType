@@ -18,7 +18,7 @@ void TestInfo::init(int test_time)
 void TestInfo::update()
 {
     // get wpm sample
-    if (watch.s() >= sec_per_check)
+    if (watch.s() >= sec_per_check || abs(watch.s() - time) < 0.02f) // within time or if basically on test end
     {
         watch.start();  // reset
         if (wpm_logger.get_elapsed() >= 1)  // cannot be too early

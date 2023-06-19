@@ -23,6 +23,7 @@ class Graph : public UIObject
     // graph hints
     bool show_hint;
     int wpm_hint, instant_hint, errors_hint;
+    int error_index;
     
     public:
     Graph(float x, float y, float w, float h, float thick);
@@ -33,8 +34,10 @@ class Graph : public UIObject
     void set_plot(vector<float>& plot_points, int wpm_type = NORMAL);
     void set_error(vector<float> & error_list);
     void update() override;
+    void draw_hint();
     void draw() override;
     void set_time(float t);
     float width();
+    float pos_to_value(float position, float max_val);
 };
 extern Graph* graph;

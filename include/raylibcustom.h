@@ -26,6 +26,8 @@ using namespace std;
 #define cosa(x) (cosf(rad(x)))
 #define sina(x) (sinf(rad(x)))
 #define t_s(x) (to_string(x))
+#define square(x) ((x) * (x))
+#define hypot(x, y) sqrt(square(x) + square(y))
 // String funcs ------------------------------------------------------------------
 
 #define is_digit(c) ((c) >= '0' && (c) <= '9')

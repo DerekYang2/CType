@@ -77,10 +77,11 @@ std::vector<Vector2> PiecewiseCubic::GetDrawingPoints()
 {
     vector<Vector2> drawingPoints;
     float t_inc = 1.0f / SEGMENTS_PER_CURVE;
-    for (float t = 0.f; t <= float(n - 1); t += t_inc)
+    for (float t = 0.f; t < float(n - 1); t += t_inc)
     {
         drawingPoints.push_back(GetPoint(t));
     }
+    drawingPoints.push_back(GetPoint(n - 1));
     return drawingPoints;
 }
 
