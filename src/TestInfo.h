@@ -11,6 +11,7 @@ struct TestInfo {
     TestInfo();
     void init(int test_time);
     void update();
+    void push_final();
     float variation();
     float get_cov(vector<float>& sample);  // coefficient of variation
     void update_graph(Graph* graph);

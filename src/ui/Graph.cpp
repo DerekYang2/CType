@@ -249,7 +249,7 @@ void Graph::update()
             if (abs(y_p - mouse.y) < min_dist)  // only check x if y is close enough
                 closest_err_x = min(closest_err_x, abs(x_p - mouse.x));
         }
-        if (min(abs(mouse.y - normal_y), abs(mouse.y - instant_y)) <= 3 * min_dist || (closest_err_x <= min_dist))  // if close to curve or error point
+        if (min(abs(mouse.y - normal_y), abs(mouse.y - instant_y)) <= rect.height * 0.2f || (closest_err_x <= min_dist))  // if close to curve or error point
             show_hint = true;
     }
         
@@ -281,6 +281,7 @@ void Graph::update()
     }
 }
 
+//TODO: ORDER
 void Graph::draw_hint()
 {
 
@@ -300,8 +301,8 @@ void Graph::draw_hint()
     float box_height = 5 * padding + time_h + normal_h + instant_h + error_h;
     Vector2 hint_offset;
     float offset_amt = 2 * padding;
-    Rectangle hint_box = { 0, 0, text_max_w + 2 * padding, box_height};
-    if (mouse.x < rect.x + rect.width * 0.5f)  // left side
+    Rectangle hint_box = { 0, 0, text_max_w + 4 * padding, box_height};
+    if (mouse.x + hint_box.width + offset_amt < rect.x + rect.width)  // if box left align fits
     {
         hint_offset = { offset_amt, offset_amt };
         if (normal_y - 1.1f * hint_box.height + hint_offset.y < rect.y) // top-left corner
@@ -324,25 +325,22 @@ void Graph::draw_hint()
             hint_box.x = mouse.x - hint_box.width + hint_offset.x, hint_box.y = normal_y - hint_box.height + hint_offset.y;
         }
     }
-    // Draw circle points
-    DrawCircle(mouse.x, instant_y, 5, theme.sub);
-    DrawCircle(mouse.x, normal_y, 5, theme.main);
-    
+
     DrawRectangleRounded(hint_box, 0.1f, 7, rgba(0, 0, 0, 0.95f));
     float ypos = padding;
-    DrawTextAlign(time_str, hint_box.x + padding, hint_box.y + ypos, hint_fs, WHITE), ypos += time_h;
+    DrawTextAlign(time_str, hint_box.x + 2*padding, hint_box.y + ypos, hint_fs, WHITE), ypos += time_h;
     ypos += padding;
 
-    DrawTextAlign("wpm", hint_box.x + padding, hint_box.y + ypos, hint_fs, WHITE);
-    DrawTextAlign(wpm_str, hint_box.x + hint_box.width - padding, hint_box.y + ypos, hint_fs, WHITE, RIGHT);
+    DrawTextAlign("wpm", hint_box.x + 2*padding, hint_box.y + ypos, hint_fs, WHITE);
+    DrawTextAlign(wpm_str, hint_box.x + hint_box.width - 2 * padding, hint_box.y + ypos, hint_fs, WHITE, RIGHT);
     ypos += normal_h + padding;
 
-    DrawTextAlign("instant", hint_box.x + padding, hint_box.y + ypos, hint_fs, WHITE);
-    DrawTextAlign(instant_str, hint_box.x + hint_box.width - padding, hint_box.y + ypos, hint_fs, WHITE, RIGHT);
+    DrawTextAlign("instant", hint_box.x + 2*padding, hint_box.y + ypos, hint_fs, WHITE);
+    DrawTextAlign(instant_str, hint_box.x + hint_box.width - 2 * padding, hint_box.y + ypos, hint_fs, WHITE, RIGHT);
     ypos += instant_h + padding;
 
-    DrawTextAlign("errors", hint_box.x + padding, hint_box.y + ypos, hint_fs, WHITE);
-    DrawTextAlign(error_str, hint_box.x + hint_box.width - padding, hint_box.y + ypos, hint_fs, WHITE, RIGHT);
+    DrawTextAlign("errors", hint_box.x + 2*padding, hint_box.y + ypos, hint_fs, WHITE);
+    DrawTextAlign(error_str, hint_box.x + hint_box.width - 2 * padding, hint_box.y + ypos, hint_fs, WHITE, RIGHT);
     // Draw rectangle 
     //DrawRectangleRoundedAlign()
 }
@@ -390,19 +388,30 @@ void Graph::draw()
     DrawTriangleStrip(&draw_points[RAW][0], draw_points[RAW].size(), theme.sub);
     // NORMAL curve
     DrawTriangleStrip(&draw_points[NORMAL][0], draw_points[NORMAL].size(), theme.main);
-
+    // Draw circle points
     if (show_hint)
-        draw_hint();
-
+    {
+        DrawCircle(mouse.x, LUTy[RAW][(int)round(mouse.x)], 5, theme.sub);
+        DrawCircle(mouse.x, LUTy[NORMAL][(int)round(mouse.x)], 5, theme.main);
+    }
     // error points 
     for (int i = 0; i < errors.size(); i++)
     {
         float stroke = 4.f;
+        Color col = ColorNewAlpha(theme.error, 0.7f * 255);
         if (i == error_index && show_hint)
+        {
             stroke += sin(rad(globalFrame * 6));
-        DrawRectanglePro({ errors[i].x, errors[i].y, stroke, 3 * stroke }, { stroke * 0.5f, 3 * stroke * 0.5f }, 45, RED);
-        DrawRectanglePro({ errors[i].x, errors[i].y, stroke, 3 * stroke }, { stroke * 0.5f, 3 * stroke * 0.5f }, 45 + 90, RED);
+            col.a = 255;
+        }
+        
+        DrawRectanglePro({ errors[i].x, errors[i].y, stroke, 3 * stroke }, { stroke * 0.5f, 3 * stroke * 0.5f }, 45, col);
+        DrawRectanglePro({ errors[i].x, errors[i].y, stroke, 3 * stroke }, { stroke * 0.5f, 3 * stroke * 0.5f }, 45 + 90, col);
     }
+    
+    if (show_hint)  // draw hint box
+        draw_hint();
+
 
     if (IsKeyDown(KEY_SPACE))
     {

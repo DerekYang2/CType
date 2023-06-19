@@ -78,7 +78,7 @@ mt19937 rng(std::chrono::system_clock::now().time_since_epoch().count());
 Font font; // Font: UI font
 float font_spacing;
 
-UIAlloc ui_objects(30);
+UIAlloc ui_objects(100);
 Shader shader;
 Vector2 char_dimension[CHAR_MAX + 1];
 
@@ -94,10 +94,7 @@ float drawing_x, drawing_y;
 
 // settings UI
 TogglePanel* behavior_panel;
-ToggleGroup
-*show_wpm,
-*strict_space,
-*tape_mode;
+CreateSettingToggles;
 
 // END init extern variables ----------------------------------------------------------------
 
@@ -162,6 +159,7 @@ void end_test()
 {
     wpm_logger.end();
     final_wpm = round(wpm_logger.wpm());
+    test_info.push_final();
     final_raw_wpm = round(wpm_logger.raw_wpm());
     final_accuracy = round(100 * wpm_logger.accuracy());
     consistency = round(100 * (1 - test_info.variation()));

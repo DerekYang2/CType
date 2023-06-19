@@ -1,5 +1,6 @@
 #pragma once
 #include "globals.h"
+#include "Settings.h"
 extern bool drawing_block;
 extern float drawing_x, drawing_y;
 

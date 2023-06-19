@@ -18,7 +18,7 @@ void TestInfo::init(int test_time)
 void TestInfo::update()
 {
     // get wpm sample
-    if (watch.s() >= sec_per_check || abs(watch.s() - time) < 0.02f) // within time or if basically on test end
+    if (watch.s() >= sec_per_check)
     {
         watch.start();  // reset
         if (wpm_logger.get_elapsed() >= 1)  // cannot be too early
@@ -27,6 +27,12 @@ void TestInfo::update()
             raw_wpm_record.push_back(wpm_logger.instant_wpm());
         }
     }
+}
+
+void TestInfo::push_final()
+{
+    wpm_record.push_back(wpm_logger.wpm());
+    raw_wpm_record.push_back(wpm_logger.instant_wpm());
 }
 
 // coefficient of variation mapped between 0 and 1

@@ -2,6 +2,12 @@
 
 void update_rect_preview()
 {
+    if (debug_mode->get_selected() == "off")
+    {
+        drawing_block = false;
+        return;
+    }
+    
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
     {
         if (!drawing_block)

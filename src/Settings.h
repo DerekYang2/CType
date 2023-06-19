@@ -9,10 +9,9 @@ extern void switch_start();
 // variables
 extern TogglePanel* behavior_panel;
 
-extern ToggleGroup
-*show_wpm,
-*strict_space,
-*tape_mode;
+#define CreateSettingToggles ToggleGroup *show_wpm, *strict_space, *tape_mode, *debug_mode
+
+extern CreateSettingToggles;
 
 // custom macros
 #define is_strict_space (strict_space->get_selected() == "on")
