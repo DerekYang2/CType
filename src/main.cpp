@@ -352,19 +352,20 @@ void draw_test()
     if (show_wpm->get_selected() == "on")
     {
         float info_h = char_dimension['I'].y;
-        
         float info_x = drawer.center, info_y = drawer.get_top_y() - 1.5f * info_h;
-        // TODO: FIX alignment
-        if (!is_tape_mode)
-            info_x = drawer.padding;
-        
         string time_text = " " + convertSeconds((int)round(test_info.time - elapsed), test_info.time) + " ";
         float text_width = MeasureTextEx(time_text, drawer.font_size).x;
+        float clock_r = char_dimension['0'].y * 0.4f;
+
+        // DRAW TIME
+        // TODO: FIX alignment
+        if (!is_tape_mode)
+            info_x = drawer.padding + text_width + 2 * clock_r; 
+        
         // DRAW TIME
         DrawTextAlign(time_text, info_x, info_y, drawer.font_size, theme.text, RIGHT, CENTER);
 
         // DRAW TIME CLOCK
-        float clock_r = char_dimension['0'].y * 0.4f;
         DrawCircleSector(info_x - text_width - clock_r, info_y, clock_r * 0.86f, 180 - (elapsed / test_info.time) * 360, 180, theme.text);
         DrawRing(info_x - text_width - clock_r, info_y, clock_r, clock_r * 0.85f, theme.text);
 

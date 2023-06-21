@@ -158,8 +158,9 @@ void TextDrawer::draw()
         }
 
         float current_bottom = bottom_y - 1.5f * char_dimension['I'].y;
+        bool first_row = newlines.size() < 2;
         // draw previous row
-        if (newlines.size() >= 2)
+        if (!first_row)
         {
             Color col;
             float x_pos = padding;
@@ -185,10 +186,11 @@ void TextDrawer::draw()
                 if (!(char_str == " " && i == newlines[newlines.size() - 2] + 1))  // do not draw first space
                     x_pos += dimension.x;
             }
-        }
+        } 
 
         // Draw current row
-        current_bottom = bottom_y;
+        if (!first_row)
+            current_bottom = bottom_y;
         Color col;
         float x_pos = padding;
         for (int i = newlines.back() + 1; i < char_status.size(); i++)
@@ -247,8 +249,9 @@ void TextDrawer::draw()
                 prev_space = i;
             x_pos += dimension.x;
         }
+
+        current_bottom = first_row ? bottom_y : bottom_y + 1.5f * char_dimension['I'].y;
         
-        current_bottom = bottom_y + 1.5f * char_dimension['I'].y;
         x_pos = padding;
         for (int i = foldpoint_relative; i < endpoint; i++)
         {
@@ -261,6 +264,44 @@ void TextDrawer::draw()
                 DrawTextAlign(char_str, x_pos, current_bottom, font_size, theme.sub, LEFT, BOTTOM);
             if (!(char_str == " " && i == foldpoint_relative))  // do not draw if first space
                 x_pos += dimension.x;
+        }
+        // next future row at the beginning of test
+        if (first_row)
+        {
+            current_bottom = bottom_y + 1.5f * char_dimension['I'].y;
+            int start_point = endpoint;  // start point for next row
+            // Draw next row 
+            // find endpoint 
+            endpoint = prev_space = -1;
+            x_pos = padding;
+            for (int i = start_point; i < generated_chars.size(); i++)
+            {
+                string char_str(1, generated_chars[i]);
+                Vector2 dimension = char_dimension[generated_chars[i]];
+                // check remaining 
+                float remain = gameScreenWidth - padding - (x_pos + dimension.x);
+                if (remain < 0)
+                {
+                    endpoint = prev_space;
+                    break;
+                }
+                if (char_str == " ")
+                    prev_space = i;
+                x_pos += dimension.x;
+            }
+            x_pos = padding;
+            for (int i = start_point; i < endpoint; i++)
+            {
+                string char_str(1, generated_chars[i]);
+                Vector2 dimension = char_dimension[generated_chars[i]];
+                // check if in padding range
+                if (x_pos + dimension.x > gameScreenWidth - padding)
+                    break;
+                if (char_str != " ")
+                    DrawTextAlign(char_str, x_pos, current_bottom, font_size, theme.sub, LEFT, BOTTOM);
+                if (!(char_str == " " && i == start_point))  // do not draw if first space
+                    x_pos += dimension.x;
+            }
         }
     }
 }
