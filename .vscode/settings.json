@@ -1,5 +1,6 @@
 {
     "C_Cpp.vcFormat.indent.braces": false,
     "C_Cpp.vcFormat.indent.accessSpecifiers": true,
-    "C_Cpp.vcFormat.indent.caseContents": false
+    "C_Cpp.vcFormat.indent.caseContents": false,
+    "C_Cpp.errorSquiggles": "enabled"
 }

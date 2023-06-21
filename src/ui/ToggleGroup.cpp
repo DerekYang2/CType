@@ -31,7 +31,7 @@ ToggleGroup::ToggleGroup(float x, float y, float h, int init_idx, vector<string>
     }
 
     tot_width = 0;
-    float x_pos = x;
+    float x_pos = corner.x;
     for (string& str : text)
     {
         hitbox.push_back({ x_pos, y, 0, h });
@@ -43,7 +43,29 @@ ToggleGroup::ToggleGroup(float x, float y, float h, int init_idx, vector<string>
     offset_y = 0;
 }
 
-ToggleGroup::ToggleGroup(float x, float y, float h, int init_idx, vector<string> text_list, string init_msg, string img_path) 
+// all toggle images
+ToggleGroup::ToggleGroup(float x, float y, float h, int init_idx, vector<string> texture_paths, vector<string> hints, bool centered)
+{
+    tot_width = h * texture_paths.size();
+    corner = { x , y };
+    if (centered)
+        corner.x -= tot_width * 0.5f;
+    selected = init_idx;
+    float x_pos = corner.x;
+    for (string& texture_path : texture_paths)
+    {
+        textures.push_back(&textureOf[texture_path]);
+        img_scales.push_back(h * 0.8f / max(textures.back()->height, textures.back()->width));
+        hitbox.push_back({ x_pos, y, h, h });
+        x_pos += h;
+    }
+    // add hints to text array
+    text = deque<string>(hints.begin(), hints.end());
+    offset_y = 0;
+}
+
+// one starting image
+ToggleGroup::ToggleGroup(float x, float y, float h, int init_idx, vector<string> text_list, string init_msg, string img_path)
 {
     corner = { x, y };
     init_message = init_msg + " ";
@@ -73,7 +95,7 @@ ToggleGroup::ToggleGroup(float x, float y, float h, int init_idx, vector<string>
     }
 
     tot_width = img_scale * texture->width;
-    float x_pos = tot_width;
+    float x_pos = corner.x + tot_width;
     for (string& str : text)
     {
         hitbox.push_back({ x_pos, y, 0, h });
@@ -85,25 +107,6 @@ ToggleGroup::ToggleGroup(float x, float y, float h, int init_idx, vector<string>
     offset_y = 0;
 }
 
-void ToggleGroup::draw()
-{
-    //DrawRectangle(corner.x, corner.y, tot_width, hitbox[0].height, BLACK);
-    float x_pos = corner.x;
-    if (texture != nullptr)
-    {
-        DrawTextureEx(*texture, corner, 0, img_scale, theme.main);
-        x_pos += texture->width * img_scale;
-    }
-
-    for (int i = 0; i < hitbox.size(); i++)
-    {
-        Color col = (hover[i] || i == selected) ? theme.main : theme.sub;
-        if (i == selected && pressWatch.s() < TOGGLE_DELAY) col = theme.sub;  // blink off when click
-        DrawTextAlign(text[i], x_pos, hitbox[i].y + hitbox[i].height * 0.5f, font_size, col, LEFT, CENTER);
-        x_pos += hitbox[i].width;
-    }
-}
-
 void ToggleGroup::update()
 {
     pressed = false;
@@ -111,7 +114,7 @@ void ToggleGroup::update()
     int hover_idx = -1;
     for (int i = 0; i < hitbox.size(); i++)
     {
-        if (CheckCollisionPointRec({mouse.x, mouse.y - offset_y}, hitbox[i])) hover_idx = i;
+        if (CheckCollisionPointRec({ mouse.x, mouse.y - offset_y }, hitbox[i])) hover_idx = i;
     }
     for (int i = 0; i < hitbox.size(); i++)
         if (i != hover_idx)
@@ -128,8 +131,41 @@ void ToggleGroup::update()
             pressed = true;
         }
     }
-
 }
+
+void ToggleGroup::draw()
+{
+    if (textures.empty())
+    {
+        //DrawRectangle(corner.x, corner.y, tot_width, hitbox[0].height, BLACK);
+        float x_pos = corner.x;
+        if (texture != nullptr)
+        {
+            DrawTextureEx(*texture, corner, 0, img_scale, theme.main);
+            x_pos += texture->width * img_scale;
+        }
+
+        for (int i = 0; i < hitbox.size(); i++)
+        {
+            Color col = (hover[i] || i == selected) ? theme.main : theme.sub;
+            if (i == selected && pressWatch.s() < TOGGLE_DELAY) col = theme.sub;  // blink off when click
+            DrawTextAlign(text[i], x_pos, hitbox[i].y + hitbox[i].height * 0.5f, font_size, col, LEFT, CENTER);
+            x_pos += hitbox[i].width;
+        }
+    } else
+    {
+        float img_h = hitbox[0].height;
+        for (int i = 0; i < textures.size(); i++)
+        {
+            Color col = (hover[i] || i == selected) ? theme.main : theme.sub;
+            if (i == selected && pressWatch.s() < TOGGLE_DELAY) col = theme.sub;  // blink off when click
+            DrawTexturePro(*textures[i], { 0, 0, (float)textures[i]->width, (float)textures[i]->height },
+            { corner.x + (i + 0.5f) * img_h, corner.y + 0.5f * img_h, textures[i]->width * img_scales[i], textures[i]->height * img_scales[i] },
+            { textures[i]->width * img_scales[i] * 0.5f, textures[i]->height * img_scales[i] * 0.5f }, 0, col);
+        }
+    }
+}
+
 
 void ToggleGroup::set_offset(float y)
 {
@@ -148,6 +184,19 @@ string ToggleGroup::get_selected()
         return !std::isspace(ch);
     }).base(), str.end());
     return str;
+}
+
+void ToggleGroup::set_selected(string str)
+{
+    for (int i = 0; i < text.size(); i++)
+    {
+        if (text[i] == str)
+        {
+            pressWatch.start();
+            selected = i;
+            pressed = true;
+        }
+    }
 }
 
 float ToggleGroup::width()

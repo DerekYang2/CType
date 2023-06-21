@@ -43,6 +43,15 @@ int UIAlloc::alloc(UIObject* obj, int sceneId) // add a new UIObject and return 
     return idx;
 }
 
+int UIAlloc::alloc(UIObject* obj, initializer_list<int> sceneIdList) // add a new UIObject and return its idx
+{
+    int idx = pop();
+    objs[idx] = obj;
+    for (int sceneId : sceneIdList)
+        scene_ids[sceneId].insert(idx);
+    return idx;
+}
+
 UIObject* UIAlloc::operator [](int i) const
 {
     if (i < 0 || i >= capacity || objs[i] == nullptr)

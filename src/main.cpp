@@ -110,6 +110,8 @@ float elapsed;
 Graph* graph;
 TextPanelV* end_stats;
 SettingBar* setting_bar;
+ToggleGroup* taskbar;
+
 // test display vars
 int display_wpm_frames = 15;  // frames to update wpm display
 int display_wpm;
@@ -309,6 +311,28 @@ void update_test()
     }
 }
 
+void update_taskbar()
+{
+    if (taskbar->was_pressed())
+    {
+        int taskbar_scene = -1;
+        if (taskbar->get_selected() == "default test")  // home or test
+        {
+            taskbar_scene = START;
+        } else if (taskbar->get_selected() == "settings")  // settings
+        {
+            taskbar_scene = SETTINGS;
+        }
+        if (taskbar_scene != scene)  // taskbar scene changed
+        {
+            if (taskbar_scene == START)
+                switch_start();
+            else if (taskbar_scene == SETTINGS)
+                switch_settings();
+        }
+    }
+}
+
 void update_end()
 {
     
@@ -435,6 +459,10 @@ void init()
     //test_shader = LoadShader(0, "./fonts/test2.frag");
     load_base_font("default");
     init_raw_data;
+    for (auto& [key, texture] : textureOf)
+    {
+        SetTextureFilter(texture, TEXTURE_FILTER_BILINEAR);
+    }
     // STARTING UI ---------------------------------------------------------------
     //new_Toggle(START, 0, 300, 50, true, "test", "settings_icon");
     float bar_h = 25;
@@ -444,6 +472,10 @@ void init()
     setting_bar = new SettingBar(gameScreenWidth / 2, 300, { test }, test_group);
     ui_objects.alloc(setting_bar, START);
 
+    
+    taskbar = new ToggleGroup(gameScreenWidth/2, 800, 75, 0, { "keyboard", "settings_icon" }, { "default test", "settings" }, true);
+    ui_objects.alloc(taskbar, {START, SETTINGS});
+    
     // ENDING UI ---------------------------------------------------------------
     new_Button(END, 100, 900, 300, 100, "restart", [] { switch_start(); });
     graph = new Graph(wpm_width + (gameScreenWidth - (graph_width + wpm_width)) * 0.5f, graph_top, graph_width, graph_height, 4), ui_objects.alloc(graph, END);
@@ -514,7 +546,7 @@ int main(void)
         {
             update_end();
         }
-
+        update_taskbar();
         for (const int id : scene_ids[scene])
         {
             ui_objects[id]->update();

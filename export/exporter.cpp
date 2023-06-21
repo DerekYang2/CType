@@ -65,7 +65,7 @@ void export_raw_font(string path_name)
 int main()
 {
     // Comment out if not using
-    export_raw_font("RobotoMono");
+    // export_raw_font("RobotoMono");
     
     ofstream ofs;
     ofs.open("./src/ResourceInit.h", ofstream::out | ofstream::trunc);  //header file

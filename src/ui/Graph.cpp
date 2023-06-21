@@ -305,10 +305,10 @@ void Graph::draw_hint()
     Vector2 hint_offset;
     float offset_amt = 2 * padding;
     Rectangle hint_box = { 0, 0, text_max_w + 4 * padding + square_len + space_w, box_height};
-    if (mouse.x - hint_box.width - offset_amt >= rect.x)  // if box right align fits
+    if (ceil(mouse.x - hint_box.width - offset_amt) >= rect.x)  // if box right align fits
     {
         hint_offset = { -offset_amt, offset_amt };
-        if (normal_y - 1.1f * hint_box.height + hint_offset.y < rect.y) // top-right corner
+        if (normal_y - hint_box.height + hint_offset.y < rect.y) // top-right corner
         {
             hint_box.x = mouse.x - hint_box.width + hint_offset.x, hint_box.y = normal_y + hint_offset.y;
         } else // bottom_right corner
@@ -319,7 +319,7 @@ void Graph::draw_hint()
     } else
     {
         hint_offset = { offset_amt, offset_amt };
-        if (normal_y - 1.1f * hint_box.height + hint_offset.y < rect.y) // top-left corner
+        if (normal_y - hint_box.height + hint_offset.y < rect.y) // top-left corner
         {
             hint_box.x = mouse.x + hint_offset.x, hint_box.y = normal_y + hint_offset.y;
         } else // bottom_left corner

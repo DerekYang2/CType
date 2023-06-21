@@ -15,6 +15,7 @@ class UIAlloc
     int pop();
     void push(int i);
     int alloc(UIObject* obj, int sceneId);
+    int alloc(UIObject* obj, initializer_list<int> sceneIdList);
     UIObject* operator [] (int i) const;
     UIObject*& operator [] (int i);
     void erase(int idx);
