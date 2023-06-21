@@ -41,12 +41,12 @@
 #include "Settings.h"
 // Init extern variables ------------------------------------------------------------------
 Theme theme{
-    WHITE, // background
-    rgb(14, 105, 161), // main
-    rgb(61, 78, 92), // sub 
-    BLACK, // text 
-    rgb(255, 0, 0), // error
-    rgb(128, 41, 41) // error_extra
+    rgb(232, 233, 236), // background
+    rgb(78, 93, 146), // main
+    rgb(133, 136, 163), // sub 
+    rgb(53, 54, 76), // text 
+    rgb(198, 77, 123), // error
+    rgb(147, 57, 91) // error_extra
 };
 // Window Variables
 int gameScreenWidth = 1920, gameScreenHeight = 1080;
@@ -116,7 +116,7 @@ int display_wpm;
 float max_wpm = 0, cur_wpm = 0;
 float restart_alpha = 0;
 // UI DIMENSIONS 
-float wpm_width = 300;  // width of wpm text 
+float wpm_width = 350;  // width of wpm text 
 float graph_width = 1300;
 float graph_top = 200;
 float graph_height = 600;
@@ -189,13 +189,13 @@ void end_test()
     // character status can get too wide 
     string char_status = TextFormat("%d/%d/%d/%d", correct, incorrect, missing, extra);
 
-    end_stats->init({ {"wpm", 50}, {"acc", 50}, {"raw", 25}, {"characters", 25}, {"consistency", 25}, {"test type", 25}},
+    end_stats->init({ {"wpm", 50}, {"acc", 50}, {"raw", 25}, {"consistency", 25}, {"characters", 25}, {"test type", 25}},
                     {
                         {t_s(final_wpm), 100},
                         {TextFormat("%d%%", final_accuracy), 100},
                         {t_s(final_raw_wpm), 50},
-                        {char_status, min(50.f, MeasureFontSize(char_status, wpm_width - 50))},
                         {TextFormat("%d%%", consistency), 50},
+                        {char_status, min(50.f, MeasureFontSize(char_status, wpm_width - 50))},
                         {"time " + t_s(test_info.time) + "\n" + text_gen.list, 25}
                     });
 }
@@ -363,23 +363,23 @@ void draw_test()
             info_x = drawer.padding + text_width + 2 * clock_r; 
         
         // DRAW TIME
-        DrawTextAlign(time_text, info_x, info_y, drawer.font_size, theme.text, RIGHT, CENTER);
+        DrawTextAlign(time_text, info_x, info_y, drawer.font_size, theme.main, RIGHT, CENTER);
 
         // DRAW TIME CLOCK
-        DrawCircleSector(info_x - text_width - clock_r, info_y, clock_r * 0.86f, 180 - (elapsed / test_info.time) * 360, 180, theme.text);
-        DrawRing(info_x - text_width - clock_r, info_y, clock_r, clock_r * 0.85f, theme.text);
+        DrawCircleSector(info_x - text_width - clock_r, info_y, clock_r * 0.86f, 180 - (elapsed / test_info.time) * 360, 180, theme.main);
+        DrawRing(info_x - text_width - clock_r, info_y, clock_r, clock_r * 0.85f, theme.main);
 
         // DRAW DASHBOARD 
         float dash_x = info_x + char_dimension[' '].x + clock_r;  // center x of dashboard
-        DrawRing(dash_x, info_y, clock_r, clock_r * 0.85f, 45, 315, theme.text);
-        DrawCircle(dash_x, info_y, clock_r * 0.2f, theme.text);
+        DrawRing(dash_x, info_y, clock_r, clock_r * 0.85f, 45, 315, theme.main);
+        DrawCircle(dash_x, info_y, clock_r * 0.2f, theme.main);
         float dash_percent = (cur_wpm / (1.1f * max_wpm + 10));
         const float gap_a = 45;  // 2 * gap_a  = dashboard gap
         float angle = (90 + gap_a) + ((450 - gap_a) - (90 + gap_a)) * dash_percent;
-        DrawLineEx({ dash_x - clock_r * 0.4f * cosa(angle), info_y - clock_r * 0.4f * sina(angle) }, { dash_x + clock_r * cosa(angle), info_y + clock_r * sina(angle) }, 2, theme.text);
+        DrawLineEx({ dash_x - clock_r * 0.4f * cosa(angle), info_y - clock_r * 0.4f * sina(angle) }, { dash_x + clock_r * cosa(angle), info_y + clock_r * sina(angle) }, 2, theme.main);
         // DRAW WPM
         string wpm_text = TextFormat("% 3d", display_wpm);
-        DrawTextAlign(wpm_text, dash_x + clock_r, info_y, drawer.font_size, theme.text, LEFT, CENTER);
+        DrawTextAlign(wpm_text, dash_x + clock_r, info_y, drawer.font_size, theme.main, LEFT, CENTER);
     }
     // DRAW TYPING TEST TEXT
     drawer.draw();
@@ -524,8 +524,11 @@ int main(void)
         // Draw everything in the render texture, note this will not be rendered on screen, yet
         BeginTextureMode(target);
         ClearBackground(theme.background);  // Clear render texture background color
-        int max_fps = 1000.0 / frame_time;
-        DrawText(TextFormat("MAX FPS: %d | ELAPSED TIME: %.2f", max_fps, frame_time), 0, gameScreenHeight - 30, 25, BLACK);
+        if (debug_mode->get_selected() == "on")
+        {
+            int max_fps = 1000.0 / frame_time;
+            DrawText(TextFormat("MAX FPS: %d | ELAPSED TIME: %.2f", max_fps, frame_time), 0, gameScreenHeight - 30, 25, BLACK);
+        }
         if (scene == START)
         {
             draw_start();

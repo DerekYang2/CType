@@ -40,7 +40,7 @@ void SettingBar::update()
 
 void SettingBar::draw()
 {
-    Color col = multiply_rgb(theme.background, 0.7f);
+    Color col = multiply_rgb(theme.background, 0.9f);
     float padding = 2 * space_width;  // also equal to y padding
     float x_pad = padding - space_width; // x already has some padding
     DrawRectangleRoundedAlign(cx, cy, tot_width + 2 * x_pad, h + 2 * padding, 0.4f, h/5, col, CENTER, CENTER); 

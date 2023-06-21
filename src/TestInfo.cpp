@@ -58,7 +58,7 @@ float TestInfo::variation()
     }
     float cov_raw = get_cov(raw_wpm_record);
     float cov_worst = get_cov(sample_worst);
-    cout << cov_raw << " " << cov_worst << endl;
+    // cout << cov_raw << " " << cov_worst << endl;
     /**
      * technically cov(raw_wpm)/cov(worst case sample)
      * worst case sample of half 0, half max wpm gives cov of 1, so return cov(raw_wpm)/1 

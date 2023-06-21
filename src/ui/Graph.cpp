@@ -298,22 +298,14 @@ void Graph::draw_hint()
     
     float text_max_w = max({ MeasureTextEx("wpm  " + wpm_str, hint_fs).x, MeasureTextEx("instant  " + instant_str, hint_fs).x, MeasureTextEx("errors  " + error_str, hint_fs).x });
     float padding = 0.25f * MeasureTextEx("I", hint_fs).y;
-    float box_height = 5 * padding + time_h + normal_h + instant_h + error_h;
+    float box_height = 6 * padding + time_h + normal_h + instant_h + error_h; // 1 + 1 + 1 + 1 + 2
+    float square_len = MeasureTextEx("1", hint_fs).y;
+    float space_w = MeasureTextEx(" ", hint_fs).x;
+
     Vector2 hint_offset;
     float offset_amt = 2 * padding;
-    Rectangle hint_box = { 0, 0, text_max_w + 4 * padding, box_height};
-    if (mouse.x + hint_box.width + offset_amt < rect.x + rect.width)  // if box left align fits
-    {
-        hint_offset = { offset_amt, offset_amt };
-        if (normal_y - 1.1f * hint_box.height + hint_offset.y < rect.y) // top-left corner
-        {
-            hint_box.x = mouse.x + hint_offset.x, hint_box.y = normal_y + hint_offset.y;
-        } else // bottom_left corner
-        {
-            hint_offset = { offset_amt, -offset_amt };
-            hint_box.x = mouse.x + hint_offset.x, hint_box.y = normal_y - hint_box.height + hint_offset.y;
-        }
-    } else 
+    Rectangle hint_box = { 0, 0, text_max_w + 4 * padding + square_len + space_w, box_height};
+    if (mouse.x - hint_box.width - offset_amt >= rect.x)  // if box right align fits
     {
         hint_offset = { -offset_amt, offset_amt };
         if (normal_y - 1.1f * hint_box.height + hint_offset.y < rect.y) // top-right corner
@@ -324,22 +316,36 @@ void Graph::draw_hint()
             hint_offset = { -offset_amt, -offset_amt };
             hint_box.x = mouse.x - hint_box.width + hint_offset.x, hint_box.y = normal_y - hint_box.height + hint_offset.y;
         }
+    } else
+    {
+        hint_offset = { offset_amt, offset_amt };
+        if (normal_y - 1.1f * hint_box.height + hint_offset.y < rect.y) // top-left corner
+        {
+            hint_box.x = mouse.x + hint_offset.x, hint_box.y = normal_y + hint_offset.y;
+        } else // bottom_left corner
+        {
+            hint_offset = { offset_amt, -offset_amt };
+            hint_box.x = mouse.x + hint_offset.x, hint_box.y = normal_y - hint_box.height + hint_offset.y;
+        }
     }
 
     DrawRectangleRounded(hint_box, 0.1f, 7, rgba(0, 0, 0, 0.95f));
     float ypos = padding;
-    DrawTextAlign(time_str, hint_box.x + 2*padding, hint_box.y + ypos, hint_fs, WHITE), ypos += time_h;
+    DrawTextAlign(time_str, hint_box.x + 2 * padding, hint_box.y + ypos, hint_fs, WHITE), ypos += time_h;
     ypos += padding;
 
-    DrawTextAlign("wpm", hint_box.x + 2*padding, hint_box.y + ypos, hint_fs, WHITE);
+    DrawRectangle(hint_box.x + 2 * padding, hint_box.y + ypos, square_len, square_len, theme.main);
+    DrawTextAlign("wpm", hint_box.x + 2 * padding + square_len + space_w, hint_box.y + ypos, hint_fs, WHITE);
     DrawTextAlign(wpm_str, hint_box.x + hint_box.width - 2 * padding, hint_box.y + ypos, hint_fs, WHITE, RIGHT);
     ypos += normal_h + padding;
-
-    DrawTextAlign("instant", hint_box.x + 2*padding, hint_box.y + ypos, hint_fs, WHITE);
+    
+    DrawRectangle(hint_box.x + 2 * padding, hint_box.y + ypos, square_len, square_len, theme.sub);
+    DrawTextAlign("instant", hint_box.x + 2*padding + square_len + space_w, hint_box.y + ypos, hint_fs, WHITE);
     DrawTextAlign(instant_str, hint_box.x + hint_box.width - 2 * padding, hint_box.y + ypos, hint_fs, WHITE, RIGHT);
     ypos += instant_h + padding;
-
-    DrawTextAlign("errors", hint_box.x + 2*padding, hint_box.y + ypos, hint_fs, WHITE);
+    
+    DrawRectangle(hint_box.x + 2 * padding, hint_box.y + ypos, square_len, square_len, theme.error);
+    DrawTextAlign("errors", hint_box.x + 2*padding + square_len + space_w, hint_box.y + ypos, hint_fs, WHITE);
     DrawTextAlign(error_str, hint_box.x + hint_box.width - 2 * padding, hint_box.y + ypos, hint_fs, WHITE, RIGHT);
     // Draw rectangle 
     //DrawRectangleRoundedAlign()
