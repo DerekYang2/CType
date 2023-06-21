@@ -97,7 +97,8 @@ TogglePanel* behavior_panel;
 CreateSettingToggles;
 
 // END init extern variables ----------------------------------------------------------------
-
+string cursor_path = "arrow_cursor";
+float cursor_height = 22.f;
 // render textures
 RenderTexture2D target;
 
@@ -234,21 +235,24 @@ void update_mouse()
             if (!mouse_focus)  // refocus mouse
             {
                 mouse_focus = true;
-                ShowCursor();
+                //ShowCursor();
+                cursor_path = "arrow_cursor";
             }
             mouse_frames = 5 * 60;
         }
         if (mouse_focus && mouse_frames <= 0)  // unfocus mouse
         {
             mouse_focus = false;
-            HideCursor();
+            //HideCursor();
+            cursor_path = "";
         }
     } else if (scene == START || scene == SETTINGS)
     {
         if (!mouse_focus)
         {
             mouse_focus = true;
-            ShowCursor();
+            //ShowCursor();
+            cursor_path = "arrow_cursor";
         }
     }
 }
@@ -424,6 +428,14 @@ void draw_end()
     
     //EndShaderMode();
 }
+ 
+void draw_cursor()
+{
+    if (cursor_path.empty() || !IsCursorOnScreen()) return;
+    Texture cursor = textureOf[cursor_path];
+    float scale = cursor_height / max(cursor.width, cursor.height);
+    DrawTextureEx(cursor, GetMousePosition(), 0, scale, theme.main);
+}
 //NOTE: C:/Windows/Fonts/segoeui.ttf - SEGOE UI PATH
 // Font loading function
 void load_base_font(string path = "default")
@@ -507,6 +519,7 @@ int main(void)
     init();
     init_test();
 
+    HideCursor();
     // example shader init
 /*     int textLoc = GetShaderLocation(test_shader, "texture0");
     int vecLoc = GetShaderLocation(test_shader, "resolution");
@@ -524,7 +537,7 @@ int main(void)
         frame_timer.start();
         //----------------------------------------------------------------------------------
         // Compute required framebuffer scaling
-        scale = min((float)GetScreenWidth()/gameScreenWidth, (float)GetScreenHeight()/gameScreenHeight);
+        scale = min((float)GetScreenWidth() / gameScreenWidth, (float)GetScreenHeight() / gameScreenHeight);
         update_mouse();
         // Update
         globalFrame++;
@@ -581,11 +594,9 @@ int main(void)
             ui_objects[id]->draw();
         }
         draw_rect_preview();
-
         EndShaderMode();
         EndTextureMode();
-
-        // Draw render texture onto real screen
+        // Draw render texture onto real screen ---------------------------------------------------
         BeginDrawing();
         ClearBackground(BLACK);     // Clear screen background
         //if (shader_on) BeginShaderMode(test_shader);
@@ -594,6 +605,8 @@ int main(void)
                            (Rectangle){ (GetScreenWidth() - ((float)gameScreenWidth*scale))*0.5f, (GetScreenHeight() - ((float)gameScreenHeight*scale))*0.5f,
                            (float)gameScreenWidth* scale, (float)gameScreenHeight* scale
         }, (Vector2) { 0, 0 }, 0.0f, WHITE);
+
+        draw_cursor();
         //if (shader_on) EndShaderMode();
         if (globalFrame % 30 == 0)
             frame_time = frame_timer.ms();

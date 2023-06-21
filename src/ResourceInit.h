@@ -1,9 +1,17 @@
 #pragma once
+#include "arrow_cursor.h"
 #include "keyboard.h"
 #include "settings_icon.h"
 
 #define init_raw_data \
 Image _img = {0}; \
+_img = { 0 }; \
+_img.format = ARROW_CURSOR_FORMAT; \
+_img.width = ARROW_CURSOR_WIDTH; \
+_img.height = ARROW_CURSOR_HEIGHT; \
+_img.data = ARROW_CURSOR_DATA; \
+_img.mipmaps = 1; \
+textureOf["arrow_cursor"] = LoadTextureFromImage(_img); \
 _img = { 0 }; \
 _img.format = KEYBOARD_FORMAT; \
 _img.width = KEYBOARD_WIDTH; \
