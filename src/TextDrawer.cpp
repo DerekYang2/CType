@@ -123,7 +123,7 @@ void TextDrawer::draw()
                 DrawTextEx(font, char_str.c_str(), { left_most, bottom_y - dimension.y }, font_size, font_size / spacing, col);
             if (char_status[i].first == MISSING)
             {
-                DrawLineEx({ left_most, bottom_y }, { left_most + dimension.x, bottom_y }, 2, RED);
+                DrawLineEx({ left_most, bottom_y }, { left_most + dimension.x, bottom_y }, 2, theme.error);
             }
         }
         float right_most = center + offset;
@@ -181,7 +181,7 @@ void TextDrawer::draw()
                     DrawTextAlign(char_status[i].second, x_pos, current_bottom, font_size, col, LEFT, BOTTOM);
                 if (char_status[i].first == MISSING)
                 {
-                    DrawLineEx({ x_pos, current_bottom }, { x_pos + dimension.x, current_bottom }, 2, RED);
+                    DrawLineEx({ x_pos, current_bottom }, { x_pos + dimension.x, current_bottom }, 2, theme.error);
                 }
                 if (!(char_str == " " && i == newlines[newlines.size() - 2] + 1))  // do not draw first space
                     x_pos += dimension.x;
@@ -211,7 +211,7 @@ void TextDrawer::draw()
                 DrawTextAlign(char_status[i].second, x_pos, current_bottom, font_size, col, LEFT, BOTTOM);
             if (char_status[i].first == MISSING)
             {
-                DrawLineEx({ x_pos, current_bottom }, { x_pos + dimension.x, current_bottom }, 2, RED);
+                DrawLineEx({ x_pos, current_bottom }, { x_pos + dimension.x, current_bottom }, 2, theme.error);
             }
             if (!(char_str == " " && i == newlines.back() + 1))  // do not draw if first space
                 x_pos += dimension.x;
@@ -306,9 +306,9 @@ void TextDrawer::draw()
     }
 }
 
-void TextDrawer::draw_cursor()
+void TextDrawer::draw_caret()
 {
-    DrawRectangleRounded(Rectangle(cursor_pos.x, cursor_pos.y, 3, cursor_h), 0.8f, 7, BLACK);
+    DrawRectangleRounded(Rectangle(cursor_pos.x, cursor_pos.y, 3, cursor_h), 0.8f, 7, theme.caret);
 }
 
 float TextDrawer::get_top_y()

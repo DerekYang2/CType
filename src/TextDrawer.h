@@ -22,7 +22,7 @@ struct TextDrawer {
     void set_offset(float x);
     int next_foldpoint();
     void draw();
-    void draw_cursor();
+    void draw_caret();
     float get_top_y();
 };
 

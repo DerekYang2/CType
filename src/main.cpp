@@ -40,14 +40,25 @@
 #include "RectPreview.h"
 #include "Settings.h"
 // Init extern variables ------------------------------------------------------------------
-Theme theme{
+/* Theme theme{
     rgb(232, 233, 236), // background
     rgb(78, 93, 146), // main
-    rgb(133, 136, 163), // sub 
+    rgb(53, 54, 76), // caret 
+    rgb(133, 136, 163), // sub
     rgb(53, 54, 76), // text 
     rgb(198, 77, 123), // error
     rgb(147, 57, 91) // error_extra
+}; */
+Theme theme{
+    rgb(36, 41, 51), // background
+    rgb(217, 222, 233), // main
+    rgb(217, 222, 233), // caret
+    rgb(109, 131, 158), // sub 
+    rgb(217, 222, 233), // text 
+    rgb(179, 93, 105), // error
+    rgb(117, 61, 69) // error_extra
 };
+
 // Window Variables
 int gameScreenWidth = 1920, gameScreenHeight = 1080;
 int windowWidth = gameScreenWidth, windowHeight = gameScreenHeight;
@@ -348,7 +359,7 @@ void draw_start()
     drawer.draw();
     if (io_handler.inactive_frames < inactive_time*60 || (io_handler.inactive_frames/30) & 1)  // if active or Inactive, blink half of the time
     {
-        drawer.draw_cursor();
+        drawer.draw_caret();
     }
     Color text_color = theme.main;
     text_color.a = restart_alpha * 255;
@@ -418,7 +429,7 @@ void draw_test()
     EndShaderMode();
     if (io_handler.inactive_frames < inactive_time * 60 || (io_handler.inactive_frames / 30) & 1)  // if active or Inactive, blink half of the time
     {
-        drawer.draw_cursor();
+        drawer.draw_caret();
     }
 }
 
@@ -477,7 +488,10 @@ void load_base_font(string path = "default")
 void set_rand_font()
 {
     vector<string> font_paths = directory_files("C:/Windows/Fonts", ".ttf");
-    load_base_font(font_paths[rand_int(0, font_paths.size() - 1)]);
+    string font_path = font_paths[rand_int(0, font_paths.size() - 1)];
+    //string font_path = select_file("C:/Users/derek/Documents/projects/typingtest/fonts", "ttf");
+    //cout << font_path << endl;
+    load_base_font(font_path);
 }
 
 void init()

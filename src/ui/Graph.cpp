@@ -356,7 +356,7 @@ void Graph::draw()
 {
     Color line_col = rgba(0, 0, 0, 0.3);
     DrawRectangleLinesEx(rect, 1, line_col);
-
+    float grid_font_sz = 22;
     // DRAW y-grid
     for (float y = rect.y + rect.height; y >= rect.y; y -= grid_y_gap)
     {
@@ -364,7 +364,7 @@ void Graph::draw()
             DrawLine(rect.x, y, rect.x + rect.width, y, line_col);
         // wpm
         int y_v = round(pos_to_value(y, max_v));
-        DrawTextAlign(t_s(y_v), rect.x - 10, y, 20, theme.sub, RIGHT, CENTER);
+        DrawTextAlign(t_s(y_v), rect.x - 10, y, grid_font_sz, theme.sub, RIGHT, CENTER);
     }
 
     float err_y_gap = max_err <= 9 ? (rect.height / max_err) : (rect.height / (10));
@@ -372,7 +372,7 @@ void Graph::draw()
     {
          // errors
         int y_v = pos_to_value(y, max_err);
-        DrawTextAlign(t_s(y_v), rect.x + rect.width + 10, y, 20, theme.sub, LEFT, CENTER);
+        DrawTextAlign(t_s(y_v), rect.x + rect.width + 10, y, grid_font_sz, theme.sub, LEFT, CENTER);
     }
     // Draw x-axis
     int sec_gap = round(time / 15);
@@ -383,7 +383,7 @@ void Graph::draw()
     {
         if (x > rect.x && x < rect.x + rect.width)  // no need to redraw
             DrawLine(x, rect.y, x, rect.y + rect.height, line_col);
-        DrawTextAlign(t_s(sec), x, rect.y + rect.height + 10, 20, theme.sub, CENTER, TOP);
+        DrawTextAlign(t_s(sec), x, rect.y + rect.height + 10, grid_font_sz, theme.sub, CENTER, TOP);
         sec += sec_gap;
     }    
     

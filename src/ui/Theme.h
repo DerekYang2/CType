@@ -9,6 +9,7 @@ struct Theme {
     Color
         background,
         main,
+        caret,
         sub,
         text,
         error,
