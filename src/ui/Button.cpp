@@ -39,7 +39,7 @@ void Button::setPos(float x, float y)
 void Button::update()
 {
     hover = CheckCollisionPointRec(mouse, hitbox);
-    if (hover) cursor_path = "link_cursor";
+    if (hover) SetMouseCursor(MOUSE_CURSOR_POINTING_HAND); //cursor_path = "link_cursor";
     if (hover && IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && pressWatch.s() > delay)
     {
         pressWatch.start();

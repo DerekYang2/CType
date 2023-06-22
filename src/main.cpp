@@ -246,24 +246,24 @@ void update_mouse()
             if (!mouse_focus)  // refocus mouse
             {
                 mouse_focus = true;
-                //ShowCursor();
-                cursor_path = "arrow_cursor";
+                ShowCursor();
+                //cursor_path = "arrow_cursor";
             }
             mouse_frames = 5 * 60;
         }
         if (mouse_focus && mouse_frames <= 0)  // unfocus mouse
         {
             mouse_focus = false;
-            //HideCursor();
-            cursor_path = "";
+            HideCursor();
+            //cursor_path = "";
         }
     } else if (scene == START || scene == SETTINGS)
     {
         if (!mouse_focus)
         {
             mouse_focus = true;
-            //ShowCursor();
-            cursor_path = "arrow_cursor";
+            ShowCursor();
+            //cursor_path = "arrow_cursor";
         }
     }
 }
@@ -551,7 +551,7 @@ int main(void)
     init();
     init_test();
 
-    HideCursor();
+    // HideCursor();  // only hide for custom cursor
     // example shader init
 /*     int textLoc = GetShaderLocation(test_shader, "texture0");
     int vecLoc = GetShaderLocation(test_shader, "resolution");
@@ -571,6 +571,8 @@ int main(void)
         // Compute required framebuffer scaling
         scale = min((float)GetScreenWidth() / gameScreenWidth, (float)GetScreenHeight() / gameScreenHeight);
         update_mouse();
+        SetMouseCursor(MOUSE_CURSOR_DEFAULT);
+
         // Update
         globalFrame++;
         update_rect_preview();
@@ -638,7 +640,7 @@ int main(void)
                            (float)gameScreenWidth* scale, (float)gameScreenHeight* scale
         }, (Vector2) { 0, 0 }, 0.0f, WHITE);
 
-        draw_cursor();
+        //draw_cursor(); // custom cursors
         //if (shader_on) EndShaderMode();
         if (globalFrame % 30 == 0)
             frame_time = frame_timer.ms();
