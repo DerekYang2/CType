@@ -120,7 +120,10 @@ void ToggleGroup::update()
         if (i != hover_idx)
             hover[i] = false;
     if (hover_idx != -1)
+    {
         hover[hover_idx] = true;
+        cursor_path = "link_cursor";
+    }
 
     for (int i = 0; i < hitbox.size(); i++)
     {

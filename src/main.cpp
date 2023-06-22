@@ -434,7 +434,13 @@ void draw_cursor()
     if (cursor_path.empty() || !IsCursorOnScreen()) return;
     Texture cursor = textureOf[cursor_path];
     float scale = cursor_height / max(cursor.width, cursor.height);
-    DrawTextureEx(cursor, GetMousePosition(), 0, scale, theme.main);
+    bool centered = (cursor_path == "link_cursor");
+    float offset = centered ? cursor.width * scale * 0.5f : 0;
+    Vector2 abs_mouse = GetMousePosition();
+    abs_mouse.x -= offset;
+    DrawTextureEx(cursor, abs_mouse, 0, scale, theme.main);
+    
+    cursor_path = "arrow_cursor";  // set back to default
 }
 //NOTE: C:/Windows/Fonts/segoeui.ttf - SEGOE UI PATH
 // Font loading function

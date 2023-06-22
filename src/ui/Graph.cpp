@@ -257,6 +257,7 @@ void Graph::update()
     error_index = -1;  // reset to nothing
     if (show_hint)
     {
+        cursor_path = "link_cursor";
         if (errors.empty())
         {
             errors_hint = 0;

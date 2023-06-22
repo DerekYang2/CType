@@ -1,6 +1,7 @@
 #pragma once
 #include "arrow_cursor.h"
 #include "keyboard.h"
+#include "link_cursor.h"
 #include "settings_icon.h"
 
 #define init_raw_data \
@@ -19,6 +20,13 @@ _img.height = KEYBOARD_HEIGHT; \
 _img.data = KEYBOARD_DATA; \
 _img.mipmaps = 1; \
 textureOf["keyboard"] = LoadTextureFromImage(_img); \
+_img = { 0 }; \
+_img.format = LINK_CURSOR_FORMAT; \
+_img.width = LINK_CURSOR_WIDTH; \
+_img.height = LINK_CURSOR_HEIGHT; \
+_img.data = LINK_CURSOR_DATA; \
+_img.mipmaps = 1; \
+textureOf["link_cursor"] = LoadTextureFromImage(_img); \
 _img = { 0 }; \
 _img.format = SETTINGS_ICON_FORMAT; \
 _img.width = SETTINGS_ICON_WIDTH; \
