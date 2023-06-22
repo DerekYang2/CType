@@ -8,6 +8,7 @@ extern void switch_start();
 
 // variables
 extern TogglePanel* behavior_panel;
+extern ToggleGroup* taskbar;
 
 #define CreateSettingToggles ToggleGroup *show_wpm, *strict_space, *tape_mode, *debug_mode
 

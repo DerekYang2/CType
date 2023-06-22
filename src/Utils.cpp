@@ -546,3 +546,12 @@ Font load_font(string path)
     SetTextureFilter(ret_font.texture, TEXTURE_FILTER_BILINEAR);    // Required for SDF font  
     return ret_font;
 }
+
+vector<string> directory_files(string directory_path, string extension)
+{
+    FilePathList dir_files = LoadDirectoryFilesEx(directory_path.c_str(), extension.c_str(), false);
+    vector<string> file_paths;
+    for (int i = 0; i < dir_files.count; i++)
+        file_paths.push_back(string(dir_files.paths[i]));
+    return file_paths;
+}

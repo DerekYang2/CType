@@ -49,6 +49,7 @@ extern bool starts_with(std::string str, std::string prefix);
 extern string add_prefix(string name, string prefix);
 extern string remove_prefix(string name, string prefix);
 extern Font load_font(string path);
+extern vector<string> directory_files(string directory_path, string extension);
 
 #define rand_int(min, max) (uniform_int_distribution<>(min, max)(rng))
 #define randf(min, max) (uniform_real_distribution<>(min, max)(rng))

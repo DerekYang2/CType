@@ -122,7 +122,7 @@ float restart_alpha = 0;
 float wpm_width = 350;  // width of wpm text 
 float graph_width = 1300;
 float graph_top = 200;
-float graph_height = 600;
+float graph_height = 600 ;
 int mouse_frames;
 float scale;
 
@@ -354,6 +354,9 @@ void draw_start()
     text_color.a = restart_alpha * 255;
     DrawTextAlign("Restarted", gameScreenWidth/2, 450, 30, text_color, CENTER);
     EndShaderMode();
+    Rectangle taskbar_rect = taskbar->bounding_box();
+    taskbar_rect.height *= 2;  // goes of screen
+    DrawRectangleRounded(taskbar_rect, 0.2f, 10, darkenColor(theme.background, 0.1f));
 }
 
 /* deque<float> stored_wpm;
@@ -471,11 +474,19 @@ void load_base_font(string path = "default")
     font_spacing = 12;  // Default Font 
 }
 
+void set_rand_font()
+{
+    vector<string> font_paths = directory_files("C:/Windows/Fonts", ".ttf");
+    load_base_font(font_paths[rand_int(0, font_paths.size() - 1)]);
+}
+
 void init()
 {
     load_sdf_shader();
     //test_shader = LoadShader(0, "./fonts/test2.frag");
     load_base_font("default");
+    //set_rand_font();
+
     init_raw_data;
     for (auto& [key, texture] : textureOf)
     {
@@ -491,22 +502,23 @@ void init()
     ui_objects.alloc(setting_bar, START);
 
     
-    taskbar = new ToggleGroup(gameScreenWidth/2, 800, 75, 0, { "keyboard", "settings_icon" }, { "default test", "settings" }, true);
+    taskbar = new ToggleGroup(gameScreenWidth/2, gameScreenHeight - 75, 75, 0, { "keyboard", "settings_icon" }, { "default test", "settings" }, true);
     ui_objects.alloc(taskbar, {START, SETTINGS});
     
     // ENDING UI ---------------------------------------------------------------
     new_Button(END, 100, 900, 300, 100, "restart", [] { switch_start(); });
     graph = new Graph(wpm_width + (gameScreenWidth - (graph_width + wpm_width)) * 0.5f, graph_top, graph_width, graph_height, 4), ui_objects.alloc(graph, END);
-    end_stats = new TextPanelV(0.5f * (gameScreenWidth - (wpm_width + graph_width)), graph_top, wpm_width, graph_height), ui_objects.alloc(end_stats, END);
+    end_stats = new TextPanelV(0.5f * (gameScreenWidth - (wpm_width + graph_width)), graph_top, wpm_width, graph_height + 20), ui_objects.alloc(end_stats, END);
     init_settings();
 }
+
 
 //------------------------------------------------------------------------------------
 // Program main entry point
 //------------------------------------------------------------------------------------
 int main(void)
 {
-
+    
     /**
      * TECHNICAL INITIALIZATION
     */

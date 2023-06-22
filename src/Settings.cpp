@@ -38,5 +38,7 @@ void update_settings()
 
 void draw_settings()
 {
-    DrawText("SETTINGS", 0, 0, 20, BLACK);
+    Rectangle taskbar_rect = taskbar->bounding_box();
+    taskbar_rect.height *= 2;  // goes of screen
+    DrawRectangleRounded(taskbar_rect, 0.2f, 10, darkenColor(theme.background, 0.1f));
 }

@@ -55,7 +55,7 @@ ToggleGroup::ToggleGroup(float x, float y, float h, int init_idx, vector<string>
     for (string& texture_path : texture_paths)
     {
         textures.push_back(&textureOf[texture_path]);
-        img_scales.push_back(h * 0.8f / max(textures.back()->height, textures.back()->width));
+        img_scales.push_back(h * 0.7f / max(textures.back()->height, textures.back()->width));
         hitbox.push_back({ x_pos, y, h, h });
         x_pos += h;
     }
@@ -200,6 +200,11 @@ void ToggleGroup::set_selected(string str)
             pressed = true;
         }
     }
+}
+
+Rectangle ToggleGroup::bounding_box()
+{
+    return Rectangle(corner.x, corner.y, tot_width, hitbox[0].height);
 }
 
 float ToggleGroup::width()
