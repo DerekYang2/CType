@@ -6,7 +6,7 @@ struct TextDrawer {
     // non-tape mode variables
     deque<int> newlines;  // newline indices
     Vector2 cursor_pos;   // for moving cursor
-    
+    Vector2 cursor_target;  // used for smooth cursor
     Font font;
     int font_size;
     float spacing;

@@ -190,7 +190,7 @@ void end_test()
                         {TextFormat("%d%%", final_accuracy), 100},
                         {t_s(final_raw_wpm), 50},
                         {TextFormat("%d%%", consistency), 50},
-                        {char_status, min(50.f, MeasureFontSize(char_status, wpm_width - 50))},
+                        {char_status, min(50.f, MeasureFontSize(char_status, wpm_width - 65))},
                         {"time " + t_s(test_info.time) + "\n" + text_gen.list, 25}
                     });
 }
@@ -442,6 +442,11 @@ void draw_cursor()
     
     cursor_path = "arrow_cursor";  // set back to default
 }
+
+void draw_logo()
+{
+    DrawTextureEx(textureOf["logo"], {25, 25}, 0, 50.f / textureOf["logo"].height, theme.main);
+}
 //NOTE: C:/Windows/Fonts/segoeui.ttf - SEGOE UI PATH
 // Font loading function
 void load_base_font(string path = "default")
@@ -478,6 +483,19 @@ void set_rand_font()
     //string font_path = select_file("C:/Users/derek/Documents/projects/typingtest/fonts", "ttf");
     //cout << font_path << endl;
     load_base_font(font_path);
+}
+
+void set_icon()
+{
+    Image icon_img = { 0 }; 
+    icon_img.format = LOGO_ICON_FORMAT; 
+    icon_img.width = LOGO_ICON_WIDTH; 
+    icon_img.height = LOGO_ICON_HEIGHT; 
+    icon_img.data = LOGO_ICON_DATA; 
+    icon_img.mipmaps = 1;
+    Image imCopy = ImageCopy(icon_img);
+    ImageColorTint(&imCopy, theme.main);
+    SetWindowIcon(imCopy);
 }
 
 void init()
@@ -524,9 +542,10 @@ int main(void)
     */
     // Enable config flags for resizable window and vertical synchro
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-    InitWindow(windowWidth, windowHeight, "Typing Test");
+    InitWindow(windowWidth, windowHeight, "CType");
     MaximizeWindow();
     SetWindowMinSize(320, 240);
+    set_icon();
     // Render texture initialization, used to hold the rendering result so we can easily resize it
     target = LoadRenderTexture(gameScreenWidth, gameScreenHeight);
     SetTextureFilter(target.texture, TEXTURE_FILTER_BILINEAR);  // Texture scale filter to use
@@ -619,6 +638,7 @@ int main(void)
         }
         draw_rect_preview();
         EndShaderMode();
+        draw_logo();
         EndTextureMode();
         // Draw render texture onto real screen ---------------------------------------------------
         BeginDrawing();

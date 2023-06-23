@@ -409,9 +409,42 @@ void DrawRectangleRoundedAlign(Rectangle r, float roundness, int segments, Color
     DrawRectangleRounded({r.x + x_offset, r.y + y_offset, r.width, r.height}, roundness, segments, col);
 }
 
+
 void DrawRectangleRoundedAlign(float x, float y, float width, float height, float roundness, int segments, Color col, int x_align, int y_align)
 {
     return DrawRectangleRoundedAlign({ x, y, width, height }, roundness, segments, col, x_align, y_align);
+}
+
+void DrawRectangleRoundedLinesAlign(Rectangle r, float roundness, int segments, float lineThick, Color col, int x_align, int y_align)
+{
+    float x_offset = 0;
+    float y_offset = 0;
+
+    // Handle x-alignment
+    if (x_align == CENTER)
+    {
+        x_offset = -r.width / 2;
+    }
+    else if (x_align == RIGHT)
+    {
+        x_offset = -r.width;
+    }
+
+    // Handle y-alignment
+    if (y_align == CENTER)
+    {
+        y_offset = -r.height / 2;
+    }
+    else if (y_align == BOTTOM)
+    {
+        y_offset = -r.height;
+    }
+    DrawRectangleRoundedLines({r.x + x_offset, r.y + y_offset, r.width, r.height}, roundness, segments, lineThick, col);
+}
+
+void DrawRectangleRoundedLinesAlign(float x, float y, float width, float height, float roundness, int segments, float lineThick, Color col, int x_align, int y_align)
+{
+    return DrawRectangleRoundedLinesAlign({ x, y, width, height }, roundness, segments, lineThick, col, x_align, y_align);
 }
 
 void DrawCircleSector(float x, float y, float r, float start_angle, float end_angle, Color col)
@@ -465,7 +498,7 @@ vector<string> split_string(string str, char delimiter) {
     return result;
 }
 
-string fileText(string file_path)
+string readFile(string file_path)
 {
     if (!FileExists(file_path.c_str())) return "";
     char* charText = LoadFileText(file_path.c_str());
@@ -479,7 +512,9 @@ void writeText(string file_path, string str)
 {
     try
     {
-        ofstream ofs(file_path);
+        ofstream ofs;
+        ofs.open(file_path, ofstream::out | ofstream::trunc);  //header file
+
         if (!ofs.is_open())
         {
             std::cout << "Failed to open file: " << file_path << std::endl;

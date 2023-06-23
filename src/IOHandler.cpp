@@ -67,8 +67,14 @@ void IOHandler::update()
     // update offset 
     float wpm = 0.8f * max(80.f, wpm_logger.raw_wpm());
     float secperchar = 1.0 / (wpm * 5 / 60);  // predicted seconds to type a char
-    vel_target = offset_x / max(1.f, (secperchar * 60));  // cannot divide by anything smaller than 1
-    offset_vel += (vel_target - offset_vel) * 0.3f;
+    if (offset_x >= 0)
+        vel_target = offset_x / max(1.f, (secperchar * 60));  // cannot divide by anything smaller than 1
+    else
+        vel_target = offset_x / max(1.f, (secperchar * 20));  // backspace is stronger
+
+    float accel_factor = 0.3f;
+    offset_vel += (vel_target - offset_vel) * accel_factor;
+    
     offset_x -= offset_vel;
     drawer.set_offset(offset_x);
 }

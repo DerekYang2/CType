@@ -38,6 +38,8 @@ extern void DrawRectangleAlign(Rectangle r, Color col, int x_align = LEFT, int y
 extern void DrawRectangleAlign(float x, float y, float width, float height, Color col, int x_align = LEFT, int y_align = TOP);
 extern void DrawRectangleRoundedAlign(Rectangle r, float roundness, int segments, Color col, int x_align, int y_align);
 extern void DrawRectangleRoundedAlign(float x, float y, float width, float height, float roundness, int segments, Color col, int x_align, int y_align);
+extern void DrawRectangleRoundedLinesAlign(Rectangle r, float roundness, int segments, float lineThick, Color col, int x_align, int y_align);
+extern void DrawRectangleRoundedLinesAlign(float x, float y, float width, float height, float roundness, int segments, float lineThick, Color col, int x_align, int y_align);
 extern void DrawCircleSector(float x, float y, float r, float start_angle, float end_angle, Color col);
 extern void DrawRing(float cx, float cy, float innerRadius, float outerRadius, Color color); // Draw ring
 extern void DrawRing(float cx, float cy, float innerRadius, float outerRadius, float startAngle, float endAngle, Color color); // Draw ring
@@ -57,5 +59,5 @@ extern vector<string> directory_files(string directory_path, string extension);
 #define rand() (uniform_real_distribution<double>(0.0, 1.0)(rng))
 
 extern vector<string> split_string(string str, char delimiter);
-extern string fileText(string file_path);
+extern string readFile(string file_path);
 extern void writeText(string file_path, string str);

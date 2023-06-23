@@ -164,6 +164,7 @@ void ToggleGroup::draw()
             x_pos += texture->width * img_scale;
         }
 
+        const float stroke_w = 2.f;
         for (int i = 0; i < hitbox.size(); i++)
         {
             if (show_rect)
@@ -171,7 +172,9 @@ void ToggleGroup::draw()
                 Color col = (hover[i] || i == selected) ? theme.main : theme.sub;
                 if (i == selected && pressWatch.s() < TOGGLE_DELAY)
                     col = theme.sub;  // blink off when click
-                DrawRectangleRoundedAlign({ x_pos, hitbox[i].y + hitbox[i].height * 0.5f, hitbox[i].width, hitbox[i].height + MeasureTextEx(" ", font_size).x }, 0.3f, 3, theme.background_shade, LEFT, CENTER);
+                DrawRectangleRoundedAlign(x_pos, hitbox[i].y + hitbox[i].height * 0.5f, hitbox[i].width, hitbox[i].height + MeasureTextEx(" ", font_size).x , 0.3f, 3, theme.background_shade, LEFT, CENTER);
+                if (i == selected)
+                    DrawRectangleRoundedLinesAlign(x_pos, hitbox[i].y + hitbox[i].height * 0.5f, hitbox[i].width, hitbox[i].height + MeasureTextEx(" ", font_size).x , 0.3f, 3, stroke_w, theme.main, LEFT, CENTER);
                 DrawTextAlign(text[i], x_pos, hitbox[i].y + hitbox[i].height * 0.5f, font_size, col, LEFT, CENTER);
                 x_pos += hitbox[i].width;
             } else

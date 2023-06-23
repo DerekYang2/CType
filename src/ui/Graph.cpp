@@ -381,14 +381,13 @@ void Graph::draw()
     if (sec_gap < 1) sec_gap = 1;
     float x_gap = rect.width * (sec_gap / (time-1));  // theere are time-1 seconds in plot because plot starts at 1 second
     int sec = 1;
-    for (float x = rect.x; x <= rect.x + rect.width; x += x_gap)
+    for (float x = rect.x; x <= 1.01f * (rect.x + rect.width); x += x_gap)
     {
         if (x > rect.x && x < rect.x + rect.width)  // no need to redraw
             DrawLine(x, rect.y, x, rect.y + rect.height, line_col);
         DrawTextAlign(t_s(sec), x, rect.y + rect.height + 10, grid_font_sz, theme.sub, CENTER, TOP);
         sec += sec_gap;
     }    
-    
     // RAW curve polygon
     for (vector<Vector2>& segment : draw_segments)
         DrawTriangleFan(&segment[0], segment.size(), rgba(0, 0, 0, 0.15));

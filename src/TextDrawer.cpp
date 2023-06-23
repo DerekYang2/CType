@@ -16,7 +16,7 @@ TextDrawer::TextDrawer(string font_path, float fontSize, float font_spacing)
         string str(1, c);
         char_dimension[c] = MeasureTextEx(font, str.c_str(), font_size, font_size / spacing);
     }
-
+    cursor_pos = { -1, -1 };
     center = gameScreenWidth / 2;
     cursor_h = char_dimension['I'].y;
     bottom_y = (gameScreenHeight + cursor_h) / 2;
@@ -40,7 +40,7 @@ TextDrawer::TextDrawer(Font draw_font, float fontSize, float spacing)
         string str(1, c);
         char_dimension[c] = MeasureTextEx(font, str.c_str(), font_size, font_size / spacing);
     }
-
+    cursor_pos = { -1, -1 };
     center = gameScreenWidth / 2;
     cursor_h = char_dimension['I'].y;
     bottom_y = (gameScreenHeight + cursor_h) / 2;
@@ -139,7 +139,7 @@ void TextDrawer::draw()
                 DrawTextEx(font, char_str.c_str(), { right_most, bottom_y - dimension.y }, font_size, font_size / spacing, col);
             right_most += dimension.x;
         }
-        cursor_pos = { center, bottom_y - cursor_h };
+        cursor_pos = cursor_target = { center, bottom_y - cursor_h };
 
     } else
     {
@@ -216,8 +216,13 @@ void TextDrawer::draw()
             if (!(char_str == " " && i == newlines.back() + 1))  // do not draw if first space
                 x_pos += dimension.x;
         }
-        cursor_pos = {x_pos, current_bottom - cursor_h};
-
+        cursor_target = { x_pos, current_bottom - cursor_h };
+        float accel_factor = 0.3f;
+        if (cursor_pos.x == -1)  // not init yet 
+            cursor_pos = cursor_target;
+        else
+            cursor_pos += accel_factor * (cursor_target - cursor_pos);
+            
         int foldpoint_relative = empty_i + foldpoint - ((int)char_status.size());
         // Draw remaining current row
         for (int i = empty_i; i < foldpoint_relative; i++)

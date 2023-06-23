@@ -17,7 +17,7 @@ TogglePanel::TogglePanel(float x, float y, float w, vector<ToggleGroup*> toggles
         text_height.push_back({ MeasureTextEx(label, font_size).y, MeasureTextEx(fold_detail, font_size).y });
         float tot_h = text_height.back().first + text_height.back().second;
         cur_y += gap;
-        toggles[idx]->set_pos(x + width - toggles[idx]->width(), cur_y + (tot_h - toggles[idx]->height()) * 0.5f);  // center
+        toggles[idx]->set_pos(x + width - toggles[idx]->width(), cur_y + (tot_h - toggles[idx]->height()) * 0.5f);  // right align x, center y
         cur_y += tot_h + gap;
         idx++;
     }
@@ -75,6 +75,5 @@ string TogglePanel::fold(string str, float max_width)
     }
     // final line
     fold_str += substrE(str, start_pos, str.length());
-    cout << fold_str << endl;
     return fold_str;
 }
