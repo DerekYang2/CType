@@ -14,7 +14,7 @@ SettingBar::SettingBar(float center_x, float center_y, initializer_list<Toggle*>
         tot_width += space_width;
     }
     separator_x = tot_width + 1.5f*space_width; 
-    tot_width += 2 * space_width;  // separator between toggles and group
+    tot_width += 3 * space_width;  // separator between toggles and group
     tot_width += toggle_group->width();  // last space is auto handled by toggle group
 
     // fix toggle positions 
@@ -27,7 +27,7 @@ SettingBar::SettingBar(float center_x, float center_y, initializer_list<Toggle*>
         toggle->set_pos(x_pos, cy - h / 2);
         x_pos += toggle->width() + space_width;
     }
-    x_pos += 2*space_width;
+    x_pos += 3*space_width;
     toggle_group->set_pos(x_pos, cy - h / 2);
 }
 
@@ -40,7 +40,7 @@ void SettingBar::update()
 
 void SettingBar::draw()
 {
-    Color col = darkenColor(theme.background, 0.1f);
+    Color col = theme.background_shade;
     float padding = 2 * space_width;  // also equal to y padding
     float x_pad = padding - space_width; // x already has some padding
     DrawRectangleRoundedAlign(cx, cy, tot_width + 2 * x_pad, h + 2 * padding, 0.2f, h/5, col, CENTER, CENTER); 

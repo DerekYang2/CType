@@ -19,10 +19,11 @@ class ToggleGroup : public UIObject {
     bool pressed;
     int selected;
     Stopwatch pressWatch;
+    bool show_rect;
     public:
-    ToggleGroup(float x, float y, float h, int init_idx, vector<string> text_list);
-    ToggleGroup(float x, float y, float h, int init_idx, vector<string> texture_paths, vector<string> hints, bool centered = false);
-    ToggleGroup(float x, float y, float h, int init_idx, vector<string> text_list, string init_msg, string img_path);
+    ToggleGroup(float x, float y, float h, int init_idx, vector<string> text_list, bool show_rectangle = false);
+    ToggleGroup(float x, float y, float h, int init_idx, vector<string> texture_paths, vector<string> hints, bool centered = false, bool show_rectangle = false);
+    ToggleGroup(float x, float y, float h, int init_idx, vector<string> text_list, string init_msg, string img_path, bool show_rectangle = false);
     void draw_hint() override;
     void draw() override;
     void update() override;

@@ -40,7 +40,7 @@
 #include "RectPreview.h"
 #include "Settings.h"
 // Init extern variables ------------------------------------------------------------------
-/* Theme theme{
+/* Theme theme(
     rgb(232, 233, 236), // background
     rgb(78, 93, 146), // main
     rgb(53, 54, 76), // caret 
@@ -48,7 +48,7 @@
     rgb(53, 54, 76), // text 
     rgb(198, 77, 123), // error
     rgb(147, 57, 91) // error_extra
-}; */
+);  */
 Theme theme{
     rgb(36, 41, 51), // background
     rgb(217, 222, 233), // main
@@ -58,7 +58,6 @@ Theme theme{
     rgb(179, 93, 105), // error
     rgb(117, 61, 69) // error_extra
 };
-
 // Window Variables
 int gameScreenWidth = 1920, gameScreenHeight = 1080;
 int windowWidth = gameScreenWidth, windowHeight = gameScreenHeight;
@@ -367,7 +366,7 @@ void draw_start()
     EndShaderMode();
     Rectangle taskbar_rect = taskbar->bounding_box();
     taskbar_rect.height *= 2;  // goes of screen
-    DrawRectangleRounded(taskbar_rect, 0.1f, 10, darkenColor(theme.background, 0.1f));
+    DrawRectangleRounded(taskbar_rect, 0.1f, 10, theme.background_shade);
 }
 
 /* deque<float> stored_wpm;

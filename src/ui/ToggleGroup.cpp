@@ -2,7 +2,7 @@
 
 #define TOGGLE_DELAY 0.1
 
-ToggleGroup::ToggleGroup(float x, float y, float h, int init_idx, vector<string> text_list)
+ToggleGroup::ToggleGroup(float x, float y, float h, int init_idx, vector<string> text_list, bool show_rectangle) : show_rect(show_rectangle)
 {
     corner = { x, y };
     init_message = "";
@@ -10,7 +10,7 @@ ToggleGroup::ToggleGroup(float x, float y, float h, int init_idx, vector<string>
     texture = nullptr;
     
     text = deque<string>(text_list.begin(), text_list.end());
-    text[0] = " " + text[0];
+    text[0] = text[0];
     for (int i = 0; i < text.size(); i++)
         text[i] = " " + text[i] + " ";
     
@@ -44,7 +44,7 @@ ToggleGroup::ToggleGroup(float x, float y, float h, int init_idx, vector<string>
 }
 
 // all toggle images
-ToggleGroup::ToggleGroup(float x, float y, float h, int init_idx, vector<string> texture_paths, vector<string> hints, bool centered)
+ToggleGroup::ToggleGroup(float x, float y, float h, int init_idx, vector<string> texture_paths, vector<string> hints, bool centered, bool show_rectangle) : show_rect(show_rectangle)
 {
     tot_width = h * texture_paths.size();
     corner = { x , y };
@@ -67,7 +67,7 @@ ToggleGroup::ToggleGroup(float x, float y, float h, int init_idx, vector<string>
 }
 
 // one starting image
-ToggleGroup::ToggleGroup(float x, float y, float h, int init_idx, vector<string> text_list, string init_msg, string img_path)
+ToggleGroup::ToggleGroup(float x, float y, float h, int init_idx, vector<string> text_list, string init_msg, string img_path, bool show_rectangle) : show_rect(show_rectangle)
 {
     corner = { x, y };
     init_message = init_msg + " ";
@@ -166,10 +166,21 @@ void ToggleGroup::draw()
 
         for (int i = 0; i < hitbox.size(); i++)
         {
-            Color col = (hover[i] || i == selected) ? theme.main : theme.sub;
-            if (i == selected && pressWatch.s() < TOGGLE_DELAY) col = theme.sub;  // blink off when click
-            DrawTextAlign(text[i], x_pos, hitbox[i].y + hitbox[i].height * 0.5f, font_size, col, LEFT, CENTER);
-            x_pos += hitbox[i].width;
+            if (show_rect)
+            {
+                Color col = (hover[i] || i == selected) ? theme.main : theme.sub;
+                if (i == selected && pressWatch.s() < TOGGLE_DELAY)
+                    col = theme.sub;  // blink off when click
+                DrawRectangleRoundedAlign({ x_pos, hitbox[i].y + hitbox[i].height * 0.5f, hitbox[i].width, hitbox[i].height * 1.2f }, 0.3f, 3, theme.background_shade, LEFT, CENTER);
+                DrawTextAlign(text[i], x_pos, hitbox[i].y + hitbox[i].height * 0.5f, font_size, col, LEFT, CENTER);
+                x_pos += hitbox[i].width;
+            } else
+            {
+                Color col = (hover[i] || i == selected) ? theme.main : theme.sub;
+                if (i == selected && pressWatch.s() < TOGGLE_DELAY) col = theme.sub;  // blink off when click
+                DrawTextAlign(text[i], x_pos, hitbox[i].y + hitbox[i].height * 0.5f, font_size, col, LEFT, CENTER);
+                x_pos += hitbox[i].width;
+            }
         }
     } else
     {
