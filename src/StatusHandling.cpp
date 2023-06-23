@@ -11,17 +11,20 @@ void update_status(char c)
     if (generated_chars[empty_i] == ' ')  // adding extra 
     {
         status = EXTRA;
+        status_count.extra++;
         words[word_i].add(c);
         wpm_logger.push_error();
     } else if (c != generated_chars[empty_i]) // normal incorrect
     {
         status = INCORRECT;
+        status_count.incorrect++;
         words[word_i].add(c);
         wpm_logger.push_error();
         empty_i++;
     } else  // correct
     {
         status = CORRECT;
+        status_count.correct++;
         words[word_i].add(c);
         wpm_logger.push_char(true);
         empty_i++;
@@ -36,6 +39,7 @@ void update_space()
     if (idx >= words[word_i].length())  // on the space, or extra char then space
     {
         char_status.push_back({ CORRECT, ' ' });
+        status_count.correct++;
         io_handler.offset_x += char_dimension[' '].x;
         bool is_good = idx == words[word_i].length();  // not an extra space 
         wpm_logger.push_char(is_good), empty_i++;   // if space is in the correct position, total good char++ (affects accuracy and raw)
@@ -49,16 +53,26 @@ void update_space()
         {
             char correct = generated_chars[i];
             char_status.push_back({ MISSING, correct });
+            status_count.missing++;
             io_handler.offset_x += char_dimension[correct].x;
         }
         // space is correct 
         char_status.push_back({ CORRECT, ' ' });
+        status_count.correct++;
         io_handler.offset_x += char_dimension[' '].x;
         wpm_logger.push_error();  // this space correct, but from incorrect press -> error
         // go to start next word
         empty_i = space_idx + 1;
         words[word_i].seal_word(false);
         word_i++;
+    } else if (strict_space->get_selected() == "on")  // if idx == 0 but strict space is on
+    {
+        words[word_i].add(' ');
+        char_status.push_back({ MISSING, words[word_i].word[words[word_i].idx - 1] });
+        status_count.missing++;
+        io_handler.offset_x += char_dimension[' '].x;
+        wpm_logger.push_error();
+        empty_i++;
     }
 }
 

@@ -106,6 +106,7 @@ float drawing_x, drawing_y;
 TogglePanel* behavior_panel;
 CreateSettingToggles;
 
+StatusCount status_count; 
 // END init extern variables ----------------------------------------------------------------
 string cursor_path = "arrow_cursor";
 float cursor_height = 22.f;
@@ -143,6 +144,7 @@ void init_test()
     char_status.clear();
     words.clear();
     // reset variables
+    status_count = StatusCount(0, 0, 0, 0);
     elapsed = 0;
     word_i = 0;
     empty_i = 0;
@@ -176,31 +178,11 @@ void end_test()
     final_raw_wpm = round(wpm_logger.raw_wpm());
     final_accuracy = round(100 * wpm_logger.accuracy());
     consistency = round(100 * (1 - test_info.variation()));
-    // calculate char statuses 
-    int correct = 0, incorrect = 0, missing = 0, extra = 0;
-    for (auto &[status, c] : char_status)
-    {
-        switch (status)
-        {
-        case CORRECT:
-            correct++;
-            break;
-        case INCORRECT:
-            incorrect++;
-            break;
-        case MISSING:
-            missing++; 
-            break;
-        case EXTRA:
-            extra++;
-            break;
-        }
-    }
     scene = END;
     test_info.update_graph(graph);
 
     // character status can get too wide 
-    string char_status = TextFormat("%d/%d/%d/%d", correct, incorrect, missing, extra);
+    string char_status = TextFormat("%d/%d/%d/%d", status_count.correct, status_count.incorrect, status_count.missing, status_count.extra);
 
     end_stats->init({ {"wpm", 50}, {"acc", 50}, {"raw", 25}, {"consistency", 25}, {"characters", 25}, {"test type", 25}},
                     {
@@ -285,10 +267,13 @@ void update_start()
         restart_alpha = 1;
         return;
     }
-    if (IsKeyPressed() && !IsKeyPressed(KEY_SPACE))  // press any key except for space to start
+    if (IsKeyPressed())  // press any key except for space to start
     {
-        start_test();
-        restart_alpha = 0;
+        if (strict_space->get_selected() == "on" || !IsKeyPressed(KEY_SPACE))  // if strict space on, any key start, otherwise must not be space press
+        {
+            start_test();
+            restart_alpha = 0;
+        }
     }
 } 
 

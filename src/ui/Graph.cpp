@@ -210,12 +210,14 @@ void Graph::set_error(vector<float>& error_list)
     // trim out all errors less than t = 1
     while (err_i < error_list.size() && error_list[err_i] < 1)
         err_i++;
-    for (float t = 1; t + t_gap <= time; t += t_gap)
+    float t_prev = 1;
+    for (float t = 1 + t_gap; t <= time; t += t_gap)
     {
         int error_amt = 0;
-        while (err_i < error_list.size() && t <= error_list[err_i] && error_list[err_i] < t + t_gap)
+        while (err_i < error_list.size() && t_prev <= error_list[err_i] && error_list[err_i] < t)
             error_amt++, err_i++;
         err_amt.push_back(error_amt);
+        t_prev = t;
     }
     
     max_err = 0;
