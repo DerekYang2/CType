@@ -13,10 +13,12 @@ extern bool mouse_focus;
 // GLOBAL VARS
 extern unordered_set<int> scene_ids[5];
 extern int scene;
-#define START 0
-#define TEST 1
-#define END 2
-#define SETTINGS 3
+typedef enum {
+    START,
+    TEST,
+    END,
+    SETTINGS
+} SCENES;
 
 extern Vector2 mouse;
 
@@ -35,11 +37,14 @@ extern string cursor_path;
  * first = 2 -> store incorrect char, not typed
  * first = 3 -> store incorrect char, extra typed
 */
-#define CORRECT 0
-#define INCORRECT 1
-#define MISSING 2
-#define EXTRA 3
-#define FUTURE 4
+typedef enum {
+    CORRECT,
+    INCORRECT,
+    MISSING,
+    EXTRA,
+    FUTURE
+} CHAR_STATUS;
+
 extern vector<pair<char, char>> char_status;
 extern vector<Word> words;
 extern int word_i;

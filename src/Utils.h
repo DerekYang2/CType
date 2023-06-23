@@ -12,12 +12,13 @@ extern float font_spacing;
 #define add_rgb(c, v) Color((c).r + v, (c).g + v, (c).b + v, 255)
 #define darkenColor(c, v) Color((c).r * (1.0f - v), (c).g * (1.0f - v), (c).b * (1.0f - v), (c).a)
 #define lightenColor(c, v) Color((c).r + v * (255 - (c).r), (c).g + v * (255 - (c).g), (c).b + v * (255 - (c).b), (c).a)
-#define LEFT 0
-#define RIGHT 1
-#define CENTER 2
-#define TOP 0
-#define BOTTOM 1
-
+typedef enum {
+    LEFT,
+    RIGHT,
+    CENTER,
+    TOP,
+    BOTTOM
+} ALIGNMENT;
 // override draw text ex with custom spacing
 extern void DrawTextEx(Font font, string text, Vector2 position, float fontSize, float spacing, Color tint, float line_spacing = 1.f);
 extern Vector2 MeasureTextEx(Font font, string text, float fontSize, float spacing, float line_spacing = 1.f);
