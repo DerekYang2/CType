@@ -141,7 +141,7 @@ void DrawText(string text, float x, float y, float font_size, Color col)
 void DrawTextCenter(string text, float x, float y, float font_size, Color col)
 {
     Vector2 textSize = MeasureTextEx(font, text.c_str(), font_size, font_size / font_spacing);
-    DrawTextEx(font, text.c_str(), {x - textSize.x/2, y - textSize.y/2}, font_size, font_size/font_spacing, col);
+    DrawText(text, x - textSize.x / 2, y - textSize.y / 2, font_size, col);
 }
 
 void DrawLabel(string text, int x, int y, int fontSize, Color label_col, Color text_col)
@@ -150,7 +150,7 @@ void DrawLabel(string text, int x, int y, int fontSize, Color label_col, Color t
     textSize.y /= 1.5;
     float padding = fontSize / 5;
     DrawRectangle(x, y, textSize.x + 2*padding, textSize.y + 2*padding, label_col);
-    DrawText(text.c_str(), x + padding, y + padding, fontSize, text_col);
+    DrawText(text, x + padding, y + padding, fontSize, text_col);
 }
 
 void DrawLabel(string text, int x, int y, int fontSize, Color label_col, Color text_col, bool rounded)

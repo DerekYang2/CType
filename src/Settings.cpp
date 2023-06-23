@@ -21,7 +21,7 @@ void init_settings()
 
     behavior_panel = new TogglePanel(SETTING_PADDING, 200, gameScreenWidth - 2 * SETTING_PADDING, { show_wpm, strict_space, tape_mode, debug_mode }, {
         {"Show Live WPM", "Displays the live WPM on the test screen."},
-        {"Strict Space", "When disabled, pressing space will jump to the next word."},
+        {"Strict Space", "When enabled, pressing space at the beginning of a word will insert a space character."},
         {"Tape Mode", "Only shows one line which scrolls horizontally."},
         {"Debug Mode", "Allows debugging functions."}
     });

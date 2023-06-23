@@ -350,6 +350,8 @@ void draw_start()
     DrawTextAlign("Restarted", gameScreenWidth/2, 450, 30, text_color, CENTER);
     EndShaderMode();
     Rectangle taskbar_rect = taskbar->bounding_box();
+    float padding = taskbar_rect.width * 0.05f;
+    taskbar_rect.x -= padding, taskbar_rect.width += 2 * padding;
     taskbar_rect.height *= 2;  // goes of screen
     DrawRectangleRounded(taskbar_rect, 0.1f, 10, theme.background_shade);
 }

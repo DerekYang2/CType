@@ -171,7 +171,7 @@ void ToggleGroup::draw()
                 Color col = (hover[i] || i == selected) ? theme.main : theme.sub;
                 if (i == selected && pressWatch.s() < TOGGLE_DELAY)
                     col = theme.sub;  // blink off when click
-                DrawRectangleRoundedAlign({ x_pos, hitbox[i].y + hitbox[i].height * 0.5f, hitbox[i].width, hitbox[i].height * 1.2f }, 0.3f, 3, theme.background_shade, LEFT, CENTER);
+                DrawRectangleRoundedAlign({ x_pos, hitbox[i].y + hitbox[i].height * 0.5f, hitbox[i].width, hitbox[i].height + MeasureTextEx(" ", font_size).x }, 0.3f, 3, theme.background_shade, LEFT, CENTER);
                 DrawTextAlign(text[i], x_pos, hitbox[i].y + hitbox[i].height * 0.5f, font_size, col, LEFT, CENTER);
                 x_pos += hitbox[i].width;
             } else

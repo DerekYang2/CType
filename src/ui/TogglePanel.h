@@ -15,4 +15,6 @@ class TogglePanel : public UIObject {
     void update();
     void draw();
     string selected(int idx);
+    private:
+    string fold(string str, float max_width);
 };
