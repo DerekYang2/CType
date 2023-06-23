@@ -9,6 +9,7 @@ class TogglePanel : public UIObject {
     vector<pair<float, float>> text_height;
     vector<ToggleGroup*> toggles;
     vector<pair<string, string>> toggle_info;  // label, details
+
     public:
     TogglePanel(float x, float y, float w, vector<ToggleGroup*> toggles, vector<pair<string, string>> toggle_info);
     void update();

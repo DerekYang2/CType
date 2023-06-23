@@ -367,7 +367,7 @@ void draw_start()
     EndShaderMode();
     Rectangle taskbar_rect = taskbar->bounding_box();
     taskbar_rect.height *= 2;  // goes of screen
-    DrawRectangleRounded(taskbar_rect, 0.2f, 10, darkenColor(theme.background, 0.1f));
+    DrawRectangleRounded(taskbar_rect, 0.1f, 10, darkenColor(theme.background, 0.1f));
 }
 
 /* deque<float> stored_wpm;
@@ -626,6 +626,10 @@ int main(void)
         for (const int id : scene_ids[scene])
         {
             ui_objects[id]->draw();
+        }
+        for (const int id : scene_ids[scene])
+        {
+            ui_objects[id]->draw_hint();
         }
         draw_rect_preview();
         EndShaderMode();

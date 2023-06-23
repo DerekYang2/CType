@@ -18,7 +18,6 @@ TogglePanel::TogglePanel(float x, float y, float w, vector<ToggleGroup*> toggles
         cur_y += tot_h + gap;
         idx++;
     }
-
 }
 
 void TogglePanel::update()

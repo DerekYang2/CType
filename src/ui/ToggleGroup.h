@@ -7,6 +7,7 @@ class ToggleGroup : public UIObject {
     deque<Rectangle> hitbox;
     deque<string> text;
     deque<bool> hover;
+    deque<float> hint_alpha;
     Texture* texture;
     vector<Texture*> textures;
     vector<float> img_scales;
@@ -22,6 +23,7 @@ class ToggleGroup : public UIObject {
     ToggleGroup(float x, float y, float h, int init_idx, vector<string> text_list);
     ToggleGroup(float x, float y, float h, int init_idx, vector<string> texture_paths, vector<string> hints, bool centered = false);
     ToggleGroup(float x, float y, float h, int init_idx, vector<string> text_list, string init_msg, string img_path);
+    void draw_hint() override;
     void draw() override;
     void update() override;
     void set_offset(float y);

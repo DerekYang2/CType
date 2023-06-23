@@ -285,7 +285,7 @@ void Graph::update()
 //TODO: ORDER
 void Graph::draw_hint()
 {
-
+    if (!show_hint) return;
     float normal_y = LUTy[NORMAL][(int)round(mouse.x)];
     float instant_y = LUTy[RAW][(int)round(mouse.x)];
     string time_str = convertSeconds(1 + (time - 1) * (mouse.x - rect.x) / rect.width, time);
@@ -415,10 +415,6 @@ void Graph::draw()
         DrawRectanglePro({ errors[i].x, errors[i].y, stroke, 3 * stroke }, { stroke * 0.5f, 3 * stroke * 0.5f }, 45, col);
         DrawRectanglePro({ errors[i].x, errors[i].y, stroke, 3 * stroke }, { stroke * 0.5f, 3 * stroke * 0.5f }, 45 + 90, col);
     }
-    
-    if (show_hint)  // draw hint box
-        draw_hint();
-
 
     if (IsKeyDown(KEY_SPACE))
     {
