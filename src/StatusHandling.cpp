@@ -65,7 +65,7 @@ void update_space()
         empty_i = space_idx + 1;
         words[word_i].seal_word(false);
         word_i++;
-    } else if (strict_space->get_selected() == "on")  // if idx == 0 but strict space is on
+    } else if (setting_toggle["strict space"]->get_selected() == "on")  // if idx == 0 but strict space is on
     {
         words[word_i].add(' ');
         char_status.push_back({ MISSING, words[word_i].word[words[word_i].idx - 1] });

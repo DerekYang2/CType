@@ -104,9 +104,10 @@ float drawing_x, drawing_y;
 
 // settings UI
 TogglePanel* behavior_panel;
-CreateSettingToggles;
+unordered_map<string, ToggleGroup*> setting_toggle;
 
-StatusCount status_count; 
+StatusCount status_count;
+string default_settings;
 // END init extern variables ----------------------------------------------------------------
 string cursor_path = "arrow_cursor";
 float cursor_height = 22.f;
@@ -269,7 +270,7 @@ void update_start()
     }
     if (IsKeyPressed())  // press any key except for space to start
     {
-        if (strict_space->get_selected() == "on" || !IsKeyPressed(KEY_SPACE))  // if strict space on, any key start, otherwise must not be space press
+        if (setting_toggle["strict space"]->get_selected() == "on" || !IsKeyPressed(KEY_SPACE))  // if strict space on, any key start, otherwise must not be space press
         {
             start_test();
             restart_alpha = 0;
@@ -377,7 +378,7 @@ void draw_test()
         DrawRectangleRec(formatRect(Rectangle(x_pos, 500 - scale_f*stored_current_wpm[x_pos], 1, 10)), BLUE); */
     BeginShaderMode(shader);
 
-    if (show_wpm->get_selected() == "on")
+    if (setting_toggle["show wpm"]->get_selected() == "on")
     {
         float info_h = char_dimension['I'].y;
         float info_x = drawer.center, info_y = drawer.get_top_y() - 1.5f * info_h;
@@ -608,7 +609,7 @@ int main(void)
         // Draw everything in the render texture, note this will not be rendered on screen, yet
         BeginTextureMode(target);
         ClearBackground(theme.background);  // Clear render texture background color
-        if (debug_mode->get_selected() == "on")
+        if (setting_toggle["debug mode"]->get_selected() == "on")
         {
             int max_fps = 1000.0 / frame_time;
             DrawText(TextFormat("MAX FPS: %d | ELAPSED TIME: %.2f", max_fps, frame_time), 0, gameScreenHeight - 30, 25, BLACK);

@@ -2,7 +2,7 @@
 
 void update_rect_preview()
 {
-    if (debug_mode->get_selected() == "off")
+    if (setting_toggle["debug mode"]->get_selected() == "off")
     {
         drawing_block = false;
         return;
