@@ -2,6 +2,8 @@
 
 #define SETTING_PADDING 200
 string setting_path = "./data/settings.json";
+RSJresource setting_json;
+
 void init_settings()
 {
     RSJresource default_json(
@@ -20,10 +22,8 @@ void init_settings()
         writeText(setting_path, default_json.as_str());
     }
 
-    RSJresource setting_json(readFile(setting_path));
-
-
-    float setting_h = 30;
+    setting_json = RSJresource(readFile(setting_path));
+    float setting_h = 20;
 
     vector<ToggleGroup*> toggle_pointers;  // issue toggle pointers not in order because of unordered map
     for (auto& [key, value] : setting_json.as_object())
@@ -47,6 +47,17 @@ void init_settings()
     ui_objects.alloc(behavior_panel, SETTINGS);
 }
 
+void write_settings()
+{
+    // update settings json object
+    for (auto &[label, toggle] : setting_toggle)
+    {
+        setting_json[label]["default"] = toggle->selected_index();
+    }
+    // update settings file
+    writeText(setting_path, setting_json.as_str());
+}
+
 void update_settings()
 {
     if (IsKeyPressed(KEY_ESCAPE))
@@ -57,7 +68,5 @@ void update_settings()
 
 void draw_settings()
 {
-    Rectangle taskbar_rect = taskbar->bounding_box();
-    taskbar_rect.height *= 2;  // goes of screen
-    DrawRectangleRounded(taskbar_rect, 0.1f, 10, theme.background_shade);
+    draw_taskbar();
 }

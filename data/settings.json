@@ -1,6 +1,6 @@
 {
     'tape mode': {
-        'default': 0,
+        'default': 1,
         'options': [
             'off',
             'on'

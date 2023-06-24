@@ -7,7 +7,7 @@ TogglePanel::TogglePanel(float x, float y, float w, vector<ToggleGroup*> toggles
     
     float cur_y = y;
     font_size = toggles.back()->get_font_size();
-    gap = MeasureTextEx("I", font_size).y;
+    gap = toggle_h * 0.5f;
     int idx = 0;
     
     for (auto& [label, detail] : toggleInfo)

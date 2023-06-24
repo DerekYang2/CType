@@ -29,6 +29,7 @@ class ToggleGroup : public UIObject {
     void update() override;
     void set_offset(float y);
     string get_selected();
+    int selected_index();
     void set_selected(string str);
     Rectangle bounding_box();
     float width();

@@ -233,6 +233,11 @@ string ToggleGroup::get_selected()
     return str;
 }
 
+int ToggleGroup::selected_index()
+{
+    return selected;
+}
+
 void ToggleGroup::set_selected(string str)
 {
     for (int i = 0; i < text.size(); i++)

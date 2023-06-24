@@ -338,6 +338,21 @@ void update_end()
     
 }
 
+void draw_taskbar()
+{
+    Rectangle taskbar_rect = taskbar->bounding_box();
+    float padding = taskbar_rect.width * 0.05f;
+    taskbar_rect.x -= padding, taskbar_rect.width += 2 * padding;
+    taskbar_rect.height *= 2;  // goes of screen
+    DrawRectangleRounded(taskbar_rect, 0.15f, 10, theme.background_shade);
+
+    // draw selected index
+    int index = taskbar->selected_index();
+    float icon_w = taskbar->height();
+    float x = taskbar_rect.x + padding + icon_w * (index + 0.5f);  // taskbar height = width since square
+    DrawRectangleRoundedAlign(x, gameScreenHeight, icon_w * 0.4f, icon_w * 0.1f, 1.f, 5, theme.main, CENTER, CENTER);
+}
+
 void draw_start()
 {
     BeginShaderMode(shader);
@@ -350,11 +365,7 @@ void draw_start()
     text_color.a = restart_alpha * 255;
     DrawTextAlign("Restarted", gameScreenWidth/2, 450, 30, text_color, CENTER);
     EndShaderMode();
-    Rectangle taskbar_rect = taskbar->bounding_box();
-    float padding = taskbar_rect.width * 0.05f;
-    taskbar_rect.x -= padding, taskbar_rect.width += 2 * padding;
-    taskbar_rect.height *= 2;  // goes of screen
-    DrawRectangleRounded(taskbar_rect, 0.1f, 10, theme.background_shade);
+    draw_taskbar();
 }
 
 /* deque<float> stored_wpm;
@@ -542,7 +553,8 @@ int main(void)
      * TECHNICAL INITIALIZATION
     */
     // Enable config flags for resizable window and vertical synchro
-    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE /* | FLAG_WINDOW_UNDECORATED */);
+
     InitWindow(windowWidth, windowHeight, "CType");
     MaximizeWindow();
     SetWindowMinSize(320, 240);
@@ -643,14 +655,13 @@ int main(void)
         EndTextureMode();
         // Draw render texture onto real screen ---------------------------------------------------
         BeginDrawing();
-        ClearBackground(BLACK);     // Clear screen background
+        ClearBackground(theme.background_shade);     // Clear screen background
         //if (shader_on) BeginShaderMode(test_shader);
         // Draw render texture to screen, properly scaled
         DrawTexturePro(target.texture, (Rectangle){ 0.0f, 0.0f, (float)target.texture.width, (float)-target.texture.height },
                            (Rectangle){ (GetScreenWidth() - ((float)gameScreenWidth*scale))*0.5f, (GetScreenHeight() - ((float)gameScreenHeight*scale))*0.5f,
                            (float)gameScreenWidth* scale, (float)gameScreenHeight* scale
         }, (Vector2) { 0, 0 }, 0.0f, WHITE);
-
         //draw_cursor(); // custom cursors
         //if (shader_on) EndShaderMode();
         if (globalFrame % 30 == 0)
@@ -661,6 +672,7 @@ int main(void)
 
     // De-Initialization
     //--------------------------------------------------------------------------------------
+    write_settings();                   // update settings file
     UnloadRenderTexture(target);        // Unload render texture
     for (auto& [path, texture] : textureOf)
         UnloadTexture(texture);
