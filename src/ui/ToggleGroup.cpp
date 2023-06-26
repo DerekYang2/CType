@@ -221,16 +221,7 @@ void ToggleGroup::set_offset(float y)
 
 string ToggleGroup::get_selected()
 {
-    string str = text[selected];
-        // Trim leading spaces
-    str.erase(str.begin(), std::find_if(str.begin(), str.end(), [](int ch) {
-        return !std::isspace(ch);
-    }));
-    // Trim trailing spaces
-    str.erase(std::find_if(str.rbegin(), str.rend(), [](int ch) {
-        return !std::isspace(ch);
-    }).base(), str.end());
-    return str;
+    return trim(text[selected]);
 }
 
 int ToggleGroup::selected_index()
@@ -242,9 +233,8 @@ void ToggleGroup::set_selected(string str)
 {
     for (int i = 0; i < text.size(); i++)
     {
-        if (text[i] == str)
+        if (trim(text[i]) == str)
         {
-            pressWatch.start();
             selected = i;
             pressed = true;
         }

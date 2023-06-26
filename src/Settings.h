@@ -1,3 +1,4 @@
+#pragma once
 #include "globals.h"
 #include "UIAlloc.h"
 #include "TogglePanel.h"

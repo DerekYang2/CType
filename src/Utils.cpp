@@ -250,6 +250,18 @@ float MeasureFontSize(string text, float width, float height)
     return fontSize;
 }
 
+string trim(string str, bool front, bool back)
+{
+    int strBegin = str.find_first_not_of(" ");
+    if (strBegin == std::string::npos)
+        return ""; // no content
+    if (!front) strBegin = 0;
+    int strEnd = str.find_last_not_of(" ");
+    if (!back) strEnd = str.size() - 1;
+    int strRange = strEnd - strBegin + 1;
+    return str.substr(strBegin, strRange);
+}
+
 bool IsKeyPressed()
 {
     return IsKeyPressed(KEY_APOSTROPHE) ||

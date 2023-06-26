@@ -48,6 +48,7 @@ extern Rectangle formatRect(Rectangle r);  // make rectangle width and height po
 extern char shiftChar(char original);
 extern float MeasureFontSize(string str, float width, float height = INT_MAX);
 
+extern string trim(string str, bool front = true, bool back = true);
 extern bool starts_with(std::string str, std::string prefix);
 extern string add_prefix(string name, string prefix);
 extern string remove_prefix(string name, string prefix);

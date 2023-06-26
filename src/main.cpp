@@ -39,6 +39,7 @@
 #include "TestInfo.h"
 #include "RectPreview.h"
 #include "Settings.h"
+#include "UserData.h"
 // Init extern variables ------------------------------------------------------------------
 /* Theme theme(
     rgb(232, 233, 236), // background
@@ -163,6 +164,8 @@ void init_test()
 void start_test()
 {
     test_info.init(stoi(setting_bar->group_selected()));
+    set_data("test time", test_info.time);
+
     wpm_logger.start();
     scene = TEST;
     display_wpm = 0;
@@ -522,11 +525,16 @@ void init()
     {
         SetTextureFilter(texture, TEXTURE_FILTER_BILINEAR);
     }
+
+    load_user_data();
+    init_settings();
+
     // STARTING UI ---------------------------------------------------------------
     //new_Toggle(START, 0, 300, 50, true, "test", "settings_icon");
     float bar_h = 25;
     Toggle* test = new Toggle(0, 300, bar_h, true, "test", "settings_icon");
     ToggleGroup* test_group = new ToggleGroup(0, 300, bar_h, 0, { "5", "15", "30", "60", "120" });
+    test_group->set_selected(data_json["test time"].as_str());
     //new_ToggleGroup(START, 0, 300, 50, 0, { "15", "30", "60", "120" });
     setting_bar = new SettingBar(gameScreenWidth / 2, 300, { test }, test_group);
     ui_objects.alloc(setting_bar, START);
@@ -539,7 +547,6 @@ void init()
     new_Button(END, 100, 900, 300, 100, "restart", [] { switch_start(); });
     graph = new Graph(wpm_width + (gameScreenWidth - (graph_width + wpm_width)) * 0.5f, graph_top, graph_width, graph_height, 4), ui_objects.alloc(graph, END);
     end_stats = new TextPanelV(0.5f * (gameScreenWidth - (wpm_width + graph_width)), graph_top, wpm_width, graph_height + 20), ui_objects.alloc(end_stats, END);
-    init_settings();
 }
 
 
@@ -673,6 +680,7 @@ int main(void)
     // De-Initialization
     //--------------------------------------------------------------------------------------
     write_settings();                   // update settings file
+    write_user_data();
     UnloadRenderTexture(target);        // Unload render texture
     for (auto& [path, texture] : textureOf)
         UnloadTexture(texture);
