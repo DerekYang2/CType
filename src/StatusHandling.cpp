@@ -30,7 +30,7 @@ void update_status(char c)
         empty_i++;
     }
     char_status.push_back({ status, c });
-    io_handler.offset_x += char_dimension[c].x;
+    io_handler[scene].offset_x += char_dimension[c].x;
 }
 
 void update_space()
@@ -40,7 +40,7 @@ void update_space()
     {
         char_status.push_back({ CORRECT, ' ' });
         status_count.correct++;
-        io_handler.offset_x += char_dimension[' '].x;
+        io_handler[scene].offset_x += char_dimension[' '].x;
         bool is_good = idx == words[word_i].length();  // not an extra space 
         wpm_logger.push_char(is_good), empty_i++;   // if space is in the correct position, total good char++ (affects accuracy and raw)
         words[word_i].seal_word(is_good);
@@ -54,12 +54,12 @@ void update_space()
             char correct = generated_chars[i];
             char_status.push_back({ MISSING, correct });
             status_count.missing++;
-            io_handler.offset_x += char_dimension[correct].x;
+            io_handler[scene].offset_x += char_dimension[correct].x;
         }
         // space is correct 
         char_status.push_back({ CORRECT, ' ' });
         status_count.correct++;
-        io_handler.offset_x += char_dimension[' '].x;
+        io_handler[scene].offset_x += char_dimension[' '].x;
         wpm_logger.push_error();  // this space correct, but from incorrect press -> error
         // go to start next word
         empty_i = space_idx + 1;
@@ -70,7 +70,7 @@ void update_space()
         words[word_i].add(' ');
         char_status.push_back({ MISSING, words[word_i].word[words[word_i].idx - 1] });
         status_count.missing++;
-        io_handler.offset_x += char_dimension[' '].x;
+        io_handler[scene].offset_x += char_dimension[' '].x;
         wpm_logger.push_error();
         empty_i++;
     }
@@ -85,7 +85,7 @@ void update_backspace()
         int del_amt = max(0, words[word_i - 1].length() - words[word_i-1].idx) + 1;
         for (int i = 0; i < del_amt; i++)  // del amt times
         {
-            io_handler.offset_x -= char_dimension[char_status.back().second].x;
+            io_handler[scene].offset_x -= char_dimension[char_status.back().second].x;
             char_status.pop_back();
         }
         empty_i -= del_amt;
@@ -93,7 +93,7 @@ void update_backspace()
         words[word_i].unseal_word();  // reset status of word
     } else
     {
-        io_handler.offset_x -= char_dimension[char_status.back().second].x;
+        io_handler[scene].offset_x -= char_dimension[char_status.back().second].x;
         char_status.pop_back();
         words[word_i].pop();
         if (words[word_i].idx < words[word_i].length())

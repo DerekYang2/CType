@@ -2,7 +2,6 @@
 #define _GLOBALSH_
 #include "raylibcustom.h"
 #include "Theme.h"
-#include <fstream>
 #include "Word.h"
 #include "Utils.h"
 #define shader_path "./fonts/sdf.fs"
@@ -10,15 +9,16 @@
 extern int windowWidth, windowHeight;
 extern int gameScreenWidth, gameScreenHeight;
 extern bool mouse_focus;
-// GLOBAL VARS
-extern unordered_set<int> scene_ids[5];
-extern int scene;
 typedef enum {
     START,
     TEST,
     END,
-    SETTINGS
+    SETTINGS,
+    SCENE_COUNT
 } SCENES;
+// GLOBAL VARS
+extern unordered_set<int> scene_ids[SCENE_COUNT];
+extern int scene;
 
 extern Vector2 mouse;
 

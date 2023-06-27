@@ -36,6 +36,7 @@
 #include "ToggleGroup.h"
 #include "TextPanelV.h"
 #include "SettingBar.h"
+#include "InputBox.h"
 #include "TestInfo.h"
 #include "RectPreview.h"
 #include "Settings.h"
@@ -65,7 +66,7 @@ int windowWidth = gameScreenWidth, windowHeight = gameScreenHeight;
 bool mouse_focus = true;
 
 // GLOBAL VARS
-unordered_set<int> scene_ids[5];
+unordered_set<int> scene_ids[SCENE_COUNT];
 int scene = START;
 Vector2 mouse;
 int globalFrame; // Frames printed in the game scene
@@ -95,7 +96,7 @@ Vector2 char_dimension[CHAR_MAX + 1];
 
 // HANDLERS
 TextDrawer drawer;
-IOHandler io_handler;
+IOHandler io_handler[SCENE_COUNT];
 WpmLogger wpm_logger;
 TestInfo test_info;
 TextGenerator text_gen;
@@ -142,7 +143,7 @@ float scale;
 void init_test()
 {
     drawer = TextDrawer(font, 40);
-    io_handler = IOHandler();
+    reset_IOHandler(TEST);
     char_status.clear();
     words.clear();
     // reset variables
@@ -290,7 +291,6 @@ void update_test()
     {
         text_gen.generate_text(2 * ceil(gameScreenWidth / char_dimension['i'].x));
     }
-    io_handler.update();
     wpm_logger.update();
     test_info.update();
     elapsed = wpm_logger.get_elapsed();
@@ -360,7 +360,7 @@ void draw_start()
 {
     BeginShaderMode(shader);
     drawer.draw();
-    if (io_handler.inactive_frames < inactive_time*60 || (io_handler.inactive_frames/30) & 1)  // if active or Inactive, blink half of the time
+    if ((globalFrame/30) & 1)  // if active or Inactive, blink half of the time
     {
         drawer.draw_caret();
     }
@@ -428,7 +428,7 @@ void draw_test()
     drawer.draw();
     
     EndShaderMode();
-    if (io_handler.inactive_frames < inactive_time * 60 || (io_handler.inactive_frames / 30) & 1)  // if active or Inactive, blink half of the time
+    if (io_handler[TEST].inactive_frames < inactive_time * 60 || (io_handler[TEST].inactive_frames / 30) & 1)  // if active or Inactive, blink half of the time
     {
         drawer.draw_caret();
     }
@@ -547,6 +547,9 @@ void init()
     new_Button(END, 100, 900, 300, 100, "restart", [] { switch_start(); });
     graph = new Graph(wpm_width + (gameScreenWidth - (graph_width + wpm_width)) * 0.5f, graph_top, graph_width, graph_height, 4), ui_objects.alloc(graph, END);
     end_stats = new TextPanelV(0.5f * (gameScreenWidth - (wpm_width + graph_width)), graph_top, wpm_width, graph_height + 20), ui_objects.alloc(end_stats, END);
+
+    InputBox* input_box = new InputBox(400, 900, 500, 50, "default", false);
+    ui_objects.alloc(input_box, END);
 }
 
 
@@ -560,7 +563,7 @@ int main(void)
      * TECHNICAL INITIALIZATION
     */
     // Enable config flags for resizable window and vertical synchro
-    SetConfigFlags(FLAG_WINDOW_RESIZABLE /* | FLAG_WINDOW_UNDECORATED */);
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_MSAA_4X_HINT /* | FLAG_WINDOW_UNDECORATED */);
 
     InitWindow(windowWidth, windowHeight, "CType");
     MaximizeWindow();
@@ -602,7 +605,6 @@ int main(void)
         globalFrame++;
         update_rect_preview();
         // must be if instead of of else if so start transitions into test directly
-
         if (scene == START)
         {
             update_start();
@@ -610,6 +612,8 @@ int main(void)
         {
             update_settings();
         }
+        io_handler[scene].update();  // update the IO handler of the current scene
+        
         if (scene == TEST)
         {
             update_test();

@@ -16,7 +16,7 @@ void load_user_data()
     // test insert 
     default_json["test history"][0] = RSJresource("{ wpm: 0.0, raw: 0.0, accuracy: 0.0, consistency: 0.0, characters: '0/0/0/0', test type: 'test' }");
     default_json["test history"][1] = RSJresource("{ wpm: 100.0, raw: 0.0, accuracy: 0.0, consistency: 0.0, characters: '0/0/1/0', test type: 'test2' }");
-    default_json.print();
+    //default_json.print();
 
     if (!FileExists(data_path.c_str()))
     {

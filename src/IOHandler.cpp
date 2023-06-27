@@ -1,7 +1,13 @@
 #include "IOHandler.h"
 
-
 IOHandler::IOHandler()
+{
+    back_frames = offset_x = offset_vel = vel_target = 0;
+    inactive_frames = inactive_time * 60;
+    add_function = NULL, back_function = NULL;
+}
+
+IOHandler::IOHandler(function<void(char)> add_function, function<void()> back_function) : add_function(add_function), back_function(back_function)
 {
     back_frames = offset_x = offset_vel = vel_target = 0;
     inactive_frames = inactive_time * 60;
@@ -11,13 +17,16 @@ IOHandler::IOHandler()
  * NOTE: strange behavior with autohotkey correct, pressing space right too quickly after wrong word doesn't work
  * Example: "porblem" should become "problem ", but results in "proble m"
  * for some reason, space comes before 'm'
+ * add function: update_status(char_pressed);
+ * back function: update_backspace(); 
 */
 void IOHandler::update()
 {
+    if (add_function == NULL) return;
     bool active = false;
     int key_pressed = GetKeyPressed();
-    fill(handled_press, handled_press + CHAR_MAX + 1, false);
     
+    fill(handled_press, handled_press + CHAR_MAX + 1, false);
     while (key_pressed)  // IF PRESSED
     {
         active = true;
@@ -27,15 +36,15 @@ void IOHandler::update()
             char_pressed = shiftChar(char_pressed);
         if (char_pressed != 0)  // valid character
         {
-            update_status(char_pressed);
+            add_function(char_pressed);
             handled_press[char_pressed] = true;  // Do not handle it again
         } else if (key_pressed == KEY_BACKSPACE)
         {
-            update_backspace();
+            back_function();
         } 
         key_pressed = GetKeyPressed();
     }
-
+    
     // HANDLE held char
     char char_pressed = GetCharPressed();
     while (char_pressed)
@@ -43,7 +52,7 @@ void IOHandler::update()
         active = true;
         if (!handled_press[char_pressed])
         {
-            update_status(char_pressed);
+            add_function(char_pressed);
         }
         char_pressed = GetCharPressed();
     } 
@@ -56,7 +65,7 @@ void IOHandler::update()
     
     if (!IsKeyPressed(KEY_BACKSPACE) && (back_frames > 30 && empty_i > 0))  // IF HELD
     {
-        update_backspace();
+        back_function();
     }
      
     if (active)
@@ -77,4 +86,18 @@ void IOHandler::update()
     
     offset_x -= offset_vel;
     drawer.set_offset(offset_x);
+}
+
+void reset_IOHandler(int sceneId)
+{
+    if (sceneId == TEST)
+    {
+        io_handler[sceneId] = IOHandler(
+        [](char char_pressed) {
+            update_status(char_pressed);
+        },
+        [] {
+            update_backspace();
+        });
+    }
 }
