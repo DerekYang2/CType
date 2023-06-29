@@ -78,7 +78,7 @@ void update_space()
 
 void update_backspace()
 {
-    if (empty_i == 0) return;
+    if (empty_i <= 0) return;
     if (words[word_i].idx == 0)
     {
         if (words[word_i - 1].correct()) return; // cannot backspace new word if previous is correct

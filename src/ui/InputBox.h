@@ -1,18 +1,26 @@
 #pragma once 
 #include "globals.h"
 #include "UIObject.h"
-#include "IOHandler.h"
+
 class InputBox : public UIObject {
-    bool active; 
+    bool active;
     Rectangle rect;
     int font_size;
     string default_text, text;
     bool numeric;
+    int invalid_frames;  // blocked input, either full box or numeric fail
     int min_v, max_v;
+    float cursor_x;
+    int active_frames;
     public:
     InputBox(float x, float y, float width, float height, string default_text, bool numeric);
     void set_range(int minv, int maxv);
     void update() override;
     void draw() override;
     string get_text();
+    void push_char(char c);
+    void pop_char();
+    void set_IOHandler(int sceneId);
 };
+
+extern vector<InputBox*> input_boxes[SCENE_COUNT];

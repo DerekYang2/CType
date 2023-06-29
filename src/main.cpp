@@ -107,6 +107,7 @@ float drawing_x, drawing_y;
 // settings UI
 TogglePanel* behavior_panel;
 unordered_map<string, ToggleGroup*> setting_toggle;
+vector<InputBox*> input_boxes[SCENE_COUNT];
 
 StatusCount status_count;
 string default_settings;
@@ -184,6 +185,7 @@ void end_test()
     final_accuracy = round(100 * wpm_logger.accuracy());
     consistency = round(100 * (1 - test_info.variation()));
     scene = END;
+        
     test_info.update_graph(graph);
 
     // character status can get too wide 
@@ -270,6 +272,11 @@ void update_start()
     {
         init_test();
         restart_alpha = 1;
+        return;
+    }
+    if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_P))
+    {
+        scene = POPUP;
         return;
     }
     if (IsKeyPressed())  // press any key except for space to start
@@ -428,7 +435,7 @@ void draw_test()
     drawer.draw();
     
     EndShaderMode();
-    if (io_handler[TEST].inactive_frames < inactive_time * 60 || (io_handler[TEST].inactive_frames / 30) & 1)  // if active or Inactive, blink half of the time
+    if (io_handler[TEST].active_cursor())  // if active or Inactive, blink half of the time
     {
         drawer.draw_caret();
     }
@@ -549,7 +556,11 @@ void init()
     end_stats = new TextPanelV(0.5f * (gameScreenWidth - (wpm_width + graph_width)), graph_top, wpm_width, graph_height + 20), ui_objects.alloc(end_stats, END);
 
     InputBox* input_box = new InputBox(400, 900, 500, 50, "default", false);
-    ui_objects.alloc(input_box, END);
+    input_box->set_IOHandler(POPUP);
+    ui_objects.alloc(input_box, POPUP);
+    
+    reset_IOHandler(POPUP);
+
 }
 
 
@@ -571,7 +582,7 @@ int main(void)
     set_icon();
     // Render texture initialization, used to hold the rendering result so we can easily resize it
     target = LoadRenderTexture(gameScreenWidth, gameScreenHeight);
-    SetTextureFilter(target.texture, TEXTURE_FILTER_BILINEAR);  // Texture scale filter to use
+    SetTextureFilter(target.texture, TEXTURE_FILTER_TRILINEAR);  // Texture scale filter to use
     
     SetTargetFPS(60);                   // Set our game to run at 60 frames-per-second
     SetExitKey(KEY_NULL);
@@ -607,13 +618,13 @@ int main(void)
         // must be if instead of of else if so start transitions into test directly
         if (scene == START)
         {
-            update_start();
+            update_start();  // must be called before test so first char press carries into test
         } else if (scene == SETTINGS)
         {
             update_settings();
         }
-        io_handler[scene].update();  // update the IO handler of the current scene
         
+        io_handler[scene].update();  // update the IO handler of the current scene
         if (scene == TEST)
         {
             update_test();
@@ -621,6 +632,10 @@ int main(void)
         if (scene == END)
         {
             update_end();
+        }
+        if (scene == POPUP)
+        {
+            
         }
         update_taskbar();
         for (const int id : scene_ids[scene])
@@ -649,6 +664,9 @@ int main(void)
         } else if (scene == SETTINGS)
         {
             draw_settings();
+        } else if (scene == POPUP)
+        {
+            
         }
 
         BeginShaderMode(shader);    // Activate SDF font shader    

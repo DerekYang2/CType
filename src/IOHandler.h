@@ -2,9 +2,11 @@
 #include "TextDrawer.h"
 #include "StatusHandling.h"
 #include "WpmLogger.h"
-#define inactive_time 1
+#include "InputBox.h"
+#define inactive_time 60
+#define blink_time 0.5f
 struct IOHandler {
-    int inactive_frames = 0;
+    int active_frames = 0;
     int back_frames = 0;
     float offset_x = 0;
     float offset_vel = 0, vel_target = 0;
@@ -14,6 +16,7 @@ struct IOHandler {
     IOHandler();
     IOHandler(function<void(char)> add_function, function<void()> back_function);
     void update();
+    bool active_cursor();
 };
 
 extern IOHandler io_handler[SCENE_COUNT];

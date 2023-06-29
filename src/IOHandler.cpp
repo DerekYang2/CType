@@ -3,14 +3,14 @@
 IOHandler::IOHandler()
 {
     back_frames = offset_x = offset_vel = vel_target = 0;
-    inactive_frames = inactive_time * 60;
+    active_frames = 0;
     add_function = NULL, back_function = NULL;
 }
 
 IOHandler::IOHandler(function<void(char)> add_function, function<void()> back_function) : add_function(add_function), back_function(back_function)
 {
     back_frames = offset_x = offset_vel = vel_target = 0;
-    inactive_frames = inactive_time * 60;
+    active_frames = 0;
 }
 
 /**
@@ -23,13 +23,12 @@ IOHandler::IOHandler(function<void(char)> add_function, function<void()> back_fu
 void IOHandler::update()
 {
     if (add_function == NULL) return;
-    bool active = false;
     int key_pressed = GetKeyPressed();
     
     fill(handled_press, handled_press + CHAR_MAX + 1, false);
     while (key_pressed)  // IF PRESSED
     {
-        active = true;
+        active_frames = inactive_time;
         char char_pressed = convertKey(key_pressed);
         // shift the character pressed
         if (IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT))
@@ -49,7 +48,7 @@ void IOHandler::update()
     char char_pressed = GetCharPressed();
     while (char_pressed)
     {
-        active = true;
+        active_frames = inactive_time;
         if (!handled_press[char_pressed])
         {
             add_function(char_pressed);
@@ -63,15 +62,13 @@ void IOHandler::update()
     else
         back_frames = 0;
     
-    if (!IsKeyPressed(KEY_BACKSPACE) && (back_frames > 30 && empty_i > 0))  // IF HELD
+    if (!IsKeyPressed(KEY_BACKSPACE) && back_frames > 30)  // IF HELD
     {
+        active_frames = inactive_time;
         back_function();
     }
-     
-    if (active)
-        inactive_frames = 0;
-    else
-        inactive_frames++;
+    
+    if (active_frames > 0) active_frames--;
 
     // update offset 
     float wpm = 0.8f * max(80.f, wpm_logger.raw_wpm());
@@ -88,6 +85,11 @@ void IOHandler::update()
     drawer.set_offset(offset_x);
 }
 
+bool IOHandler::active_cursor()
+{
+    return active_frames > 0 || (int)(GetTime() / blink_time) & 1;
+}
+
 void reset_IOHandler(int sceneId)
 {
     if (sceneId == TEST)
@@ -98,6 +100,21 @@ void reset_IOHandler(int sceneId)
         },
         [] {
             update_backspace();
+        });
+    } else if (sceneId == POPUP)
+    {
+        io_handler[sceneId] = IOHandler(
+        [](char char_pressed) {
+            for (InputBox* input_box : input_boxes[POPUP])
+            {
+                input_box->push_char(char_pressed);
+            }
+        },
+        [] {
+            for (InputBox* input_box : input_boxes[POPUP])
+            {
+                input_box->pop_char();
+            }
         });
     }
 }

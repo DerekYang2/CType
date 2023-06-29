@@ -14,6 +14,7 @@ typedef enum {
     TEST,
     END,
     SETTINGS,
+    POPUP,
     SCENE_COUNT
 } SCENES;
 // GLOBAL VARS
