@@ -68,8 +68,8 @@ void IOHandler::update()
         back_function();
     }
     
-    if (active_frames > 0) active_frames--;
-
+    active_frames--;
+    if (active_frames < -2 * blink_time) active_frames = -1;  // prevent overflow
     // update offset 
     float wpm = 0.8f * max(80.f, wpm_logger.raw_wpm());
     float secperchar = 1.0 / (wpm * 5 / 60);  // predicted seconds to type a char
@@ -87,7 +87,7 @@ void IOHandler::update()
 
 bool IOHandler::active_cursor()
 {
-    return active_frames > 0 || (int)(GetTime() / blink_time) & 1;
+    return active_frames > 0 || ((-active_frames/blink_time) & 1);
 }
 
 void reset_IOHandler(int sceneId)

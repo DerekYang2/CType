@@ -3,8 +3,8 @@
 #include "StatusHandling.h"
 #include "WpmLogger.h"
 #include "InputBox.h"
-#define inactive_time 60
-#define blink_time 0.5f
+#define inactive_time 30
+#define blink_time 30
 struct IOHandler {
     int active_frames = 0;
     int back_frames = 0;

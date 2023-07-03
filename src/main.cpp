@@ -55,7 +55,7 @@ Theme theme{
     rgb(36, 41, 51), // background
     rgb(217, 222, 233), // main
     rgb(217, 222, 233), // caret
-    rgb(109, 131, 158), // sub 
+    rgb(118, 139, 165), // sub 
     rgb(217, 222, 233), // text 
     rgb(179, 93, 105), // error
     rgb(117, 61, 69) // error_extra
@@ -110,7 +110,9 @@ unordered_map<string, ToggleGroup*> setting_toggle;
 vector<InputBox*> input_boxes[SCENE_COUNT];
 
 StatusCount status_count;
+
 string default_settings;
+
 // END init extern variables ----------------------------------------------------------------
 string cursor_path = "arrow_cursor";
 float cursor_height = 22.f;
@@ -612,6 +614,8 @@ int main(void)
         update_mouse();
         SetMouseCursor(MOUSE_CURSOR_DEFAULT);
 
+        // update alloc 
+        ui_objects.update();
         // Update
         globalFrame++;
         update_rect_preview();
@@ -684,7 +688,7 @@ int main(void)
         EndTextureMode();
         // Draw render texture onto real screen ---------------------------------------------------
         BeginDrawing();
-        ClearBackground(theme.background_shade);     // Clear screen background
+        ClearBackground(BLACK);     // Clear screen background
         //if (shader_on) BeginShaderMode(test_shader);
         // Draw render texture to screen, properly scaled
         DrawTexturePro(target.texture, (Rectangle){ 0.0f, 0.0f, (float)target.texture.width, (float)-target.texture.height },
