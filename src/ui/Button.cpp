@@ -31,7 +31,7 @@ Button::Button(float x, float y, float w, float h, string text, std::function<vo
 
 void Button::attachDraw(std::function<void(Rectangle)> f) { drawFunc = f; }
 
-void Button::setPos(float x, float y) 
+void Button::set_pos(float x, float y) 
 {
     hitbox.x = x, hitbox.y = y;
 }

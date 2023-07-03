@@ -22,7 +22,7 @@ public:
     Button(float x, float y, float w, float h, Texture *texture_pointer, std::function<void()> f);
     Button(float x, float y, float w, float h, string text, std::function<void()> f);
     void attachDraw(std::function<void(Rectangle)> f);
-    void setPos(float x, float y);
+    void set_pos(float x, float y) override;
     void update();
     void setStroke(int strokeWidth);
     void draw() override;

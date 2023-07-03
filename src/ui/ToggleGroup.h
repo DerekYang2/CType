@@ -35,7 +35,7 @@ class ToggleGroup : public UIObject {
     float width();
     float height();
     float space_width();
-    void set_pos(float x, float y);
+    void set_pos(float x, float y) override;
     bool was_pressed();
     float get_font_size();
 };

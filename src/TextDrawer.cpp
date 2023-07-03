@@ -34,11 +34,13 @@ TextDrawer::TextDrawer(Font draw_font, float fontSize, float spacing)
     spacing = font_spacing;
     font_size = fontSize;
     offset = 0;
+    float spacing_x = MeasureTextEx("ab", font_size).x - MeasureTextEx("b", font_size).x - MeasureTextEx("a", font_size).x;
     // calculating char dimensions
     for (char c = ' '; c <= '~'; c++)
     {
         string str(1, c);
-        char_dimension[c] = MeasureTextEx(font, str.c_str(), font_size, font_size / spacing);
+        char_dimension[c] = MeasureTextEx(str, font_size);
+        char_dimension[c].x += spacing_x;
     }
     cursor_pos = { -1, -1 };
     center = gameScreenWidth / 2;

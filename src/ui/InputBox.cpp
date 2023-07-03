@@ -5,7 +5,6 @@
 InputBox::InputBox(float x, float y, float width, float height, string default_text, bool numeric) : default_text(default_text), text(default_text), numeric(numeric)
 {
     const float padding = max(width, height) * 0.05f * 0.5f;
-    cout << padding << endl;
     rect = Rectangle(x, y, width, height);
     outer_rect = Rectangle(x - padding, y - padding, width + 2 * padding, height + 2 * padding);
     font_size = MeasureFontSize("|", 1000, rect.height);
@@ -15,6 +14,7 @@ InputBox::InputBox(float x, float y, float width, float height, string default_t
     text_idx = text.size() - 1;
     left_frames = 0;
     right_frames = 0;
+    spacing_x = MeasureTextEx("ab", font_size).x - MeasureTextEx("b", font_size).x - MeasureTextEx("a", font_size).x;
 }
 
 void InputBox::set_range(int minv, int maxv)
@@ -87,8 +87,8 @@ void InputBox::draw()
         for (int i = 0; i < text.size(); i++)
         {
             string char_str = string(1, text[i]);
-            float cur_w = MeasureTextEx(font, char_str.c_str(), font_size, font_size / font_spacing).x;
-            DrawRectangleAlign({ rect.x + x_sum, rect.y, cur_w, 10 }, (i&1)?BLUE:RED, LEFT, BOTTOM);
+            float cur_w = MeasureTextEx(font, char_str.c_str(), font_size, font_size / font_spacing).x + spacing_x;
+            DrawRectangleAlign({ rect.x + x_sum, rect.y, cur_w, 10 }, (i & 1) ? BLUE : RED, LEFT, BOTTOM);
             x_sum += cur_w;
         }
     } else
@@ -135,4 +135,11 @@ void InputBox::pop_char()
 void InputBox::set_IOHandler(int sceneId)
 {
     input_boxes[sceneId].push_back(this);
+}
+
+void InputBox::set_pos(float x, float y)
+{
+    const float padding = max(rect.width, rect.height) * 0.05f * 0.5f;
+    rect = Rectangle(x, y, rect.width, rect.height);
+    outer_rect = Rectangle(x - padding, y - padding, rect.width + 2 * padding, rect.height + 2 * padding);
 }

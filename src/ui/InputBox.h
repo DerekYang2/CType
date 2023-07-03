@@ -13,11 +13,13 @@ class InputBox : public UIObject {
     int active_frames;
     int text_idx;
     int left_frames, right_frames;
+    float spacing_x;
     public:
     InputBox(float x, float y, float width, float height, string default_text, bool numeric);
     void set_range(int minv, int maxv);
     void update() override;
     void draw() override;
+    void set_pos(float x, float y) override;
     string get_text();
     void push_char(char c);
     void pop_char();

@@ -1,30 +1,30 @@
 {
-    'show wpm': {
+    'tape mode': {
+        'default': 1,
         'options': [
             'off',
             'on'
-        ],
-        'default': 1
-    },
-    'debug mode': {
-        'options': [
-            'off',
-            'on'
-        ],
-        'default': 0
+        ]
     },
     'strict space': {
+        'default': 0,
         'options': [
             'off',
             'on'
-        ],
-        'default': 0
+        ]
     },
-    'tape mode': {
+    'debug mode': {
+        'default': 0,
         'options': [
             'off',
             'on'
-        ],
-        'default': 0
+        ]
+    },
+    'show wpm': {
+        'default': 1,
+        'options': [
+            'off',
+            'on'
+        ]
     }
 }
