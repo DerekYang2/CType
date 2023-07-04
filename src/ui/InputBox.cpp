@@ -14,7 +14,12 @@ InputBox::InputBox(float x, float y, float width, float height, string default_t
     text_idx = text.size() - 1;
     left_frames = 0;
     right_frames = 0;
+    // space between chars
     spacing_x = MeasureTextEx("ab", font_size).x - MeasureTextEx("b", font_size).x - MeasureTextEx("a", font_size).x;
+    // selection to none
+    select_start = -2;
+    select_end = -2;
+    selecting = false;
 }
 
 void InputBox::set_range(int minv, int maxv)
@@ -23,16 +28,57 @@ void InputBox::set_range(int minv, int maxv)
     max_v = maxv;
 }
 
+int InputBox::get_index(float pos_x)
+{
+    // search index (floor) 
+    float width_sum = 0;
+    int idx = text.size() - 1;  // set to last
+    for (int i = 0; i < text_w.size(); i++)
+    {
+        width_sum += text_w[i];
+        if (rect.x + width_sum > pos_x)
+        {
+            // check whether to take i-1 or i
+            if (pos_x >= rect.x + width_sum - 0.5f*text_w[i])  // right half
+            {
+                idx = i;
+            } else
+            {
+                idx = i - 1;
+            }
+            break;
+        }
+    }
+    return idx;
+}
+
 void InputBox::update()
 {
     if (invalid_frames > 0) invalid_frames--;
+    bool colliding = CheckCollisionPointRec(mouse, rect);
+    if (colliding)
+        SetMouseCursor(MOUSE_CURSOR_IBEAM);
+
+    // place before active for direct carry through
+    if (!active)
+    {
+        if (colliding && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+        {
+            active = true;
+        }
+    }
     if (active)
     {
-        if (!CheckCollisionPointRec(mouse, rect) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+        if (!colliding && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
             active = false;
         if (IsKeyPressed(KEY_ENTER))
             active = false;
-
+        if (!active)
+        {
+            select_start = select_end = -1;            
+            return;
+        }
+        
         left_frames = IsKeyDown(KEY_LEFT) ? left_frames + 1 : 0;
         right_frames = IsKeyDown(KEY_RIGHT) ? right_frames + 1 : 0;
         
@@ -48,16 +94,35 @@ void InputBox::update()
             active_frames = 30;
             text_idx++;
         }
-        
+
+        // HANDLE CARET CLICK
+        // update char measurements
+        text_w.clear();
+        for (int i = 0; i < text.size(); i++)
+            text_w.push_back(MeasureTextEx(string(1, text[i]), font_size).x + spacing_x);
+
+        int cur_idx = get_index(mouse.x);
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+        {
+            active_frames = 30;
+            // search index (floor) 
+            text_idx = cur_idx;
+            select_start = text_idx;
+            selecting = true;
+        }
+        // UPDATE SELECT
+        if (selecting)
+        {
+            select_end = cur_idx;
+            if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON))
+            {
+                selecting = false;
+            }
+        }
+        // UPDATE ACTIVE FRAMES
         active_frames--;
         if (active_frames < -60) active_frames = -1;  // prevent overflow
-    } else
-    {
-        if (CheckCollisionPointRec(mouse, rect) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
-        {
-            active = true;
-        }
-    }
+    } 
 }
 
 void InputBox::draw()
@@ -72,25 +137,40 @@ void InputBox::draw()
         DrawRectangleRounded(outer_rect, 0.3f, 7, theme.background_shade);
         // DRAW OUTLINE
         DrawRectangleRoundedLines(outer_rect, 0.3f, 7, 2, invalid_frames > 0 ? theme.error : theme.main);
+
+        // DRAW SELECTION
+        float x_left = rect.x;
+        float select_width = 0;
+        int select_l = min(select_start, select_end), select_r = max(select_start, select_end);
+        for (int i = 0; i <= select_l; i++)
+        {
+            x_left += MeasureTextEx(string(1, text[i]), font_size).x + spacing_x;
+        }
+        for (int i = select_l + 1; i <= select_r; i++)
+        {
+            select_width += MeasureTextEx(string(1, text[i]), font_size).x + spacing_x;
+        }
+
+        DrawRectangleAlign(x_left, rect.y + rect.height, select_width, rect.height, theme.main, LEFT, BOTTOM);
+
+        // DRAW TEXT
+        x_left = rect.x;
+        for (int i = 0; i < text.size(); i++)
+        {
+            Color text_col = (select_l < i && i <= select_r) ? theme.background : theme.main;
+            string char_str = string(1, text[i]);
+            DrawTextAlign(char_str, x_left, rect.y + rect.height, font_size, text_col, LEFT, BOTTOM);
+            x_left += MeasureTextEx(char_str, font_size).x + spacing_x;
+        }
+        
         // DRAW CURSOR
-        if (active_frames > 0 || (-active_frames/30) & 1)  // if active or Inactive, blink half of the time
+        if (select_l == select_r && (active_frames > 0 || (-active_frames/30) & 1))  // if active or Inactive, blink half of the time
         {
             float cursor_x = rect.x + MeasureTextEx(substrI(text, 0, text_idx), font_size).x;
             DrawRectangleRoundedAlign(Rectangle(cursor_x, rect.y + rect.height, 3, rect.height), 0.8f, 7, theme.caret, LEFT, BOTTOM);
         }
-        // DRAW TEXT
-        DrawTextAlign(text, rect.x, rect.y + rect.height, font_size, theme.main, LEFT, BOTTOM);
+        
         rect.x -= offset_x, outer_rect.x -= offset_x;  // unoffset
-
-        float x_sum = 0;
-        // test position 
-        for (int i = 0; i < text.size(); i++)
-        {
-            string char_str = string(1, text[i]);
-            float cur_w = MeasureTextEx(font, char_str.c_str(), font_size, font_size / font_spacing).x + spacing_x;
-            DrawRectangleAlign({ rect.x + x_sum, rect.y, cur_w, 10 }, (i & 1) ? BLUE : RED, LEFT, BOTTOM);
-            x_sum += cur_w;
-        }
     } else
     {
         DrawRectangleRounded(outer_rect, 0.3f, 7, theme.background_shade);
