@@ -557,7 +557,8 @@ void init()
     graph = new Graph(wpm_width + (gameScreenWidth - (graph_width + wpm_width)) * 0.5f, graph_top, graph_width, graph_height, 4), ui_objects.alloc(graph, END);
     end_stats = new TextPanelV(0.5f * (gameScreenWidth - (wpm_width + graph_width)), graph_top, wpm_width, graph_height + 20), ui_objects.alloc(end_stats, END);
 
-    InputBox* input_box = new InputBox(400, 900, 500, 50, "default", false);
+    InputBox* input_box = new InputBox(400, 900, 500, 50, "default", true);
+    input_box->set_range(-1000, 1000);
     input_box->set_IOHandler(POPUP);
     ui_objects.alloc(input_box, POPUP);
     

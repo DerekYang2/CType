@@ -75,28 +75,7 @@ bool InputBox::update_special(char c)
                 char ch = ' ';
                 if (' ' <= c && c <= '~')
                     ch = c;
-            
-                if (select_start != select_end)  // current selection, first delete 
-                {
-                    int select_l = min(select_start, select_end), select_r = max(select_start, select_end);
-                    string before = (select_l >= 0) ? substrI(text, 0, select_l) : "";
-                    string after = (select_r + 1 < text.size()) ? text.substr(select_r + 1) : "";
-                    text = before + after;
-                    text_idx = select_l;
-
-                    selecting = false;
-                    select_start = select_end = -1;
-                }
-                if (MeasureTextEx(text + ch, font_size).x <= rect.width)
-                {
-                    string after_text = (text_idx + 1 < text.size()) ? text.substr(text_idx + 1) : "";
-                    text = substrI(text, 0, text_idx) + ch + after_text;
-                    text_idx++;
-                    active_frames = 30;
-                } else
-                {
-                    invalid_frames = 15;
-                }
+                push_char_util(ch);
             }
             return true;
         } else if (c == 'c') // copy
@@ -106,6 +85,13 @@ bool InputBox::update_special(char c)
                 SetClipboardText(substrI(text, left_i, right_i).c_str());
             else
                 SetClipboardText("");
+            return true;
+        } else if (c == 'x')  // cut
+        {
+            text = "";
+            text_idx = -1;
+            selecting = false;
+            select_start = select_end = -1;
             return true;
         }
     }
@@ -133,9 +119,29 @@ void InputBox::update()
             active = false;
         if (IsKeyPressed(KEY_ENTER))
             active = false;
-        if (!active)
+        if (!active)  // switching out of focus
         {
-            select_start = select_end = -1;            
+            select_start = select_end = -1;
+            if (numeric)   // make sure valid entry 
+            {
+                int val = 0;
+                bool invalid = false;
+                try
+                {
+                    val = stoi(text);
+                }
+                catch (...)
+                {
+                    invalid = true;
+                }
+                if (val < min_v || val > max_v)
+                    invalid = true;
+                
+                if (!invalid)  // format
+                    text = to_string(val);
+                else
+                    text = default_text;
+            }
             return;
         }
         
@@ -250,28 +256,7 @@ void InputBox::push_char(char c)
     {
         if (update_special(c))  // if special key, do not add character
             return;
-        
-        if (select_start != select_end)  // current selection, first delete 
-        {
-            int select_l = min(select_start, select_end), select_r = max(select_start, select_end);
-            string before = (select_l >= 0) ? substrI(text, 0, select_l) : "";
-            string after = (select_r + 1 < text.size()) ? text.substr(select_r + 1) : "";
-            text = before + after;
-            text_idx = select_l;
-            
-            selecting = false;
-            select_start = select_end = -1;
-        }
-        if (MeasureTextEx(text + c, font_size).x <= rect.width)
-        {
-            string after_text = (text_idx + 1 < text.size()) ? text.substr(text_idx + 1) : "";  
-            text = substrI(text, 0, text_idx) + c + after_text;
-            text_idx++;
-            active_frames = 30;
-        } else
-        {
-            invalid_frames = 15;
-        }
+        push_char_util(c);
     }
 }
 
@@ -309,4 +294,42 @@ void InputBox::set_pos(float x, float y)
     const float padding = max(rect.width, rect.height) * 0.05f * 0.5f;
     rect = Rectangle(x, y, rect.width, rect.height);
     outer_rect = Rectangle(x - padding, y - padding, rect.width + 2 * padding, rect.height + 2 * padding);
+}
+
+void InputBox::push_char_util(char c)
+{
+    if (active)
+    {
+        if (select_start != select_end)  // current selection, first delete 
+        {
+            int select_l = min(select_start, select_end), select_r = max(select_start, select_end);
+            string before = (select_l >= 0) ? substrI(text, 0, select_l) : "";
+            string after = (select_r + 1 < text.size()) ? text.substr(select_r + 1) : "";
+            text = before + after;
+            text_idx = select_l;
+            
+            selecting = false;
+            select_start = select_end = -1;
+        }
+        if (numeric)
+        {
+            if (c < '0' || c > '9')  // if not a digit
+            {
+                if (c != '-')  // keep negative signs
+                    return;
+                else if (text_idx != -1)  // if negative sign but not first char, then ignore
+                    return;
+            }
+        }
+        if (MeasureTextEx(text + c, font_size).x <= rect.width)
+        {
+            string after_text = (text_idx + 1 < text.size()) ? text.substr(text_idx + 1) : "";  
+            text = substrI(text, 0, text_idx) + c + after_text;
+            text_idx++;
+            active_frames = 30;
+        } else
+        {
+            invalid_frames = 15;
+        }
+    }
 }

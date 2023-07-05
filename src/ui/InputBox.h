@@ -20,6 +20,7 @@ class InputBox : public UIObject {
     bool selecting;
     int get_index(float pos_x);
     bool update_special(char c);  // returns true if special key press, trl+a, ctrl+v, etc
+    void push_char_util(char c);  // no special characters to prevent infinite recursion on ctrl v
     public:
     InputBox(float x, float y, float width, float height, string default_text, bool numeric);
     void set_range(int minv, int maxv);
