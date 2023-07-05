@@ -1,6 +1,8 @@
 #include "InputBox.h"
 
-
+/**
+ * TODO: replace MeasureTextEx with lookup table
+*/
 
 InputBox::InputBox(float x, float y, float width, float height, string default_text, bool numeric) : default_text(default_text), text(default_text), numeric(numeric)
 {
@@ -203,12 +205,25 @@ void InputBox::push_char(char c)
 
 void InputBox::pop_char()
 {
-    if (active && text_idx >= 0)  // text idx can become -1
+    if (active)
     {
         active_frames = 30;
-        string after_text = (text_idx + 1 < text.size()) ? text.substr(text_idx + 1) : "";
-        text = substrI(text, 0, text_idx - 1) + after_text;
-        text_idx--;
+        if (select_start != select_end)  // current selection
+        {
+            int select_l = min(select_start, select_end), select_r = max(select_start, select_end);
+            string before = (select_l >= 0) ? substrI(text, 0, select_l) : "";
+            string after = (select_r + 1 < text.size()) ? text.substr(select_r + 1) : "";
+            text = before + after;
+            text_idx = select_l;
+            
+            selecting = false;
+            select_start = select_end = -1;
+        } else if (text_idx >= 0) // text idx can become -1
+        {
+            string after_text = (text_idx + 1 < text.size()) ? text.substr(text_idx + 1) : "";
+            text = substrI(text, 0, text_idx - 1) + after_text;
+            text_idx--;
+        }
     }
 }
 
