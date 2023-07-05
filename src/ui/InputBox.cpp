@@ -70,9 +70,12 @@ bool InputBox::update_special(char c)
             if (clipboard == NULL)
                 return true;
             string clipboard_str = clipboard;
-            // manually paste code to prevent recursive v cycle 
-            for (auto& ch : clipboard_str)
+            for (char c : clipboard_str)
             {
+                char ch = ' ';
+                if (' ' <= c && c <= '~')
+                    ch = c;
+            
                 if (select_start != select_end)  // current selection, first delete 
                 {
                     int select_l = min(select_start, select_end), select_r = max(select_start, select_end);
