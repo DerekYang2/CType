@@ -19,7 +19,7 @@ class InputBox : public UIObject {
     int select_start, select_end;  // select start is exclusive, end is inclusive
     bool selecting;
     int get_index(float pos_x);
-
+    bool update_special(char c);  // returns true if special key press, trl+a, ctrl+v, etc
     public:
     InputBox(float x, float y, float width, float height, string default_text, bool numeric);
     void set_range(int minv, int maxv);

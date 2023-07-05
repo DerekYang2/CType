@@ -1,5 +1,9 @@
 #include "IOHandler.h"
 
+/**
+ * TODO: ctrl + hold key doesn't work, GetCharPressed() doesn't return valid char when ctrl + char is held
+*/
+
 IOHandler::IOHandler()
 {
     back_frames = offset_x = offset_vel = vel_target = 0;

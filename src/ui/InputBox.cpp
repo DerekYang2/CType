@@ -1,7 +1,7 @@
 #include "InputBox.h"
 
 /**
- * TODO: replace MeasureTextEx with lookup table
+ * TODO: add double click = highlight token (delimiter = ' ')
 */
 
 InputBox::InputBox(float x, float y, float width, float height, string default_text, bool numeric) : default_text(default_text), text(default_text), numeric(numeric)
@@ -13,7 +13,7 @@ InputBox::InputBox(float x, float y, float width, float height, string default_t
     active = false;
     active_frames = 0;
     invalid_frames = 0;
-    text_idx = text.size() - 1;
+    text_idx = (int)text.size() - 1;
     left_frames = 0;
     right_frames = 0;
     // space between chars
@@ -34,7 +34,7 @@ int InputBox::get_index(float pos_x)
 {
     // search index (floor) 
     float width_sum = 0;
-    int idx = text.size() - 1;  // set to last
+    int idx = (int)text.size() - 1;  // set to last
     for (int i = 0; i < text_w.size(); i++)
     {
         width_sum += text_w[i];
@@ -52,6 +52,61 @@ int InputBox::get_index(float pos_x)
         }
     }
     return idx;
+}
+
+bool InputBox::update_special(char c)
+{
+    if (IsKeyDown(KEY_LEFT_CONTROL) || IsKeyDown(KEY_RIGHT_CONTROL))
+    {
+        if (c == 'a')  // select all
+        {
+            selecting = false;
+            select_start = -1;
+            select_end = (int)text.size() - 1;
+            return true;
+        } else if (c == 'v') // paste
+        {
+            const char* clipboard = GetClipboardText();
+            if (clipboard == NULL)
+                return true;
+            string clipboard_str = clipboard;
+            // manually paste code to prevent recursive v cycle 
+            for (auto& ch : clipboard_str)
+            {
+                if (select_start != select_end)  // current selection, first delete 
+                {
+                    int select_l = min(select_start, select_end), select_r = max(select_start, select_end);
+                    string before = (select_l >= 0) ? substrI(text, 0, select_l) : "";
+                    string after = (select_r + 1 < text.size()) ? text.substr(select_r + 1) : "";
+                    text = before + after;
+                    text_idx = select_l;
+
+                    selecting = false;
+                    select_start = select_end = -1;
+                }
+                if (MeasureTextEx(text + ch, font_size).x <= rect.width)
+                {
+                    string after_text = (text_idx + 1 < text.size()) ? text.substr(text_idx + 1) : "";
+                    text = substrI(text, 0, text_idx) + ch + after_text;
+                    text_idx++;
+                    active_frames = 30;
+                } else
+                {
+                    invalid_frames = 15;
+                }
+            }
+            return true;
+        } else if (c == 'c') // copy
+        {
+            int left_i = min(select_start, select_end) + 1, right_i = max(select_start, select_end);
+            if (left_i <= right_i)
+                SetClipboardText(substrI(text, left_i, right_i).c_str());
+            else
+                SetClipboardText("");
+            return true;
+        }
+    }
+    return false;
 }
 
 void InputBox::update()
@@ -190,6 +245,20 @@ void InputBox::push_char(char c)
 {
     if (active)
     {
+        if (update_special(c))  // if special key, do not add character
+            return;
+        
+        if (select_start != select_end)  // current selection, first delete 
+        {
+            int select_l = min(select_start, select_end), select_r = max(select_start, select_end);
+            string before = (select_l >= 0) ? substrI(text, 0, select_l) : "";
+            string after = (select_r + 1 < text.size()) ? text.substr(select_r + 1) : "";
+            text = before + after;
+            text_idx = select_l;
+            
+            selecting = false;
+            select_start = select_end = -1;
+        }
         if (MeasureTextEx(text + c, font_size).x <= rect.width)
         {
             string after_text = (text_idx + 1 < text.size()) ? text.substr(text_idx + 1) : "";  
