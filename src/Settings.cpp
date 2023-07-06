@@ -68,5 +68,6 @@ void update_settings()
 
 void draw_settings()
 {
+    ClearBackground(theme.background);  // Clear render texture background color
     draw_taskbar();
 }

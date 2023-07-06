@@ -142,6 +142,7 @@ float graph_top = 200;
 float graph_height = 600 ;
 int mouse_frames;
 float scale;
+bool pending_popup_draw = false;
 
 void init_test()
 {
@@ -215,6 +216,12 @@ void switch_settings()
     scene = SETTINGS;
 }
 
+void switch_popup()
+{
+    scene = POPUP;
+    pending_popup_draw = true;
+}
+
 void update_mouse()
 {
     // Update virtual mouse (clamped mouse value behind game screen)
@@ -278,7 +285,7 @@ void update_start()
     }
     if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_P))
     {
-        scene = POPUP;
+        switch_popup();
         return;
     }
     if (IsKeyPressed())  // press any key except for space to start
@@ -367,6 +374,7 @@ void draw_taskbar()
 
 void draw_start()
 {
+    ClearBackground(theme.background);  // Clear render texture background color
     BeginShaderMode(shader);
     drawer.draw();
     if ((globalFrame/30) & 1)  // if active or Inactive, blink half of the time
@@ -386,6 +394,7 @@ Shader test_shader;
 
 void draw_test()
 {
+    ClearBackground(theme.background);  // Clear render texture background color
     // TEST draw vel
 /*     stored_wpm.push_back(wpm_logger.wpm());
     if (stored_wpm.size() > 1000)
@@ -445,6 +454,7 @@ void draw_test()
 
 void draw_end()
 {
+    ClearBackground(theme.background);  // Clear render texture background color
     //Vector2 corner = { 0.5f * (gameScreenWidth - (wpm_width + graph_width)), graph_top };
     //DrawRectangle(corner.x, corner.y, wpm_width, graph_height, BLACK);
     //BeginShaderMode(shader);
@@ -452,7 +462,16 @@ void draw_end()
     
     //EndShaderMode();
 }
- 
+
+void draw_popup()
+{
+    if (pending_popup_draw)
+    {
+        DrawRectangle(0, 0, gameScreenWidth, gameScreenHeight, rgba(0, 0, 0, 0.5f));
+        pending_popup_draw = false;
+    }
+}
+
 void draw_cursor()
 {
     if (cursor_path.empty() || !IsCursorOnScreen()) return;
@@ -557,8 +576,8 @@ void init()
     graph = new Graph(wpm_width + (gameScreenWidth - (graph_width + wpm_width)) * 0.5f, graph_top, graph_width, graph_height, 4), ui_objects.alloc(graph, END);
     end_stats = new TextPanelV(0.5f * (gameScreenWidth - (wpm_width + graph_width)), graph_top, wpm_width, graph_height + 20), ui_objects.alloc(end_stats, END);
 
-    InputBox* input_box = new InputBox(400, 900, 500, 50, "default", true);
-    input_box->set_range(-1000, 1000);
+    InputBox* input_box = new InputBox(400, 900, 500, 50, "default", false);
+    //input_box->set_range(-1000, 1000);
     input_box->set_IOHandler(POPUP);
     ui_objects.alloc(input_box, POPUP);
     
@@ -651,12 +670,7 @@ int main(void)
         //----------------------------------------------------------------------------------
         // Draw everything in the render texture, note this will not be rendered on screen, yet
         BeginTextureMode(target);
-        ClearBackground(theme.background);  // Clear render texture background color
-        if (setting_toggle["debug mode"]->get_selected() == "on")
-        {
-            int max_fps = 1000.0 / frame_time;
-            DrawText(TextFormat("MAX FPS: %d | ELAPSED TIME: %.2f", max_fps, frame_time), 0, gameScreenHeight - 30, 25, BLACK);
-        }
+
         if (scene == START)
         {
             draw_start();
@@ -671,9 +685,15 @@ int main(void)
             draw_settings();
         } else if (scene == POPUP)
         {
-            
+            draw_popup();
         }
-
+        
+        if (setting_toggle["debug mode"]->get_selected() == "on")
+        {
+            int max_fps = 1000.0 / frame_time;
+            DrawText(TextFormat("MAX FPS: %d | ELAPSED TIME: %.2f", max_fps, frame_time), 0, gameScreenHeight - 30, 25, BLACK);
+        }
+        
         BeginShaderMode(shader);    // Activate SDF font shader    
         for (const int id : scene_ids[scene])
         {

@@ -54,16 +54,21 @@ void Button::setStroke(int strokeWidth)
 
 void Button::draw()
 {
-    Color col = hover ? theme.main : theme.sub;
-
-    if (pressWatch.s() <= 0.05)
-        col = theme.sub;
 
     if (texture == nullptr)
     {
-        DrawTextAlign(message, hitbox.x + (hitbox.width - msg_width) / 2, hitbox.y + (hitbox.height-msg_height)/2, fontSize, col);
+        Color col = hover ? theme.background_shade : theme.main;  // text color
+        if (pressWatch.s() <= 0.05)
+            col = theme.main;
+
+        DrawRectangleRounded(hitbox, 0.2f, 7, (col == theme.main) ? theme.background_shade : theme.main);  // opposite color
+        DrawTextAlign(message, hitbox.x + (hitbox.width) * 0.5f, hitbox.y + (hitbox.height) * 0.5f, fontSize, col, CENTER, CENTER);
     } else
     {
+        Color col = hover ? theme.main : theme.sub;
+
+        if (pressWatch.s() <= 0.05)
+            col = theme.sub;
         if (drawFunc != NULL)
             drawFunc(hitbox);
         // shrink image a little
