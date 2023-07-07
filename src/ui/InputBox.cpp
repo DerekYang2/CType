@@ -289,6 +289,21 @@ void InputBox::set_IOHandler(int sceneId)
     input_boxes[sceneId].push_back(this);
 }
 
+float InputBox::get_width()
+{
+    return rect.width;
+}
+
+float InputBox::get_height()
+{
+    return rect.height;
+}
+
+Vector2 InputBox::get_pos()
+{
+    return Vector2(rect.x, rect.y);
+}
+
 void InputBox::set_pos(float x, float y)
 {
     const float padding = max(rect.width, rect.height) * 0.05f * 0.5f;

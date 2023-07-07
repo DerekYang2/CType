@@ -31,6 +31,11 @@ Button::Button(float x, float y, float w, float h, string text, std::function<vo
 
 void Button::attachDraw(std::function<void(Rectangle)> f) { drawFunc = f; }
 
+void Button::attach_trigger(std::function<void()> f)
+{
+    triggerFunc = f;
+}
+
 void Button::set_pos(float x, float y) 
 {
     hitbox.x = x, hitbox.y = y;
@@ -43,7 +48,8 @@ void Button::update()
     if (hover && IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && pressWatch.s() > delay)
     {
         pressWatch.start();
-        triggerFunc();
+        if (triggerFunc != NULL)
+            triggerFunc();
     }
 }
 
@@ -61,7 +67,7 @@ void Button::draw()
         if (pressWatch.s() <= 0.05)
             col = theme.main;
 
-        DrawRectangleRounded(hitbox, 0.2f, 7, (col == theme.main) ? theme.background_shade : theme.main);  // opposite color
+        DrawRectangleRounded(hitbox, 0.3f, 7, (col == theme.main) ? theme.background_shade : theme.main);  // opposite color
         DrawTextAlign(message, hitbox.x + (hitbox.width) * 0.5f, hitbox.y + (hitbox.height) * 0.5f, fontSize, col, CENTER, CENTER);
     } else
     {
@@ -77,6 +83,16 @@ void Button::draw()
         //DrawTexturePro(img_path, Rectangle(hitbox.x + padding, hitbox.y + padding, hitbox.width - 2 * padding, (flipped ? -1 : 1) * (hitbox.height - 2 * padding)), default_color);
     }
 
+}
+
+float Button::get_width()
+{
+    return hitbox.width;
+}
+
+float Button::get_height()
+{
+    return hitbox.height;
 }
 
 

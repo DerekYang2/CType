@@ -19,13 +19,16 @@ class Button : public UIObject
 
 public:
     bool flipped = false;
-    Button(float x, float y, float w, float h, Texture *texture_pointer, std::function<void()> f);
-    Button(float x, float y, float w, float h, string text, std::function<void()> f);
+    Button(float x, float y, float w, float h, Texture *texture_pointer, std::function<void()> f = NULL);
+    Button(float x, float y, float w, float h, string text, std::function<void()> f = NULL);
     void attachDraw(std::function<void(Rectangle)> f);
+    void attach_trigger(std::function<void()> f);
     void set_pos(float x, float y) override;
     void update();
     void setStroke(int strokeWidth);
     void draw() override;
+    float get_width();
+    float get_height();
 };
 
 #endif

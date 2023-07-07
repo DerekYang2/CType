@@ -31,6 +31,9 @@ class InputBox : public UIObject {
     void push_char(char c);
     void pop_char();
     void set_IOHandler(int sceneId);
+    float get_width();
+    float get_height();
+    Vector2 get_pos();
 };
 
 extern vector<InputBox*> input_boxes[SCENE_COUNT];

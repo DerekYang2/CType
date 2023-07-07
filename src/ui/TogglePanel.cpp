@@ -68,7 +68,6 @@ string TogglePanel::fold(string str, float max_width)
             fold_str += "\n";
             start_pos = prev_space + 1;
             i = start_pos;
-            break;
         }
         if (char_str == " ")
             prev_space = i;

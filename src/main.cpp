@@ -37,6 +37,7 @@
 #include "TextPanelV.h"
 #include "SettingBar.h"
 #include "InputBox.h"
+#include "PopupHandler.h"
 #include "TestInfo.h"
 #include "RectPreview.h"
 #include "Settings.h"
@@ -129,7 +130,7 @@ Graph* graph;
 TextPanelV* end_stats;
 SettingBar* setting_bar;
 ToggleGroup* taskbar;
-
+PopupHandler* test_popup;
 // test display vars
 int display_wpm_frames = 15;  // frames to update wpm display
 int display_wpm;
@@ -285,6 +286,7 @@ void update_start()
     }
     if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_P))
     {
+        test_popup->set_active();
         switch_popup();
         return;
     }
@@ -576,10 +578,15 @@ void init()
     graph = new Graph(wpm_width + (gameScreenWidth - (graph_width + wpm_width)) * 0.5f, graph_top, graph_width, graph_height, 4), ui_objects.alloc(graph, END);
     end_stats = new TextPanelV(0.5f * (gameScreenWidth - (wpm_width + graph_width)), graph_top, wpm_width, graph_height + 20), ui_objects.alloc(end_stats, END);
 
-    InputBox* input_box = new InputBox(400, 900, 500, 50, "default", false);
+    Textbox* p_title = new Textbox(0, 0, 450, 50, "TEST", 15, theme.main, false);
+    Textbox* p_description = new Textbox(0, 0, 450, 50, "end_stats = new TextPanelV(0.5f * (gameScreenWidth - (wpm_width + graph_width)), graph_top, wpm_width, graph_height + 20), ui_objects.alloc(end_stats, END);", 20, theme.sub, true);
+    Button* p_button = new Button(0, 0, 200, 50, "Ok", nullptr);
+    InputBox* input_box = new InputBox(400, 900, 450, 50, "default", false);
     //input_box->set_range(-1000, 1000);
     input_box->set_IOHandler(POPUP);
-    ui_objects.alloc(input_box, POPUP);
+    
+    test_popup = new PopupHandler(gameScreenWidth * 0.5f, gameScreenHeight * 0.5f, 500, 500, p_title, p_description, input_box, p_button);
+    ui_objects.alloc(test_popup, POPUP);
     
     reset_IOHandler(POPUP);
 
