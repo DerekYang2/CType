@@ -4,7 +4,7 @@
  * TODO: add double click = highlight token (delimiter = ' ')
 */
 
-InputBox::InputBox(float x, float y, float width, float height, string default_text, bool numeric) : default_text(default_text), text(default_text), numeric(numeric)
+InputBox::InputBox(float x, float y, float width, float height, string default_text, bool numeric, function<string(string)> formatFunc) : default_text(default_text), text(default_text), numeric(numeric), format_func(formatFunc)
 {
     const float padding = max(width, height) * 0.05f * 0.5f;
     rect = Rectangle(x, y, width, height);
@@ -98,6 +98,34 @@ bool InputBox::update_special(char c)
     return false;
 }
 
+void InputBox::unfocus()
+{
+    select_start = select_end = -1;
+    
+    if (numeric)   // make sure valid entry 
+    {
+        int val = 0;
+        bool invalid = false;
+        try
+        {
+            val = stoi(text);
+        }
+        catch (...)
+        {
+            invalid = true;
+        }
+        if (val < min_v || val > max_v)
+            invalid = true;
+        
+        if (!invalid)  // format
+            text = to_string(val);
+        else
+            text = default_text;
+    }
+    
+    active = false;
+}
+
 void InputBox::update()
 {
     if (invalid_frames > 0) invalid_frames--;
@@ -121,27 +149,7 @@ void InputBox::update()
             active = false;
         if (!active)  // switching out of focus
         {
-            select_start = select_end = -1;
-            if (numeric)   // make sure valid entry 
-            {
-                int val = 0;
-                bool invalid = false;
-                try
-                {
-                    val = stoi(text);
-                }
-                catch (...)
-                {
-                    invalid = true;
-                }
-                if (val < min_v || val > max_v)
-                    invalid = true;
-                
-                if (!invalid)  // format
-                    text = to_string(val);
-                else
-                    text = default_text;
-            }
+            unfocus();
             return;
         }
         
@@ -188,7 +196,8 @@ void InputBox::update()
         // UPDATE ACTIVE FRAMES
         active_frames--;
         if (active_frames < -60) active_frames = -1;  // prevent overflow
-    } 
+        
+    }
 }
 
 void InputBox::draw()
@@ -247,7 +256,13 @@ void InputBox::draw()
 
 string InputBox::get_text()
 {
-    return text;
+    string str = text;
+    if (format_func != NULL)
+    {
+        str = format_func(str);
+        if (str == "default") str = default_text;
+    }
+    return str;
 }
 
 void InputBox::push_char(char c)

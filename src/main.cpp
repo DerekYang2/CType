@@ -578,11 +578,23 @@ void init()
     graph = new Graph(wpm_width + (gameScreenWidth - (graph_width + wpm_width)) * 0.5f, graph_top, graph_width, graph_height, 4), ui_objects.alloc(graph, END);
     end_stats = new TextPanelV(0.5f * (gameScreenWidth - (wpm_width + graph_width)), graph_top, wpm_width, graph_height + 20), ui_objects.alloc(end_stats, END);
 
-    Textbox* p_title = new Textbox(0, 0, 450, 50, "TEST", 15, theme.main, false);
-    Textbox* p_description = new Textbox(0, 0, 450, 50, "end_stats = new TextPanelV(0.5f * (gameScreenWidth - (wpm_width + graph_width)), graph_top, wpm_width, graph_height + 20), ui_objects.alloc(end_stats, END);", 20, theme.sub, true);
+    Textbox* p_title = new Textbox(0, 0, 450, 50, "Test Duration", 15, theme.main, false);
+    Textbox* p_description = new Textbox(0, 0, 400, 50, "Enter a custom test duration in seconds, between 2 and 10000. \nYour selected duration is: %s", 25, theme.sub, true);
     Button* p_button = new Button(0, 0, 200, 50, "Ok", nullptr);
-    InputBox* input_box = new InputBox(400, 900, 450, 50, "default", false);
-    //input_box->set_range(-1000, 1000);
+    InputBox* input_box = new InputBox(0, 0, 380, 35, "2", true, [](string s) -> string {
+        // format s as time 
+        try
+        {
+            string formatted = format_time(s);
+            if (formatted.size() <= 2) formatted += "s";
+            return formatted;
+        }
+        catch (...)
+        {
+            return "default";
+        }
+    });
+    input_box->set_range(2, 10000);
     input_box->set_IOHandler(POPUP);
     
     test_popup = new PopupHandler(gameScreenWidth * 0.5f, gameScreenHeight * 0.5f, 500, 500, p_title, p_description, input_box, p_button);

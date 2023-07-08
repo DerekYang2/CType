@@ -262,6 +262,15 @@ string trim(string str, bool front, bool back)
     return str.substr(strBegin, strRange);
 }
 
+bool replace(std::string& str, const std::string& from, const std::string& to)
+{
+    size_t start_pos = str.find(from);
+    if(start_pos == std::string::npos)
+        return false;
+    str.replace(start_pos, from.length(), to);
+    return true;
+}
+
 bool IsKeyPressed()
 {
     return IsKeyPressed(KEY_APOSTROPHE) ||
@@ -488,6 +497,23 @@ string convertSeconds(float seconds, int max_time)
     
     if (!h_include && !m_include)  // have seconds pad by space, not zeroes 
         return TextFormat("%2d", s);
+    else
+        return string(h_include ? TextFormat("%02d:", h) : "") + (m_include ? TextFormat("%02d:", m) : "") + TextFormat("%02d", s);
+}
+
+string format_time(string str)
+{
+    float seconds = stoi(str);
+    float max_time = seconds;
+    bool h_include = (max_time >= 3600); // need to include hours 
+    bool m_include = (max_time >= 60); // need to include minutes
+    int s = round(seconds);
+    int h = s / 3600;
+    int m = (s / 60) % 60;
+    s %= 60;
+    
+    if (!h_include && !m_include)  
+        return to_string(s); 
     else
         return string(h_include ? TextFormat("%02d:", h) : "") + (m_include ? TextFormat("%02d:", m) : "") + TextFormat("%02d", s);
 }

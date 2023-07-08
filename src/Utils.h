@@ -43,12 +43,14 @@ extern void DrawRectangleRoundedLinesAlign(float x, float y, float width, float 
 extern void DrawCircleSector(float x, float y, float r, float start_angle, float end_angle, Color col);
 extern void DrawRing(float cx, float cy, float innerRadius, float outerRadius, Color color); // Draw ring
 extern void DrawRing(float cx, float cy, float innerRadius, float outerRadius, float startAngle, float endAngle, Color color); // Draw ring
-extern string convertSeconds(float seconds, int max_time);
+extern string convertSeconds(float seconds, int max_time);  // used for graph, time display
+extern string format_time(string s);  // lower level function, just raw conversion of time
 extern Rectangle formatRect(Rectangle r);  // make rectangle width and height positive
 extern char shiftChar(char original);
 extern float MeasureFontSize(string str, float width, float height = INT_MAX);
 
 extern string trim(string str, bool front = true, bool back = true);
+extern bool replace(std::string& str, const std::string& from, const std::string& to);
 extern bool starts_with(std::string str, std::string prefix);
 extern string add_prefix(string name, string prefix);
 extern string remove_prefix(string name, string prefix);

@@ -15,6 +15,7 @@ class InputBox : public UIObject {
     int text_idx;
     int left_frames, right_frames;
     float spacing_x;
+    function<string(string)> format_func;
     // selection points 
     int select_start, select_end;  // select start is exclusive, end is inclusive
     bool selecting;
@@ -22,10 +23,11 @@ class InputBox : public UIObject {
     bool update_special(char c);  // returns true if special key press, trl+a, ctrl+v, etc
     void push_char_util(char c);  // no special characters to prevent infinite recursion on ctrl v
     public:
-    InputBox(float x, float y, float width, float height, string default_text, bool numeric);
+    InputBox(float x, float y, float width, float height, string default_text, bool numeric, function<string(string)> formatFunc = NULL);
     void set_range(int minv, int maxv);
     void update() override;
     void draw() override;
+    void unfocus();
     void set_pos(float x, float y) override;
     string get_text();
     void push_char(char c);

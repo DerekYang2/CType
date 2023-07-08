@@ -67,7 +67,7 @@ void Button::draw()
         if (pressWatch.s() <= 0.05)
             col = theme.main;
 
-        DrawRectangleRounded(hitbox, 0.3f, 7, (col == theme.main) ? theme.background_shade : theme.main);  // opposite color
+        DrawRectangleRounded(hitbox, 0.25f, 7, (col == theme.main) ? theme.background_shade : theme.main);  // opposite color
         DrawTextAlign(message, hitbox.x + (hitbox.width) * 0.5f, hitbox.y + (hitbox.height) * 0.5f, fontSize, col, CENTER, CENTER);
     } else
     {

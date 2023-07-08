@@ -38,6 +38,8 @@ void PopupHandler::update()
     {
         input_box->update();
         button->update();
+        description->set_var_str({input_box->get_text()});
+        
         if (!CheckCollisionPointRec(mouse, rect) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
             return_call = true;
@@ -45,6 +47,7 @@ void PopupHandler::update()
     }
     if (return_call)
     {
+        input_box->unfocus();
         active = return_call = false;
         scene = init_id;
     }
