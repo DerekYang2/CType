@@ -257,10 +257,37 @@ void InputBox::draw()
 string InputBox::get_text()
 {
     string str = text;
+    
     if (format_func != NULL)
     {
-        str = format_func(str);
-        if (str == "default") str = default_text;
+        if (numeric)
+        {
+            // check if val is invalid 
+            int val = 0;
+            bool invalid = false;
+            try
+            {
+                val = stoi(str);
+            }
+            catch (...)
+            {
+                invalid = true;
+            }
+            if (val < min_v || val > max_v)
+                invalid = true;
+            
+            // format with func
+            if (invalid)
+            {
+                str = "invalid";
+            } else
+            {
+                str = format_func(str);
+            } 
+            
+            if (str == "default")
+                str = default_text;
+        }
     }
     return str;
 }

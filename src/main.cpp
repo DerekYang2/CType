@@ -579,7 +579,7 @@ void init()
     end_stats = new TextPanelV(0.5f * (gameScreenWidth - (wpm_width + graph_width)), graph_top, wpm_width, graph_height + 20), ui_objects.alloc(end_stats, END);
 
     Textbox* p_title = new Textbox(0, 0, 450, 50, "Test Duration", 15, theme.main, false);
-    Textbox* p_description = new Textbox(0, 0, 400, 50, "Enter a custom test duration in seconds, between 2 and 10000. \nYour selected duration is: %s", 25, theme.sub, true);
+    Textbox* p_description = new Textbox(0, 0, 400, 50, "Enter a custom test duration in seconds, between 2 and 10000.\nYour selected duration is:\n%s", 25, theme.sub, true);
     Button* p_button = new Button(0, 0, 200, 50, "Ok", nullptr);
     InputBox* input_box = new InputBox(0, 0, 380, 35, "2", true, [](string s) -> string {
         // format s as time 
