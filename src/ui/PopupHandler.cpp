@@ -40,7 +40,7 @@ void PopupHandler::update()
         button->update();
         description->set_var_str({input_box->get_text()});
         
-        if (!CheckCollisionPointRec(mouse, rect) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+        if ((!CheckCollisionPointRec(mouse, rect) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) || IsKeyPressed(KEY_ENTER))
         {
             return_call = true;
         }
@@ -66,6 +66,7 @@ void PopupHandler::set_active()
 {
     active = true;
     init_id = scene;
+    input_box->focus();
 }
 
 string PopupHandler::input_text()

@@ -28,6 +28,7 @@ class InputBox : public UIObject {
     void update() override;
     void draw() override;
     void unfocus();
+    void focus();
     void set_pos(float x, float y) override;
     string get_text();
     void push_char(char c);

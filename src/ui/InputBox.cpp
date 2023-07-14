@@ -121,9 +121,15 @@ void InputBox::unfocus()
             text = to_string(val);
         else
             text = default_text;
+        text_idx = (int)text.size() - 1;
     }
     
     active = false;
+}
+
+void InputBox::focus()
+{
+    active = true;
 }
 
 void InputBox::update()
