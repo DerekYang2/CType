@@ -1,5 +1,8 @@
 #pragma once 
 #include "globals.h"
+#include "IOHandler.h"
+#include "TextDrawer.h"
+
 typedef struct StatusCount {
     int correct, incorrect, missing, extra;
 } StatusCount;

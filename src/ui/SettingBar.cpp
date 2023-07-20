@@ -1,6 +1,12 @@
 #include "SettingBar.h"
 
-SettingBar::SettingBar(float center_x, float center_y, initializer_list<Toggle*> toggle_list, ToggleGroup* toggleGroup) : cx(center_x), cy(center_y), toggle_group(toggleGroup)
+/**
+ * store popuphandler
+ * if toggleGroup PRESSED = custom, activate popuphandler
+ * if toggle group selected = custom, return popuphandler input value
+*/
+
+SettingBar::SettingBar(float center_x, float center_y, initializer_list<Toggle*> toggle_list, ToggleGroup* toggleGroup, PopupHandler* popupHandler) : cx(center_x), cy(center_y), toggle_group(toggleGroup), popup_handler(popupHandler)
 {
     h = toggle_group->height();
     space_width = toggle_group->space_width();
@@ -36,6 +42,13 @@ void SettingBar::update()
     for (auto& [label, toggle] : toggle_map)
         toggle->update();
     toggle_group->update();
+    popup_handler->update();
+    if (toggle_group->was_pressed() && toggle_group->get_selected() == "custom")  // if custom pressed
+    {
+        popup_handler->set_active();
+        // need to switch scene to popup
+        switch_popup();
+    }
 }
 
 void SettingBar::draw()
@@ -68,5 +81,8 @@ bool SettingBar::is_toggled(string str)
 
 string SettingBar::group_selected()
 {
-    return toggle_group->get_selected();
+    string ret = toggle_group->get_selected();
+    if (ret == "custom")
+        ret = popup_handler->input_text();
+    return ret;
 }

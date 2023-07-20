@@ -9,7 +9,7 @@ TextDrawer::TextDrawer(string font_path, float fontSize, float font_spacing)
     font = load_font("fonts/" + font_path);
     spacing = font_spacing;
     font_size = fontSize;
-    offset = 0;
+    offset = offset_x = offset_vel = vel_target = 0;
     // calculating char dimensions
     for (char c = ' '; c <= '~'; c++)
     {
@@ -33,7 +33,7 @@ TextDrawer::TextDrawer(Font draw_font, float fontSize, float spacing)
     font = draw_font;
     spacing = font_spacing;
     font_size = fontSize;
-    offset = 0;
+    offset = offset_x = offset_vel = vel_target = 0;
     float spacing_x = MeasureTextEx("ab", font_size).x - MeasureTextEx("b", font_size).x - MeasureTextEx("a", font_size).x;
     // calculating char dimensions
     for (char c = ' '; c <= '~'; c++)
@@ -51,11 +51,6 @@ TextDrawer::TextDrawer(Font draw_font, float fontSize, float spacing)
         top_y -= 1.5f * char_dimension['I'].y;
     
     newlines.push_back(-1);  // before first char
-}
-
-void TextDrawer::set_offset(float x)
-{
-    offset = x;
 }
 
 int TextDrawer::next_foldpoint()
@@ -98,6 +93,20 @@ int TextDrawer::next_foldpoint()
 
 void TextDrawer::draw()
 {
+    // update offset
+    float wpm = 0.8f * max(80.f, wpm_logger.raw_wpm());
+    float secperchar = 1.0 / (wpm * 5 / 60);  // predicted seconds to type a char
+    if (offset_x >= 0)
+        vel_target = offset_x / max(1.f, (secperchar * 60));  // cannot divide by anything smaller than 1
+    else
+        vel_target = offset_x / max(1.f, (secperchar * 20));  // backspace is stronger
+
+    constexpr float accel_factor = 0.3f;
+    offset_vel += (vel_target - offset_vel) * accel_factor;
+    
+    offset_x -= offset_vel;
+    offset = offset_x;
+    
     if (is_tape_mode)
     {
         float left_most = center + offset;
@@ -219,7 +228,6 @@ void TextDrawer::draw()
                 x_pos += dimension.x;
         }
         cursor_target = { x_pos, current_bottom - cursor_h };
-        float accel_factor = 0.3f;
         if (cursor_pos.x == -1)  // not init yet 
             cursor_pos = cursor_target;
         else
@@ -313,12 +321,42 @@ void TextDrawer::draw()
     }
 }
 
+void TextDrawer::draw_time(string time_text, string wpm_text, float time_percent, float dash_percent, bool left_align)
+{
+    float text_width = MeasureTextEx(time_text, font_size).x;
+    float clock_r = char_dimension['0'].y * 0.4f;
+
+    float info_h = char_dimension['I'].y;
+    float info_x = (left_align ? padding + text_width + 2 * clock_r : center), info_y = top_y - 1.5f * info_h;
+
+    // DRAW TIME
+    // TODO: FIX alignment
+    
+    // DRAW TIME
+    DrawTextAlign(time_text, info_x, info_y, font_size, theme.main, RIGHT, CENTER);
+
+    // DRAW TIME CLOCK
+    DrawCircleSector(info_x - text_width - clock_r, info_y, clock_r * 0.86f, 180 - time_percent * 360, 180, theme.main);
+    DrawRing(info_x - text_width - clock_r, info_y, clock_r, clock_r * 0.85f, theme.main);
+
+    // DRAW DASHBOARD 
+    float dash_x = info_x + char_dimension[' '].x + clock_r;  // center x of dashboard
+    DrawRing(dash_x, info_y, clock_r, clock_r * 0.85f, 45, 315, theme.main);
+    DrawCircle(dash_x, info_y, clock_r * 0.2f, theme.main);
+    const float gap_a = 45;  // 2 * gap_a  = dashboard gap
+    float angle = (90 + gap_a) + ((450 - gap_a) - (90 + gap_a)) * dash_percent;
+    DrawLineEx({ dash_x - clock_r * 0.4f * cosa(angle), info_y - clock_r * 0.4f * sina(angle) }, { dash_x + clock_r * cosa(angle), info_y + clock_r * sina(angle) }, 2, theme.main);
+    // DRAW WPM
+    DrawTextAlign(wpm_text, dash_x + clock_r, info_y, font_size, theme.main, LEFT, CENTER);
+}
+
 void TextDrawer::draw_caret()
 {
     DrawRectangleRounded(Rectangle(cursor_pos.x, cursor_pos.y, 3, cursor_h), 0.8f, 7, theme.caret);
 }
 
-float TextDrawer::get_top_y()
+void TextDrawer::add_offset(float x)
 {
-    return top_y;
+    offset_x += x;
 }
+

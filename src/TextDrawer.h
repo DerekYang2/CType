@@ -1,8 +1,9 @@
 #pragma once
 #include "globals.h"
 #include "Settings.h"
+#include "WpmLogger.h"
 
-struct TextDrawer {
+class TextDrawer {
     // non-tape mode variables
     deque<int> newlines;  // newline indices
     Vector2 cursor_pos;   // for moving cursor
@@ -16,14 +17,19 @@ struct TextDrawer {
     float top_y;
     float cursor_h;
     float padding;
+    // offset variables
+    float offset_x = 0;
+    float offset_vel = 0;
+    float vel_target = 0;
+    public:
     TextDrawer();
     TextDrawer(string font_path, float fontSize, float spacing = 15);
     TextDrawer(Font draw_font, float fontSize, float spacing = 15);
-    void set_offset(float x);
     int next_foldpoint();
     void draw();
+    void draw_time(string time_text, string wpm_text, float time_percent, float dash_percent, bool left_align);
     void draw_caret();
-    float get_top_y();
+    void add_offset(float x);
 };
 
 extern TextDrawer drawer;

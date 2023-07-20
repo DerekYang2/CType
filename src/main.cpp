@@ -130,7 +130,7 @@ Graph* graph;
 TextPanelV* end_stats;
 SettingBar* setting_bar;
 ToggleGroup* taskbar;
-PopupHandler* test_popup;
+PopupHandler* time_popup;
 // test display vars
 int display_wpm_frames = 15;  // frames to update wpm display
 int display_wpm;
@@ -160,11 +160,13 @@ void init_test()
     // generate first chars
     generated_chars = "";
     text_gen.set_list("english");
-    if (is_tape_mode) 
-        text_gen.generate_text(ceil((gameScreenWidth - (drawer.center + drawer.offset)) / char_dimension['i'].x));
-    else
-        text_gen.generate_text(3 * ceil(gameScreenWidth / char_dimension['i'].x));
-    
+    text_gen.generate_text((is_tape_mode?1:3) * ceil(gameScreenWidth / char_dimension['i'].x));
+}
+
+void switch_start()
+{
+    scene = START;
+    init_test();
 }
 
 void start_test()
@@ -206,22 +208,6 @@ void end_test()
                     });
 }
 
-void switch_start()
-{
-    scene = START;
-    init_test();
-}
-
-void switch_settings()
-{
-    scene = SETTINGS;
-}
-
-void switch_popup()
-{
-    scene = POPUP;
-    pending_popup_draw = true;
-}
 
 void update_mouse()
 {
@@ -284,12 +270,6 @@ void update_start()
         restart_alpha = 1;
         return;
     }
-    if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_P))
-    {
-        test_popup->set_active();
-        switch_popup();
-        return;
-    }
     if (IsKeyPressed())  // press any key except for space to start
     {
         if (setting_toggle["strict space"]->get_selected() == "on" || !IsKeyPressed(KEY_SPACE))  // if strict space on, any key start, otherwise must not be space press
@@ -302,13 +282,7 @@ void update_start()
 
 void update_test()
 {
-    if (is_tape_mode)
-    {
-        text_gen.generate_text(ceil((gameScreenWidth - (drawer.center + drawer.offset)) / char_dimension['i'].x));
-    } else
-    {
-        text_gen.generate_text(2 * ceil(gameScreenWidth / char_dimension['i'].x));
-    }
+    text_gen.generate_text((is_tape_mode?1:2) * ceil(gameScreenWidth / char_dimension['i'].x));
     wpm_logger.update();
     test_info.update();
     elapsed = wpm_logger.get_elapsed();
@@ -414,35 +388,10 @@ void draw_test()
 
     if (setting_toggle["show wpm"]->get_selected() == "on")
     {
-        float info_h = char_dimension['I'].y;
-        float info_x = drawer.center, info_y = drawer.get_top_y() - 1.5f * info_h;
-        string time_text = " " + convertSeconds((int)round(test_info.time - elapsed), test_info.time) + " ";
-        float text_width = MeasureTextEx(time_text, drawer.font_size).x;
-        float clock_r = char_dimension['0'].y * 0.4f;
-
-        // DRAW TIME
-        // TODO: FIX alignment
-        if (!is_tape_mode)
-            info_x = drawer.padding + text_width + 2 * clock_r; 
-        
-        // DRAW TIME
-        DrawTextAlign(time_text, info_x, info_y, drawer.font_size, theme.main, RIGHT, CENTER);
-
-        // DRAW TIME CLOCK
-        DrawCircleSector(info_x - text_width - clock_r, info_y, clock_r * 0.86f, 180 - (elapsed / test_info.time) * 360, 180, theme.main);
-        DrawRing(info_x - text_width - clock_r, info_y, clock_r, clock_r * 0.85f, theme.main);
-
-        // DRAW DASHBOARD 
-        float dash_x = info_x + char_dimension[' '].x + clock_r;  // center x of dashboard
-        DrawRing(dash_x, info_y, clock_r, clock_r * 0.85f, 45, 315, theme.main);
-        DrawCircle(dash_x, info_y, clock_r * 0.2f, theme.main);
-        float dash_percent = (cur_wpm / (1.1f * max_wpm + 10));
-        const float gap_a = 45;  // 2 * gap_a  = dashboard gap
-        float angle = (90 + gap_a) + ((450 - gap_a) - (90 + gap_a)) * dash_percent;
-        DrawLineEx({ dash_x - clock_r * 0.4f * cosa(angle), info_y - clock_r * 0.4f * sina(angle) }, { dash_x + clock_r * cosa(angle), info_y + clock_r * sina(angle) }, 2, theme.main);
-        // DRAW WPM
-        string wpm_text = TextFormat("% 3d", display_wpm);
-        DrawTextAlign(wpm_text, dash_x + clock_r, info_y, drawer.font_size, theme.main, LEFT, CENTER);
+        const string time_text = " " + convertSeconds((int)round(test_info.time - elapsed), test_info.time) + " ",
+                     wpm_text = TextFormat("% 3d", display_wpm);
+        const float time_percent = elapsed / test_info.time, dash_percent = (cur_wpm / (1.1f * max_wpm + 10));
+        drawer.draw_time(time_text, wpm_text, time_percent, dash_percent, !is_tape_mode);
     }
     // DRAW TYPING TEST TEXT
     drawer.draw();
@@ -560,24 +509,7 @@ void init()
     init_settings();
 
     // STARTING UI ---------------------------------------------------------------
-    //new_Toggle(START, 0, 300, 50, true, "test", "settings_icon");
-    float bar_h = 25;
-    Toggle* test = new Toggle(0, 300, bar_h, true, "test", "settings_icon");
-    ToggleGroup* test_group = new ToggleGroup(0, 300, bar_h, 0, { "5", "15", "30", "60", "120" });
-    test_group->set_selected(data_json["test time"].as_str());
-    //new_ToggleGroup(START, 0, 300, 50, 0, { "15", "30", "60", "120" });
-    setting_bar = new SettingBar(gameScreenWidth / 2, 300, { test }, test_group);
-    ui_objects.alloc(setting_bar, START);
-
-    
-    taskbar = new ToggleGroup(gameScreenWidth/2, gameScreenHeight - 75, 75, 0, { "keyboard", "settings_icon" }, { "default test", "settings" }, true);
-    ui_objects.alloc(taskbar, {START, SETTINGS});
-    
-    // ENDING UI ---------------------------------------------------------------
-    new_Button(END, 100, 900, 300, 100, "restart", [] { switch_start(); });
-    graph = new Graph(wpm_width + (gameScreenWidth - (graph_width + wpm_width)) * 0.5f, graph_top, graph_width, graph_height, 4), ui_objects.alloc(graph, END);
-    end_stats = new TextPanelV(0.5f * (gameScreenWidth - (wpm_width + graph_width)), graph_top, wpm_width, graph_height + 20), ui_objects.alloc(end_stats, END);
-
+    // custom time popup
     Textbox* p_title = new Textbox(0, 0, 450, 50, "Test Duration", 15, theme.main, false);
     Textbox* p_description = new Textbox(0, 0, 400, 50, "Enter a custom test duration in seconds, between 2 and 10000.\nYour selected duration is:\n%s", 25, theme.sub, true);
     Button* p_button = new Button(0, 0, 200, 50, "Ok", nullptr);
@@ -597,8 +529,28 @@ void init()
     input_box->set_range(2, 10000);
     input_box->set_IOHandler(POPUP);
     
-    test_popup = new PopupHandler(gameScreenWidth * 0.5f, gameScreenHeight * 0.5f, 500, 500, p_title, p_description, input_box, p_button);
-    ui_objects.alloc(test_popup, POPUP);
+    time_popup = new PopupHandler(gameScreenWidth * 0.5f, gameScreenHeight * 0.5f, 500, 500, p_title, p_description, input_box, p_button);
+    ui_objects.alloc(time_popup, POPUP);
+    
+    //new_Toggle(START, 0, 300, 50, true, "test", "settings_icon");
+    float bar_h = 25;
+    Toggle* test = new Toggle(0, 300, bar_h, true, "test", "settings_icon");
+    ToggleGroup* test_group = new ToggleGroup(0, 300, bar_h, 0, { "5", "15", "30", "60", "120", "custom"});
+    test_group->set_selected(data_json["test time"].as_str());
+    //new_ToggleGroup(START, 0, 300, 50, 0, { "15", "30", "60", "120" });
+    setting_bar = new SettingBar(gameScreenWidth / 2, 300, { test }, test_group, time_popup);
+    ui_objects.alloc(setting_bar, START);
+
+    
+    taskbar = new ToggleGroup(gameScreenWidth/2, gameScreenHeight - 75, 75, 0, { "keyboard", "settings_icon" }, { "default test", "settings" }, true);
+    ui_objects.alloc(taskbar, {START, SETTINGS});
+    
+    // ENDING UI ---------------------------------------------------------------
+    new_Button(END, 100, 900, 300, 100, "restart", [] { switch_start(); });
+    graph = new Graph(wpm_width + (gameScreenWidth - (graph_width + wpm_width)) * 0.5f, graph_top, graph_width, graph_height, 4), ui_objects.alloc(graph, END);
+    end_stats = new TextPanelV(0.5f * (gameScreenWidth - (wpm_width + graph_width)), graph_top, wpm_width, graph_height + 20), ui_objects.alloc(end_stats, END);
+
+
     
     reset_IOHandler(POPUP);
 

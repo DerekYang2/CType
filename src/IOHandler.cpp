@@ -2,18 +2,19 @@
 
 /**
  * TODO: ctrl + hold key doesn't work, GetCharPressed() doesn't return valid char when ctrl + char is held
+ * TODO: MOVE offset_x to status handling
 */
 
 IOHandler::IOHandler()
 {
-    back_frames = offset_x = offset_vel = vel_target = 0;
+    back_frames = 0;
     active_frames = 0;
     add_function = NULL, back_function = NULL;
 }
 
 IOHandler::IOHandler(function<void(char)> add_function, function<void()> back_function) : add_function(add_function), back_function(back_function)
 {
-    back_frames = offset_x = offset_vel = vel_target = 0;
+    back_frames = 0;
     active_frames = 0;
 }
 
@@ -74,19 +75,6 @@ void IOHandler::update()
     
     active_frames--;
     if (active_frames < -2 * blink_time) active_frames = -1;  // prevent overflow
-    // update offset 
-    float wpm = 0.8f * max(80.f, wpm_logger.raw_wpm());
-    float secperchar = 1.0 / (wpm * 5 / 60);  // predicted seconds to type a char
-    if (offset_x >= 0)
-        vel_target = offset_x / max(1.f, (secperchar * 60));  // cannot divide by anything smaller than 1
-    else
-        vel_target = offset_x / max(1.f, (secperchar * 20));  // backspace is stronger
-
-    float accel_factor = 0.3f;
-    offset_vel += (vel_target - offset_vel) * accel_factor;
-    
-    offset_x -= offset_vel;
-    drawer.set_offset(offset_x);
 }
 
 bool IOHandler::active_cursor()

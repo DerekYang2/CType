@@ -1,5 +1,19 @@
 #include "globals.h"
 
+// scene switch functions
+
+void switch_settings()
+{
+    scene = SETTINGS;
+}
+
+void switch_popup()
+{
+    scene = POPUP;
+    pending_popup_draw = true;
+}
+
+
 // overloads
 //Addition overloads: componentwise addition
 Vector2 operator+(const Vector2& a, const Vector2& b) {
