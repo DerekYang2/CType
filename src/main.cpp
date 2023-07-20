@@ -359,7 +359,7 @@ void draw_start()
     }
     Color text_color = theme.main;
     text_color.a = restart_alpha * 255;
-    DrawTextAlign("Restarted", gameScreenWidth/2, 450, 30, text_color, CENTER);
+    DrawTextAlign("Restarted", gameScreenWidth/2, 975, 35, text_color, CENTER, CENTER);
     EndShaderMode();
     draw_taskbar();
 }
