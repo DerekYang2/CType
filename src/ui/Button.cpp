@@ -2,6 +2,7 @@
 
 Button::Button(float x, float y, float w, float h, Texture *texture_pointer, std::function<void()> f) : triggerFunc(f)
 {
+    reset();
     message = "";
     texture = texture_pointer;
     hitbox = Rectangle(x, y, w, h);
@@ -9,6 +10,7 @@ Button::Button(float x, float y, float w, float h, Texture *texture_pointer, std
 
 Button::Button(float x, float y, float w, float h, string text, std::function<void()> f): triggerFunc(f)
 {
+    reset();
     texture = nullptr;
     message = text;
     hitbox = Rectangle(x, y, w, h);
@@ -27,6 +29,12 @@ Button::Button(float x, float y, float w, float h, string text, std::function<vo
     }
     Vector2 textSize = MeasureTextEx(font, message.c_str(), fontSize, fontSize / font_spacing);
     msg_width = textSize.x, msg_height = textSize.y * 1.1;
+}
+
+void Button::reset()
+{
+    hover = false;
+    pressWatch = Stopwatch();
 }
 
 void Button::attachDraw(std::function<void(Rectangle)> f) { drawFunc = f; }

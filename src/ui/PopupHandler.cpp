@@ -47,6 +47,7 @@ void PopupHandler::update()
     }
     if (return_call)
     {
+        button->reset();
         input_box->unfocus();
         active = return_call = false;
         scene = init_id;
