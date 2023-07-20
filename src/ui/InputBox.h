@@ -31,12 +31,14 @@ class InputBox : public UIObject {
     void focus();
     void set_pos(float x, float y) override;
     string get_text();
+    string get_number();
     void push_char(char c);
     void pop_char();
     void set_IOHandler(int sceneId);
     float get_width();
     float get_height();
     Vector2 get_pos();
+    bool is_numeric();
 };
 
 extern vector<InputBox*> input_boxes[SCENE_COUNT];

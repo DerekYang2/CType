@@ -83,6 +83,8 @@ string SettingBar::group_selected()
 {
     string ret = toggle_group->get_selected();
     if (ret == "custom")
-        ret = popup_handler->input_text();
+    {
+        ret = popup_handler->is_numeric() ? popup_handler->input_number() : popup_handler->input_text();
+    }
     return ret;
 }

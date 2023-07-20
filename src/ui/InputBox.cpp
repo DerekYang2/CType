@@ -260,6 +260,33 @@ void InputBox::draw()
     }
 }
 
+// do not format
+string InputBox::get_number()
+{
+    string str = text;
+  
+    if (numeric)
+    {
+        // check if val is invalid 
+        int val = 0;
+        bool invalid = false;
+        try
+        {
+            val = stoi(str);
+        }
+        catch (...)
+        {
+            invalid = true;
+        }
+        if (val < min_v || val > max_v)
+            invalid = true;
+
+        if (str == "default" || invalid)
+            str = default_text;
+    }
+    return str;
+}
+
 string InputBox::get_text()
 {
     string str = text;
@@ -350,6 +377,11 @@ float InputBox::get_height()
 Vector2 InputBox::get_pos()
 {
     return Vector2(rect.x, rect.y);
+}
+
+bool InputBox::is_numeric()
+{
+    return numeric;
 }
 
 void InputBox::set_pos(float x, float y)

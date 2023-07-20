@@ -74,3 +74,13 @@ string PopupHandler::input_text()
 {
     return input_box->get_text();
 }
+
+string PopupHandler::input_number()
+{
+    return input_box->get_number();
+}
+
+bool PopupHandler::is_numeric()
+{
+    return input_box->is_numeric();
+}

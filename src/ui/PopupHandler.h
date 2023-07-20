@@ -18,4 +18,6 @@ class PopupHandler : public UIObject {
     void draw();
     void set_active();
     string input_text();
+    string input_number();
+    bool is_numeric();
 };
