@@ -1,6 +1,6 @@
 {
     'dictionary': 'english',
-    'test time': 2,
+    'test time': 5,
     'test history': [
         {
             'wpm': 0.0,

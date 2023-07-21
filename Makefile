@@ -21,7 +21,7 @@ INCLUDE  := ./src ./include ./include/nfd_src ./src/ui ./export/assets
 SRC      := ./src
 SRCS     := $(wildcard $(SRC)/*.cpp) $(wildcard $(SRC)/ui/*.cpp)
 OBJS     := $(patsubst $(SRC)/%.cpp,$(OBJ)/%.o,$(SRCS))
-EXE      := $(BIN)/main.exe
+EXE      := main.exe
 WARNINGS := -Wno-missing-braces -Wno-narrowing -Wno-sign-compare -Wno-char-subscripts
 CFLAGS   := -O2 -Wall -std=c++20 $(WARNINGS)
 LDFLAGS  := -std=c++20 -L ./lib 
