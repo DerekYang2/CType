@@ -1,5 +1,4 @@
-#ifndef _STOPWATCH_H
-#define _STOPWATCH_H
+#pragma once
 #include "raylib.h"
 class Stopwatch
 {
@@ -12,4 +11,3 @@ public:
     double ms();
     double s();
 };
-#endif

@@ -1,5 +1,4 @@
-#ifndef _UIALLOC_H
-#define _UIALLOC_H
+#pragma once
 #include "UIObject.h"
 class UIAlloc
 {
@@ -21,4 +20,3 @@ class UIAlloc
     void erase(int idx);
     void update();
 };
-#endif

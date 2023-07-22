@@ -1,5 +1,4 @@
-#ifndef _OBJECTMACROS_
-#define _OBJECTMACROS_
+#pragma once
 //button creation macros
 #define new_Button(scene, ...) ui_objects.alloc(new Button(__VA_ARGS__), scene)
 #define new_Toggle(scene, ...) ui_objects.alloc(new Toggle(__VA_ARGS__), scene)
@@ -14,5 +13,3 @@
 #define get_Slider(idx) static_cast<Slider*>(ui_objects[idx])
 #define get_Graph(idx) static_cast<Graph*>(ui_objects[idx])
 #define get_ToggleGroup(idx) static_cast<ToggleGroup*>(ui_objects[idx])
-
-#endif

@@ -130,7 +130,7 @@ void ToggleGroup::update()
             for (int i = 0; i < hint_alpha.size(); i++)
                 if (i != hover_idx)
                     hint_alpha[i] = 0.f;
-            hint_alpha[hover_idx] = clamp(hint_alpha[hover_idx] + 0.1f, 0.f, 0.93f);  // increase current alpha
+            hint_alpha[hover_idx] = clamp(hint_alpha[hover_idx] + 0.1f, 0.f, HINT_ALPHA);  // increase current alpha
         }
 
         SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
@@ -138,7 +138,7 @@ void ToggleGroup::update()
     } else if (!textures.empty())   // no hover idx
     {
         for (int i = 0; i < hint_alpha.size(); i++)  // decrease alpha
-            hint_alpha[i] = clamp(hint_alpha[i] - 0.1f, 0.f, 0.93f);
+            hint_alpha[i] = clamp(hint_alpha[i] - 0.1f, 0.f, HINT_ALPHA);
     }
 
     for (int i = 0; i < hitbox.size(); i++)
@@ -209,7 +209,8 @@ void ToggleGroup::draw_hint()
         Vector2 text_dim = MeasureTextEx(hint_text, 22);
         text_dim.y += 2 * MeasureTextEx(" ", 22).x;
         DrawRectangleRoundedAlign({ corner.x + (i + 0.5f) * img_w, corner.y, text_dim.x, text_dim.y }, 0.25f, 7, rgba(0, 0, 0, hint_alpha[i]), CENTER, BOTTOM);
-        DrawTextAlign(hint_text, corner.x + (i + 0.5f) * img_w, corner.y - text_dim.y * 0.5f, 22, rgba(255, 255, 255, hint_alpha[i]), CENTER, CENTER);
+        if (hint_alpha[i] * 2 >= HINT_ALPHA)  // if alpha is half of max, draw text
+            DrawTextAlign(hint_text, corner.x + (i + 0.5f) * img_w, corner.y - text_dim.y * 0.5f, 22, WHITE, CENTER, CENTER);
     }
 }
 

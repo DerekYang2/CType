@@ -1,5 +1,4 @@
-#ifndef _BUTTON_H
-#define _BUTTON_H
+#pragma once
 #include "globals.h"
 #include "Stopwatch.h"
 #include "UIObject.h"
@@ -32,4 +31,3 @@ public:
     float get_height();
 };
 
-#endif

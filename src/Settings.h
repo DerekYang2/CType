@@ -3,14 +3,13 @@
 #include "UIAlloc.h"
 #include "TogglePanel.h"
 #include "jsonparser.h"
-// EXTERNALS
+// EXTERNALS USED
 extern UIAlloc ui_objects;
 extern void switch_start();
 extern void draw_taskbar();
 
 // settings.json object
-extern RSJresource setting_json;
-
+extern RSJresource setting_json; 
 
 // variables
 extern TogglePanel* behavior_panel;
