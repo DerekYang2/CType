@@ -17,6 +17,7 @@
             'wpm': 100.0
         }
     ],
-    'test time': 5,
-    'dictionary': 'english'
+    'test time': 3,
+    'dictionary': 'english',
+    'custom time': 3
 }

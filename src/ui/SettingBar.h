@@ -17,6 +17,7 @@ class SettingBar : public UIObject {
     bool needs_update();
     bool is_toggled(string str);
     string group_selected();
+    string custom_input();
 };
 
 extern SettingBar* setting_bar;

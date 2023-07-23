@@ -79,12 +79,18 @@ bool SettingBar::is_toggled(string str)
     return it->second->toggled();
 }
 
+string SettingBar::custom_input()
+{
+    return popup_handler->is_numeric() ? popup_handler->input_number() : popup_handler->input_text();
+}
+
 string SettingBar::group_selected()
 {
     string ret = toggle_group->get_selected();
     if (ret == "custom")
     {
-        ret = popup_handler->is_numeric() ? popup_handler->input_number() : popup_handler->input_text();
+        ret = custom_input();
     }
     return ret;
 }
+

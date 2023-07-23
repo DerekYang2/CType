@@ -172,8 +172,9 @@ void switch_start()
 void start_test()
 {
     test_info.init(stoi(setting_bar->group_selected()));
-    set_data("test time", test_info.time);
-
+    data_json["test time"] = test_info.time;
+    data_json["custom time"] = stoi(setting_bar->custom_input());
+    
     wpm_logger.start();
     scene = TEST;
     display_wpm = 0;
@@ -508,17 +509,21 @@ void init()
     load_user_data();
     init_settings();
 
+    // get selected test time
+    string selected_time = data_json["test time"].as_str();
+    string custom_time = data_json["custom time"].as_str();
+
     // STARTING UI ---------------------------------------------------------------
     // custom time popup
     Textbox* p_title = new Textbox(0, 0, 450, 50, "Test Duration", 15, theme.main, false);
     Textbox* p_description = new Textbox(0, 0, 400, 50, "Enter a custom test duration in seconds, between 2 and 10000.\nYour selected duration is:\n%s", 25, theme.sub, true);
     Button* p_button = new Button(0, 0, 200, 50, "Ok", nullptr);
-    InputBox* input_box = new InputBox(0, 0, 380, 35, "2", true, [](string s) -> string {
+    InputBox* input_box = new InputBox(0, 0, 380, 35, custom_time, true, [](string s) -> string {
         // format s as time 
         try
         {
             string formatted = format_time(s);
-            if (formatted.size() <= 2) formatted += "s";
+            if (formatted.size() <= 2) formatted += "s";  // if less than a minute, add seconds suffix
             return formatted;
         }
         catch (...)
@@ -535,9 +540,14 @@ void init()
     //new_Toggle(START, 0, 300, 50, true, "test", "settings_icon");
     float bar_h = 25;
     Toggle* test = new Toggle(0, 300, bar_h, true, "test", "settings_icon");
-    ToggleGroup* test_group = new ToggleGroup(0, 300, bar_h, 0, { "5", "15", "30", "60", "120", "custom"});
-    test_group->set_selected(data_json["test time"].as_str());
-    //new_ToggleGroup(START, 0, 300, 50, 0, { "15", "30", "60", "120" });
+    const vector<string> options = {"5", "15", "30", "60", "120", "custom"};
+    ToggleGroup* test_group = new ToggleGroup(0, 300, bar_h, 0, options);
+    if (find(options.begin(), options.end(), selected_time) == options.end())  // selected  time was not found in default options 
+        test_group->set_selected("custom");
+    else
+        test_group->set_selected(selected_time);
+    
+        //new_ToggleGroup(START, 0, 300, 50, 0, { "15", "30", "60", "120" });
     setting_bar = new SettingBar(gameScreenWidth / 2, 300, { test }, test_group, time_popup);
     ui_objects.alloc(setting_bar, START);
 

@@ -11,4 +11,3 @@ extern string data_path;
 extern RSJresource data_json;
 extern void load_user_data();
 extern void write_user_data();
-#define set_data(key, value) data_json[key] = value
