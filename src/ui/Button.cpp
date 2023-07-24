@@ -71,11 +71,11 @@ void Button::draw()
 
     if (texture == nullptr)
     {
-        Color col = hover ? theme.background_shade : theme.main;  // text color
+        Color col = hover ? theme.sub_alt : theme.main;  // text color
         if (pressWatch.s() <= 0.05)
             col = theme.main;
 
-        DrawRectangleRounded(hitbox, 0.25f, 7, (col == theme.main) ? theme.background_shade : theme.main);  // opposite color
+        DrawRectangleRounded(hitbox, 0.25f, 7, (col == theme.main) ? theme.sub_alt : theme.main);  // opposite color
         DrawTextAlign(message, hitbox.x + (hitbox.width) * 0.5f, hitbox.y + (hitbox.height) * 0.5f, fontSize, col, CENTER, CENTER);
     } else
     {

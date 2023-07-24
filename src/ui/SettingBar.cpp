@@ -53,11 +53,11 @@ void SettingBar::update()
 
 void SettingBar::draw()
 {
-    Color col = theme.background_shade;
+    Color col = theme.sub_alt;
     float padding = 2 * space_width;  // also equal to y padding
     float x_pad = padding - space_width; // x already has some padding
     DrawRectangleRoundedAlign(cx, cy, tot_width + 2 * x_pad, h + 2 * padding, 0.2f, h/5, col, CENTER, CENTER); 
-    DrawRectangleAlign(separator_x, cy, space_width * 0.6f, h + padding, theme.sub, CENTER, CENTER);
+    DrawRectangleAlign(separator_x, cy, space_width * 0.6f, h + padding, theme.background, CENTER, CENTER);
     for (auto& [label, toggle] : toggle_map)
         toggle->draw();
     toggle_group->draw();

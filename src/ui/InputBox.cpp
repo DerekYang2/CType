@@ -215,7 +215,7 @@ void InputBox::draw()
             offset_x = 0.2f * (15 - invalid_frames) * sin(2 * (15 - invalid_frames)) + sin(GetTime() * 90);
         rect.x += offset_x, outer_rect.x += offset_x;
         
-        DrawRectangleRounded(outer_rect, 0.3f, 7, theme.background_shade);
+        DrawRectangleRounded(outer_rect, 0.3f, 7, theme.sub_alt);
         // DRAW OUTLINE
         DrawRectangleRoundedLines(outer_rect, 0.3f, 7, 2, invalid_frames > 0 ? theme.error : theme.main);
 
@@ -254,7 +254,7 @@ void InputBox::draw()
         rect.x -= offset_x, outer_rect.x -= offset_x;  // unoffset
     } else
     {
-        DrawRectangleRounded(outer_rect, 0.3f, 7, theme.background_shade);
+        DrawRectangleRounded(outer_rect, 0.3f, 7, theme.sub_alt);
         // DRAW TEXT
         DrawTextAlign(text, rect.x, rect.y + rect.height, font_size, theme.main, LEFT, BOTTOM);
     }

@@ -340,7 +340,7 @@ void draw_taskbar()
     float padding = taskbar_rect.width * 0.05f;
     taskbar_rect.x -= padding, taskbar_rect.width += 2 * padding;
     taskbar_rect.height *= 2;  // goes of screen
-    DrawRectangleRounded(taskbar_rect, 0.15f, 10, theme.background_shade);
+    DrawRectangleRounded(taskbar_rect, 0.15f, 10, theme.sub_alt);
 
     // draw selected index
     int index = taskbar->selected_index();
@@ -560,8 +560,6 @@ void init()
     graph = new Graph(wpm_width + (gameScreenWidth - (graph_width + wpm_width)) * 0.5f, graph_top, graph_width, graph_height, 4), ui_objects.alloc(graph, END);
     end_stats = new TextPanelV(0.5f * (gameScreenWidth - (wpm_width + graph_width)), graph_top, wpm_width, graph_height + 20), ui_objects.alloc(end_stats, END);
 
-
-    
     reset_IOHandler(POPUP);
 
 }

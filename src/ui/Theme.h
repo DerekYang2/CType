@@ -1,15 +1,25 @@
 #pragma once
 #include "raylibcustom.h"
 /**
- * main color for graph, toggled buttons, etc
- * sub color is color of untyped and untogged buttons
- * text generally = main color for dark theme, but is usually black/gray for light theme
+ * main color for graph, already toggled buttons
+ * button/toggle hovers = text color
+ * setting bar hover = text color
+ * setting bar divider rectangle = background
+ * setting bar unselected color = sub color
+ * setting bar selected color = main color
+ * setting bar background = sub alt color
+ * text highlights (input box) =  main color
+ * text input button unhovered = sub alt
+ * text input button hover = text color 
+ * text input box rectangle = sub alt
+ * text input box description + title = sub color
+ * test time = main color
 */
 class Theme {
     public:
     Color
         background,
-        background_shade,
+        sub_alt,
         main,
         caret,
         sub,
