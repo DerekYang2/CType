@@ -167,21 +167,54 @@ void ToggleGroup::draw()
         const float stroke_w = 2.f;
         for (int i = 0; i < hitbox.size(); i++)
         {
+
             if (show_rect)
             {
-                Color col = (hover[i] || i == selected) ? theme.main : theme.sub;
-                if (i == selected && pressWatch.s() < TOGGLE_DELAY)
-                    col = theme.sub;  // blink off when click
-                DrawRectangleRoundedAlign(x_pos + stroke_w, hitbox[i].y + hitbox[i].height * 0.5f, hitbox[i].width - 2 * stroke_w, hitbox[i].height + MeasureTextEx(" ", font_size).x - 2 * stroke_w, 0.3f, 3, theme.sub_alt, LEFT, CENTER);
+                /**
+                 * hover: rect - text, text - bg
+                 * selected: rect - main, text - bg
+                 * non selected: rect - sub-alt, text - text
+                 * on click, button expands and blinks sub color
+                */
+                Color rect_col, text_col;
+                if (hover[i])
+                {
+                    rect_col = theme.text;
+                    text_col = theme.background;
+                } else if (i == selected)
+                {
+                    rect_col = theme.main;
+                    text_col = theme.background;
+                } else
+                {
+                    rect_col = theme.sub_alt;
+                    text_col = theme.text;
+                }
+                bool pressed = (i == selected && pressWatch.s() < TOGGLE_DELAY);
+                if (pressed) 
+                    rect_col = theme.sub;  // blink sub when click
+                // only x position needs subtract pressed because x left align, y center align
+                DrawRectangleRoundedAlign(x_pos + stroke_w - pressed, hitbox[i].y + hitbox[i].height * 0.5f, hitbox[i].width - 2 * stroke_w + 2*pressed, hitbox[i].height + MeasureTextEx(" ", font_size).x - 2 * stroke_w + 2*pressed, 0.3f, 4, rect_col, LEFT, CENTER);
                 if (i == selected)
-                    DrawRectangleRoundedLinesAlign(x_pos + stroke_w, hitbox[i].y + hitbox[i].height * 0.5f, hitbox[i].width - 2 * stroke_w, hitbox[i].height + MeasureTextEx(" ", font_size).x - 2 * stroke_w , 0.3f, 4, stroke_w, theme.main, LEFT, CENTER);
-                DrawTextAlign(text[i], x_pos, hitbox[i].y + hitbox[i].height * 0.5f, font_size, col, LEFT, CENTER);
+                    DrawRectangleRoundedLinesAlign(x_pos + stroke_w - pressed, hitbox[i].y + hitbox[i].height * 0.5f, hitbox[i].width - 2 * stroke_w + 2*pressed, hitbox[i].height + MeasureTextEx(" ", font_size).x - 2 * stroke_w + 2*pressed, 0.3f, 4, stroke_w, theme.main, LEFT, CENTER);
+                DrawTextAlign(text[i], x_pos, hitbox[i].y + hitbox[i].height * 0.5f, font_size, text_col, LEFT, CENTER);
                 x_pos += hitbox[i].width;
             } else
             {
-                Color col = (hover[i] || i == selected) ? theme.main : theme.sub;
-                if (i == selected && pressWatch.s() < TOGGLE_DELAY) col = theme.sub;  // blink off when click
-                DrawTextAlign(text[i], x_pos, hitbox[i].y + hitbox[i].height * 0.5f, font_size, col, LEFT, CENTER);
+                Color text_col;
+                if (hover[i])
+                {
+                    text_col = theme.text; 
+                } else if (i == selected)
+                {
+                    text_col = theme.main;
+                } else
+                {
+                    text_col = theme.sub;
+                }
+                if (i == selected && pressWatch.s() < TOGGLE_DELAY)  // just pressed 
+                    text_col = theme.sub;  // blink sub when click
+                DrawTextAlign(text[i], x_pos, hitbox[i].y + hitbox[i].height * 0.5f, font_size, text_col, LEFT, CENTER);
                 x_pos += hitbox[i].width;
             }
         }
