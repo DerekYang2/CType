@@ -1,5 +1,8 @@
 #pragma once
 #include "raylibcustom.h"
+#include <filesystem>
+#include "Utils.h"
+
 /**
  * main color for graph, already toggled buttons
  * button/toggle hovers = text color
@@ -15,18 +18,25 @@
  * text input box description + title = sub color
  * test time = main color
 */
+
+extern const string THEMES_FOLDER;
+
 class Theme {
     public:
     Color
         background,
-        sub_alt,
         main,
         caret,
         sub,
+        sub_alt,
         text,
         error,
         error_extra;
-    Theme(Color background, Color main, Color caret, Color sub, Color text, Color error, Color error_extra);
+    Theme();
+    Theme(Color background, Color main, Color caret, Color sub, Color sub_alt, Color text, Color error, Color error_extra);
 };
 
 extern Theme theme;
+extern unordered_map<string, Theme> theme_map;
+extern void fetch_themes();
+extern void init_theme(string theme_name);

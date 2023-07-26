@@ -48,19 +48,12 @@
     rgb(78, 93, 146), // main
     rgb(53, 54, 76), // caret 
     rgb(133, 136, 163), // sub
-    rgb(53, 54, 76), // text 
+    rgb(201, 201, 204), // sub-alt
+    rgb(53, 54, 76), // text
     rgb(198, 77, 123), // error
     rgb(147, 57, 91) // error_extra
 );  */
-Theme theme{
-    rgb(36, 41, 51), // background
-    rgb(217, 222, 233), // main
-    rgb(217, 222, 233), // caret
-    rgb(118, 139, 165), // sub 
-    rgb(217, 222, 233), // text 
-    rgb(179, 93, 105), // error
-    rgb(117, 61, 69) // error_extra
-};
+Theme theme;
 // Window Variables
 int gameScreenWidth = 1920, gameScreenHeight = 1080;
 int windowWidth = gameScreenWidth, windowHeight = gameScreenHeight;
@@ -570,7 +563,8 @@ void init()
 //------------------------------------------------------------------------------------
 int main(void)
 {
-    
+    fetch_themes();
+    init_theme("solarized light");
     /**
      * TECHNICAL INITIALIZATION
     */

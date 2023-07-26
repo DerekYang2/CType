@@ -250,6 +250,21 @@ float MeasureFontSize(string text, float width, float height)
     return fontSize;
 }
 
+Color hexToColor(string hex_str)
+{
+    if (hex_str.size() == 3)  // Shorthand hex format 
+    {
+        hex_str = hex_str.substr(0, 1) + hex_str.substr(0, 1) + hex_str.substr(1, 1) + hex_str.substr(1, 1) + hex_str.substr(2, 1) + hex_str.substr(2, 1);
+    }
+    size_t hex_int = std::stol(hex_str, nullptr, 16);
+    Color rgbColor;
+    rgbColor.r = ((hex_int >> 16) & 0xFF);  // Extract the RR byte
+    rgbColor.g = ((hex_int >> 8) & 0xFF);   // Extract the GG byte
+    rgbColor.b = ((hex_int) & 0xFF);        // Extract the BB byte
+    rgbColor.a = 255;
+    return rgbColor;
+}
+
 string trim(string str, bool front, bool back)
 {
     int strBegin = str.find_first_not_of(" ");
