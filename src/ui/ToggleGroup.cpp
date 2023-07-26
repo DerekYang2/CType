@@ -164,7 +164,7 @@ void ToggleGroup::draw()
             x_pos += texture->width * img_scale;
         }
 
-        const float stroke_w = 2.f;
+        const float stroke_w = 1.f;
         for (int i = 0; i < hitbox.size(); i++)
         {
 
@@ -194,9 +194,8 @@ void ToggleGroup::draw()
                 if (pressed) 
                     rect_col = theme.sub;  // blink sub when click
                 // only x position needs subtract pressed because x left align, y center align
-                DrawRectangleRoundedAlign(x_pos + stroke_w - pressed, hitbox[i].y + hitbox[i].height * 0.5f, hitbox[i].width - 2 * stroke_w + 2*pressed, hitbox[i].height + MeasureTextEx(" ", font_size).x - 2 * stroke_w + 2*pressed, 0.3f, 4, rect_col, LEFT, CENTER);
-                if (i == selected)
-                    DrawRectangleRoundedLinesAlign(x_pos + stroke_w - pressed, hitbox[i].y + hitbox[i].height * 0.5f, hitbox[i].width - 2 * stroke_w + 2*pressed, hitbox[i].height + MeasureTextEx(" ", font_size).x - 2 * stroke_w + 2*pressed, 0.3f, 4, stroke_w, theme.main, LEFT, CENTER);
+                float border = (i == selected)? stroke_w : 0;
+                DrawRectangleRoundedAlign(x_pos - border - pressed, hitbox[i].y + hitbox[i].height * 0.5f, hitbox[i].width + 2 * border + 2 * pressed, hitbox[i].height + MeasureTextEx(" ", font_size).x + 2 * border + 2 * pressed, 0.4f, 5, rect_col, LEFT, CENTER);
                 DrawTextAlign(text[i], x_pos, hitbox[i].y + hitbox[i].height * 0.5f, font_size, text_col, LEFT, CENTER);
                 x_pos += hitbox[i].width;
             } else
@@ -241,7 +240,7 @@ void ToggleGroup::draw_hint()
         string hint_text = " " + text[i] + " ";
         Vector2 text_dim = MeasureTextEx(hint_text, 22);
         text_dim.y += 2 * MeasureTextEx(" ", 22).x;
-        DrawRectangleRoundedAlign({ corner.x + (i + 0.5f) * img_w, corner.y, text_dim.x, text_dim.y }, 0.25f, 7, rgba(0, 0, 0, hint_alpha[i]), CENTER, BOTTOM);
+        DrawRectangleRoundedAlign({ corner.x + (i + 0.5f) * img_w, corner.y, text_dim.x, text_dim.y }, 0.25f, 7, rgba(15, 15, 15, hint_alpha[i]), CENTER, BOTTOM);
         if (hint_alpha[i] * 2 >= HINT_ALPHA)  // if alpha is half of max, draw text
             DrawTextAlign(hint_text, corner.x + (i + 0.5f) * img_w, corner.y - text_dim.y * 0.5f, 22, WHITE, CENTER, CENTER);
     }

@@ -1,6 +1,6 @@
 #include "UIObject.h"
 
-const float HINT_ALPHA = 0.5f;
+const float HINT_ALPHA = 0.75f;
 
 UIObject::UIObject() {}
 

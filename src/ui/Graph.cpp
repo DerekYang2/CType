@@ -332,7 +332,7 @@ void Graph::draw_hint()
         }
     }
 
-    DrawRectangleRounded(hint_box, 0.1f, 7, rgba(0, 0, 0, 0.95f));
+    DrawRectangleRounded(hint_box, 0.1f, 7, rgba(15, 15, 15, 0.95f));
     float ypos = padding;
     DrawTextAlign(time_str, hint_box.x + 2 * padding, hint_box.y + ypos, hint_fs, WHITE), ypos += time_h;
     ypos += padding;

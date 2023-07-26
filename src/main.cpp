@@ -564,7 +564,7 @@ void init()
 int main(void)
 {
     fetch_themes();
-    init_theme("solarized light");
+    init_theme("matrix");
     /**
      * TECHNICAL INITIALIZATION
     */

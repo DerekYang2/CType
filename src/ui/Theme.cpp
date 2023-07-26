@@ -9,6 +9,10 @@ Theme::Theme(Color background, Color main, Color caret, Color sub, Color sub_alt
 {
 }
 
+
+/**
+ * For now, only meant for fetching specific css variables used by monkeytype 
+*/
 void fetch_themes()
 {
     namespace fs = std::filesystem;
