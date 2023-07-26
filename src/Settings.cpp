@@ -1,8 +1,10 @@
 #include "Settings.h"
 
-#define SETTING_PADDING 200
+const float SETTING_PADDING = 100;
 string setting_path = "./data/settings.json";
 RSJresource setting_json;
+
+ThemeToggle* theme_toggle;
 
 void init_settings()
 {
@@ -45,6 +47,10 @@ void init_settings()
         {"Debug Mode", "Allows debugging functions."}
     });
     ui_objects.alloc(behavior_panel, SETTINGS);
+
+    // theme toggle TODO: add TogglePanel height
+    theme_toggle = new ThemeToggle(SETTING_PADDING, 500, gameScreenWidth - 2 * SETTING_PADDING, 40, "stealth");
+    ui_objects.alloc(theme_toggle, SETTINGS);
 }
 
 void write_settings()

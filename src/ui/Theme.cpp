@@ -99,6 +99,7 @@ void refresh_themes()
 
 void init_theme(string theme_name)
 {
+    replace(theme_name.begin(), theme_name.end(), '_', ' ');
     if (theme_map.contains(theme_name))
         theme = theme_map[theme_name];
     else

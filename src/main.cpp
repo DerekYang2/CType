@@ -327,7 +327,7 @@ void update_end()
     
 }
 
-// do something for taskbar black background (for black themes)
+// TODO: do something for taskbar black background (for black themes)
 void draw_taskbar()
 {
     Rectangle taskbar_rect = taskbar->bounding_box();
@@ -565,7 +565,7 @@ void init()
 int main(void)
 {
     fetch_themes();
-    init_theme("stealth");
+    init_theme("iceberg light");
     /**
      * TECHNICAL INITIALIZATION
     */

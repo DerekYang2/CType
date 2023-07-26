@@ -1,6 +1,6 @@
 #include "ToggleGroup.h"
 
-#define TOGGLE_DELAY 0.1
+const float TOGGLE_DELAY = 0.1f;
 
 ToggleGroup::ToggleGroup(float x, float y, float h, int init_idx, vector<string> text_list, bool show_rectangle) : show_rect(show_rectangle)
 {
@@ -10,7 +10,6 @@ ToggleGroup::ToggleGroup(float x, float y, float h, int init_idx, vector<string>
     texture = nullptr;
     
     text = deque<string>(text_list.begin(), text_list.end());
-    text[0] = text[0];
     for (int i = 0; i < text.size(); i++)
         text[i] = " " + text[i] + " ";
     
@@ -193,10 +192,9 @@ void ToggleGroup::draw()
                 bool pressed = (i == selected && pressWatch.s() < TOGGLE_DELAY);
                 if (pressed) 
                     rect_col = theme.sub;  // blink sub when click
-                // only x position needs subtract pressed because x left align, y center align
                 float border = (i == selected)? stroke_w : 0;
-                DrawRectangleRoundedAlign(x_pos - border - pressed, hitbox[i].y + hitbox[i].height * 0.5f, hitbox[i].width + 2 * border + 2 * pressed, hitbox[i].height + MeasureTextEx(" ", font_size).x + 2 * border + 2 * pressed, 0.4f, 5, rect_col, LEFT, CENTER);
-                DrawTextAlign(text[i], x_pos, hitbox[i].y + hitbox[i].height * 0.5f, font_size, text_col, LEFT, CENTER);
+                DrawRectangleRoundedAlign(x_pos + hitbox[i].width * 0.5f, hitbox[i].y + hitbox[i].height * 0.5f, hitbox[i].width + 2 * border + 2 * pressed, hitbox[i].height + MeasureTextEx(" ", font_size).x + 2 * border + 2 * pressed, 0.4f, 5, rect_col, CENTER, CENTER);
+                DrawTextAlign(text[i], x_pos + hitbox[i].width*0.5f, hitbox[i].y + hitbox[i].height * 0.5f, font_size, text_col, CENTER, CENTER);
                 x_pos += hitbox[i].width;
             } else
             {
@@ -213,7 +211,7 @@ void ToggleGroup::draw()
                 }
                 if (i == selected && pressWatch.s() < TOGGLE_DELAY)  // just pressed 
                     text_col = theme.sub;  // blink sub when click
-                DrawTextAlign(text[i], x_pos, hitbox[i].y + hitbox[i].height * 0.5f, font_size, text_col, LEFT, CENTER);
+                DrawTextAlign(text[i], x_pos + hitbox[i].width * 0.5f, hitbox[i].y + hitbox[i].height * 0.5f, font_size, text_col, CENTER, CENTER);
                 x_pos += hitbox[i].width;
             }
         }

@@ -1,7 +1,7 @@
 #include "Toggle.h"
 
 /**
- * Fix toggle hover color (make consistent with toggle group)
+ * TODO: Fix toggle hover color (make consistent with togglegroup)
 */
 
 #define TOGGLE_DELAY 0.1

@@ -2,7 +2,9 @@
 #include "globals.h"
 #include "Stopwatch.h"
 #include "UIObject.h"
+extern const float TOGGLE_DELAY;
 class ToggleGroup : public UIObject {
+    protected:
     Vector2 corner;
     deque<Rectangle> hitbox;
     deque<string> text;
@@ -24,18 +26,18 @@ class ToggleGroup : public UIObject {
     ToggleGroup(float x, float y, float h, int init_idx, vector<string> text_list, bool show_rectangle = false);
     ToggleGroup(float x, float y, float h, int init_idx, vector<string> texture_paths, vector<string> hints, bool centered = false, bool show_rectangle = false);
     ToggleGroup(float x, float y, float h, int init_idx, vector<string> text_list, string init_msg, string img_path, bool show_rectangle = false);
-    void draw_hint() override;
-    void draw() override;
-    void update() override;
-    void set_offset(float y);
+    virtual void draw_hint() override;
+    virtual void draw() override;
+    virtual void update() override;
+    virtual void set_offset(float y);
     string get_selected();
     int selected_index();
-    void set_selected(string str);
-    Rectangle bounding_box();
-    float width();
-    float height();
+    virtual void set_selected(string str);
+    virtual Rectangle bounding_box();
+    virtual float width();
+    virtual float height();
     float space_width();
-    void set_pos(float x, float y) override;
+    virtual void set_pos(float x, float y) override;
     bool was_pressed();
     float get_font_size();
 };

@@ -3,6 +3,7 @@
 #include "UIAlloc.h"
 #include "TogglePanel.h"
 #include "jsonparser.h"
+#include "ThemeToggle.h"
 // EXTERNALS USED
 extern UIAlloc ui_objects;
 extern void switch_start();
@@ -12,8 +13,10 @@ extern void draw_taskbar();
 extern RSJresource setting_json; 
 
 // variables
+extern const float SETTING_PADDING;
 extern TogglePanel* behavior_panel;
 extern ToggleGroup* taskbar;
+extern ThemeToggle * theme_toggle;
 extern unordered_map<string, ToggleGroup*> setting_toggle;
 extern string default_settings;
 extern string setting_path;
