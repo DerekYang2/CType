@@ -33,9 +33,9 @@ using namespace std;
 
 #define is_digit(c) ((c) >= '0' && (c) <= '9')
 // inclusive boundaries
-#define substrI(str, start, end) str.substr(start, end - start + 1)  
+#define substrI(str, start, end) str.substr(start, (end) - (start) + 1)  
 // exclusive boundaries
-#define substrE(str, start, end) str.substr(start, end - start)
+#define substrE(str, start, end) str.substr(start, (end) - (start))
 
 #define PRINT_VECTORS_WITH_PARENTHESES
 //#define PRINT_VECTORS_BY_COMPONENT

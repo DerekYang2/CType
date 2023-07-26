@@ -327,6 +327,7 @@ void update_end()
     
 }
 
+// do something for taskbar black background (for black themes)
 void draw_taskbar()
 {
     Rectangle taskbar_rect = taskbar->bounding_box();
@@ -564,7 +565,7 @@ void init()
 int main(void)
 {
     fetch_themes();
-    init_theme("matrix");
+    init_theme("stealth");
     /**
      * TECHNICAL INITIALIZATION
     */
@@ -707,6 +708,6 @@ int main(void)
     UnloadShader(shader);
     CloseWindow();                      // Close window and OpenGL context
     //--------------------------------------------------------------------------------------
-
+    refresh_themes();
     return 0;
 }

@@ -1,5 +1,9 @@
 #include "Toggle.h"
 
+/**
+ * Fix toggle hover color (make consistent with toggle group)
+*/
+
 #define TOGGLE_DELAY 0.1
 Toggle::Toggle(float x, float y, float w, float h, bool initState) 
 {

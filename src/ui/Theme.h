@@ -2,7 +2,7 @@
 #include "raylibcustom.h"
 #include <filesystem>
 #include "Utils.h"
-
+#include "jsonparser.h"
 /**
  * main color for graph, already toggled buttons
  * button/toggle hovers = text color
@@ -20,7 +20,7 @@
 */
 
 extern const string THEMES_FOLDER;
-
+extern const string THEMES_JSON;
 class Theme {
     public:
     Color
@@ -38,5 +38,7 @@ class Theme {
 
 extern Theme theme;
 extern unordered_map<string, Theme> theme_map;
+
 extern void fetch_themes();
+extern void refresh_themes();
 extern void init_theme(string theme_name);
