@@ -109,6 +109,7 @@ StatusCount status_count;
 string default_settings;
 
 // END init extern variables ----------------------------------------------------------------
+const string start_label = "default test", settings_label = "settings";
 string cursor_path = "arrow_cursor";
 float cursor_height = 22.f;
 // render textures
@@ -157,11 +158,27 @@ void init_test()
     text_gen.generate_text((is_tape_mode?1:3) * ceil(gameScreenWidth / char_dimension['i'].x));
 }
 
+// scene switch functions
+
 void switch_start()
 {
+    taskbar->set_selected(start_label);
     scene = START;
     init_test();
 }
+
+void switch_settings()
+{
+    scene = SETTINGS;
+    taskbar->set_selected(settings_label);
+}
+
+void switch_popup()
+{
+    scene = POPUP;
+    pending_popup_draw = true;
+}
+
 
 void start_test()
 {
@@ -308,10 +325,10 @@ void update_taskbar()
     {
 
         int taskbar_scene = -1;
-        if (taskbar->get_selected() == "default test")  // home or test
+        if (taskbar->get_selected() == start_label)  // home or test
         {
             taskbar_scene = START;
-        } else if (taskbar->get_selected() == "settings")  // settings
+        } else if (taskbar->get_selected() == settings_label)  // settings
         {
             taskbar_scene = SETTINGS;
         }
@@ -555,7 +572,7 @@ void init()
     ui_objects.alloc(setting_bar, START);
 
     
-    taskbar = new ToggleGroup(gameScreenWidth/2, gameScreenHeight - 75, 75, 0, { "keyboard", "settings_icon" }, { "default test", "settings" }, true);
+    taskbar = new ToggleGroup(gameScreenWidth/2, gameScreenHeight - 75, 75, 0, { "keyboard", "settings_icon" }, { start_label, settings_label }, true);
     ui_objects.alloc(taskbar, {START, SETTINGS});
     
     // ENDING UI ---------------------------------------------------------------

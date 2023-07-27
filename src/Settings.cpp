@@ -80,7 +80,8 @@ void init_settings()
         {"Debug Mode", "Allows debugging functions."}
     });
     behavior_panel->set_bounds(boundary);
-    // theme toggle TODO: add TogglePanel height
+
+    // Initialize themes
     fetch_themes();
     theme_toggle = new ThemeToggle(SETTING_PADDING, y_pos, gameScreenWidth - 2 * SETTING_PADDING, 40, setting_json["appearance"]["theme"].as<string>());
     theme_toggle->set_bounds(boundary);
@@ -111,7 +112,6 @@ void write_settings()
 
 void update_settings()
 {
-    // doesn't update taskbar toggle
     if (IsKeyPressed(KEY_ESCAPE))
     {
         switch_start();

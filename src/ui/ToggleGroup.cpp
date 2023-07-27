@@ -268,7 +268,7 @@ void ToggleGroup::set_selected(string str)
 {
     for (int i = 0; i < text.size(); i++)
     {
-        if (trim(text[i]) == str)
+        if (trim(text[i]) == trim(str))
         {
             selected = i;
             pressed = true;

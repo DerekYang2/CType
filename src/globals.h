@@ -18,13 +18,14 @@ typedef enum {
     SCENE_COUNT
 } SCENES;
 // GLOBAL VARS
-// scene variables
+// scene variables 
 extern unordered_set<int> scene_ids[SCENE_COUNT];
 extern int scene;
 extern bool pending_popup_draw;
 extern void switch_settings();
 extern void switch_popup();
-
+// SCENE LITERALS 
+extern const string start_label, settings_label;
 
 extern Vector2 mouse;
 
