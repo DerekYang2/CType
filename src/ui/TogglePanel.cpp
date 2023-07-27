@@ -2,7 +2,7 @@
 
 TogglePanel::TogglePanel(float x, float y, float w, vector<ToggleGroup*> toggles, vector<pair<string, string>> toggleInfo) : x(x), y(y), width(w), toggles(toggles)
 {
-    toggle_h = toggles.back()->height();
+    toggle_h = toggles.back()->get_height();
     offset_y = 0;
     
     float cur_y = y;
@@ -12,12 +12,12 @@ TogglePanel::TogglePanel(float x, float y, float w, vector<ToggleGroup*> toggles
     
     for (auto& [label, detail] : toggleInfo)
     {
-        string fold_detail = fold(detail, width - toggles[idx]->width());
+        string fold_detail = fold(detail, width - toggles[idx]->get_width());
         toggle_info.push_back({ label, fold_detail });
         text_height.push_back({ MeasureTextEx(label, font_size).y, MeasureTextEx(fold_detail, font_size).y });
         float sum_h = text_height.back().first + text_height.back().second;
         cur_y += gap;
-        toggles[idx]->set_pos(x + width - toggles[idx]->width(), cur_y + (sum_h - toggles[idx]->height()) * 0.5f);  // right align x, center y
+        toggles[idx]->set_pos(x + width - toggles[idx]->get_width(), cur_y + (sum_h - toggles[idx]->get_height()) * 0.5f);  // right align x, center y
         cur_y += sum_h + gap;
         idx++;
     }
@@ -59,7 +59,7 @@ void TogglePanel::set_pos(float x2, float y2)
     {
         float sum_h = text_height.back().first + text_height.back().second;
         cur_y += gap;
-        toggles[i]->set_pos(x + width - toggles[i]->width(), cur_y + (sum_h - toggles[i]->height()) * 0.5f);  // right align x, center y
+        toggles[i]->set_pos(x + width - toggles[i]->get_width(), cur_y + (sum_h - toggles[i]->get_height()) * 0.5f);  // right align x, center y
         cur_y += sum_h + gap;
     }
 }
@@ -69,7 +69,7 @@ string TogglePanel::selected(int idx)
     return toggles[idx]->get_selected();
 }
 
-float TogglePanel::height()
+float TogglePanel::get_height()
 {
     return total_h;
 }

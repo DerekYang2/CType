@@ -84,15 +84,15 @@ void ThemeToggle::draw()
 
 Rectangle ThemeToggle::bounding_box()
 {
-    return Rectangle(corner.x, corner.y, tot_width, height());
+    return Rectangle(corner.x, corner.y, tot_width, get_height());
 }
 
-float ThemeToggle::width()
+float ThemeToggle::get_width()
 {
     return tot_width;
 }
 
-float ThemeToggle::height()
+float ThemeToggle::get_height()
 {
     float h = hitbox[0].height;
     float padding = h / 5;

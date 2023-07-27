@@ -16,3 +16,13 @@ void UIObject::set_pos(float x2, float y2)
 {
     x = x2;  y = y2;
 }
+
+float UIObject::get_width()
+{
+    return 0;
+}
+
+float UIObject::get_height()
+{
+    return 0;
+}

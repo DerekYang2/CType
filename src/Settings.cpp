@@ -40,7 +40,7 @@ void init_settings()
     for (auto& str : key_ordered)
         toggle_pointers.push_back(setting_toggle[str]);
 
-    float y_pos = 200;
+    float y_pos = SETTING_PADDING;
     
     behavior_panel = new TogglePanel(SETTING_PADDING, y_pos, gameScreenWidth - 2 * SETTING_PADDING, toggle_pointers, {
         {"Show Live WPM", "Displays the live WPM on the test screen."},
@@ -48,13 +48,16 @@ void init_settings()
         {"Tape Mode", "Only shows one line which scrolls horizontally."},
         {"Debug Mode", "Allows debugging functions."}
     });
-    ui_objects.alloc(behavior_panel, SETTINGS);
-    y_pos += behavior_panel->height();
     
     // theme toggle TODO: add TogglePanel height
     theme_toggle = new ThemeToggle(SETTING_PADDING, y_pos, gameScreenWidth - 2 * SETTING_PADDING, 40, "stealth");
-    ui_objects.alloc(theme_toggle, SETTINGS);
-    y_pos += theme_toggle->height();
+
+    for (UIObject* obj : list<UIObject*>{ behavior_panel, theme_toggle })
+    {
+        obj->set_pos(SETTING_PADDING, y_pos);
+        y_pos += obj->get_height();
+        ui_objects.alloc(obj, SETTINGS);
+    }
 }
 
 void write_settings()
@@ -79,5 +82,12 @@ void update_settings()
 void draw_settings()
 {
     ClearBackground(theme.background);  // Clear render texture background color
+}
+
+// Draw padding and taskbar on top
+void draw_borders()
+{
+    DrawRectangle(0, 0, gameScreenWidth, SETTING_PADDING, theme.background);
+    DrawRectangleAlign(0, gameScreenHeight, gameScreenWidth, SETTING_PADDING, theme.background, LEFT, BOTTOM);
     draw_taskbar();
 }

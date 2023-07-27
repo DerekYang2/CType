@@ -436,7 +436,7 @@ void Graph::set_time(float t)
     time = t;
 }
 
-float Graph::width()
+float Graph::get_width()
 {
     return rect.width;
 }

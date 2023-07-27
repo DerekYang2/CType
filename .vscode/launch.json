@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "preLaunchTask": "Debug Build",
-            "program": "${workspaceFolder}/build/main.exe",
+            "program": "${workspaceFolder}/main.exe",
             "args": [],
             "environment": [],
             "cwd": "${workspaceFolder}/",

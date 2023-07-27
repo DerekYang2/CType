@@ -277,12 +277,12 @@ Rectangle ToggleGroup::bounding_box()
     return Rectangle(corner.x, corner.y, tot_width, hitbox[0].height);
 }
 
-float ToggleGroup::width()
+float ToggleGroup::get_width()
 {
     return tot_width;
 }
 
-float ToggleGroup::height()
+float ToggleGroup::get_height()
 {
     return hitbox[0].height;
 }

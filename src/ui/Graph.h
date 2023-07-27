@@ -37,7 +37,7 @@ class Graph : public UIObject
     void draw_hint();
     void draw() override;
     void set_time(float t);
-    float width();
+    float get_width();
     float pos_to_value(float position, float max_val);
 };
 extern Graph* graph;

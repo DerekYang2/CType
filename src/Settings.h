@@ -28,3 +28,4 @@ extern void init_settings();
 extern void write_settings();  // write settings.json to file path
 extern void update_settings();
 extern void draw_settings();
+extern void draw_borders();

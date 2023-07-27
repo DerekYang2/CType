@@ -336,11 +336,14 @@ void draw_taskbar()
     taskbar_rect.height *= 2;  // goes of screen
     DrawRectangleRounded(taskbar_rect, 0.15f, 10, theme.sub_alt);
 
-    // draw selected index
+    // Draw selected index
     int index = taskbar->selected_index();
-    float icon_w = taskbar->height();
+    float icon_w = taskbar->get_height();
     float x = taskbar_rect.x + padding + icon_w * (index + 0.5f);  // taskbar height = width since square
     DrawRectangleRoundedAlign(x, gameScreenHeight, icon_w * 0.4f, icon_w * 0.1f, 1.f, 5, theme.main, CENTER, CENTER);
+
+    // Redraw in front
+    taskbar->draw();
 }
 
 void draw_start()
@@ -678,6 +681,10 @@ int main(void)
             ui_objects[id]->draw_hint();
         }
         draw_rect_preview();
+        if (scene == SETTINGS)
+        {
+            draw_borders();
+        }
         EndShaderMode();
         draw_logo();
         EndTextureMode();

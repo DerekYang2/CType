@@ -124,12 +124,12 @@ void Toggle::draw()
     }
 }
 
-float Toggle::width()
+float Toggle::get_width()
 {
     return hitbox.width;
 }
 
-float Toggle::height()
+float Toggle::get_height()
 {
     return hitbox.height;
 }

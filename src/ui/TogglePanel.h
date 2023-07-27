@@ -17,7 +17,7 @@ class TogglePanel : public UIObject {
     void draw() override;
     void set_pos(float x2, float y2) override;
     string selected(int idx);
-    float height();
+    float get_height() override;
     private:
     string fold(string str, float max_width);
 };

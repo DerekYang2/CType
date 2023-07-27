@@ -29,8 +29,8 @@ public:
     void set_state(bool state);
     void update();
     void draw();
-    float width();
-    float height();
+    float get_width();
+    float get_height();
     string get_text();
     bool toggled();
     bool was_pressed();

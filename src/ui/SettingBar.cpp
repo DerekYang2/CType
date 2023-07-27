@@ -8,7 +8,7 @@
 
 SettingBar::SettingBar(float center_x, float center_y, initializer_list<Toggle*> toggle_list, ToggleGroup* toggleGroup, PopupHandler* popupHandler) : cx(center_x), cy(center_y), toggle_group(toggleGroup), popup_handler(popupHandler)
 {
-    h = toggle_group->height();
+    h = toggle_group->get_height();
     space_width = toggle_group->space_width();
     for (auto t : toggle_list)
         toggle_map[t->get_text()] = t;
@@ -16,12 +16,12 @@ SettingBar::SettingBar(float center_x, float center_y, initializer_list<Toggle*>
     tot_width = space_width;  // first space
     for (auto t : toggle_list)
     {
-        tot_width += t->width();
+        tot_width += t->get_width();
         tot_width += space_width;
     }
     separator_x = tot_width + 1.5f*space_width; 
     tot_width += 3 * space_width;  // separator between toggles and group
-    tot_width += toggle_group->width();  // last space is auto handled by toggle group
+    tot_width += toggle_group->get_width();  // last space is auto handled by toggle group
 
     // fix toggle positions 
     float x_pos = cx - tot_width / 2;
@@ -31,7 +31,7 @@ SettingBar::SettingBar(float center_x, float center_y, initializer_list<Toggle*>
     for (auto& [label, toggle] : toggle_map)
     {
         toggle->set_pos(x_pos, cy - h / 2);
-        x_pos += toggle->width() + space_width;
+        x_pos += toggle->get_width() + space_width;
     }
     x_pos += 3*space_width;
     toggle_group->set_pos(x_pos, cy - h / 2);

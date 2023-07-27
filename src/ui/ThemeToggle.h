@@ -8,6 +8,6 @@ class ThemeToggle : public ToggleGroup {
     ThemeToggle(float x, float y, float w, float h, string init_theme);
     void draw() override;
     Rectangle bounding_box() override;
-    float width() override;
-    float height() override;
+    float get_width() override;
+    float get_height() override;
 };

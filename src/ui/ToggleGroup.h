@@ -34,8 +34,8 @@ class ToggleGroup : public UIObject {
     int selected_index();
     virtual void set_selected(string str);
     virtual Rectangle bounding_box();
-    virtual float width();
-    virtual float height();
+    virtual float get_width() override;
+    virtual float get_height() override;
     float space_width();
     virtual void set_pos(float x, float y) override;
     bool was_pressed();
