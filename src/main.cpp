@@ -565,7 +565,7 @@ void init()
 int main(void)
 {
     fetch_themes();
-    init_theme("iceberg light");
+    init_theme("dino");
     /**
      * TECHNICAL INITIALIZATION
     */

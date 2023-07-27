@@ -356,7 +356,10 @@ void Graph::draw_hint()
 
 void Graph::draw()
 {
-    Color line_col = rgba(0, 0, 0, 0.3);
+    //TODO: Make line col lighter when background is too dark
+    bool too_dark = luma(theme.background) < 40;
+    Color line_col = too_dark ? rgba(255, 255, 255, 0.3) : rgba(0, 0, 0, 0.3);
+
     DrawRectangleLinesEx(rect, 1, line_col);
     float grid_font_sz = 25;
     // DRAW y-grid
@@ -390,7 +393,7 @@ void Graph::draw()
     }    
     // RAW curve polygon
     for (vector<Vector2>& segment : draw_segments)
-        DrawTriangleFan(&segment[0], segment.size(), rgba(0, 0, 0, 0.15));
+        DrawTriangleFan(&segment[0], segment.size(), too_dark ? rgba(255, 255, 255, 0.07) : rgba(0, 0, 0, 0.15));
     
     // RAW curve
     DrawTriangleStrip(&draw_points[RAW][0], draw_points[RAW].size(), theme.sub);
