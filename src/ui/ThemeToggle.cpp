@@ -56,11 +56,26 @@ void ThemeToggle::draw()
         bool pressed = (i == selected && pressWatch.s() < TOGGLE_DELAY);
        
         // 6 * border for width so that width is extra elongated (makes it easy to see if selected/hover)
-        float border = (i == selected || hover[i]) ? (stroke_w + 0.5f * sin(rad(globalFrame * 6))) : 0;
+        float border = (i == selected || hover[i]) ? (stroke_w) : 0;
         DrawRectangleRoundedAlign(hitbox[i].x + hitbox[i].width * 0.5f, hitbox[i].y + hitbox[i].height * 0.5f, hitbox[i].width + 8 * border + 2 * pressed, hitbox[i].height + 2 * border + 2 * pressed, 0.4f, 5, rect_col, CENTER, CENTER);
         if (i == selected)
         {
             DrawRectangleRoundedLinesAlign(hitbox[i].x + hitbox[i].width * 0.5f, hitbox[i].y + hitbox[i].height * 0.5f, hitbox[i].width + 8 * border + 2 * pressed, hitbox[i].height + 2 * border + 2 * pressed, 0.4f, 5, stroke_w, text_col, CENTER, CENTER);
+            // Draw preview caret
+            if ((globalFrame / 30) & 1)
+            {
+                float cursor_h = MeasureTextEx("|", font_size).y;
+                DrawRectangleRounded(Rectangle(hitbox[i].x + 0.5f * (hitbox[i].width + MeasureTextEx(text[i], font_size).x), hitbox[i].y + 0.5f * (hitbox[i].height - cursor_h), 3, cursor_h), 0.8f, 4, theme_map[text[i]].caret);
+            }
+        }
+        if (i == selected || i == hover_idx)
+        {
+            float right_x = hitbox[i].x + hitbox[i].width + 4 * border + pressed;
+            // Draw 3 preview squares
+            constexpr float rect_w = 21, rect_pad = rect_w / 3;
+            DrawRectangleRoundedAlign(right_x - rect_pad, hitbox[i].y + hitbox[i].height * 0.5f, rect_w, rect_w, 0.4f, 4, theme_map[text[i]].text, RIGHT, CENTER);
+            DrawRectangleRoundedAlign(right_x - rect_w - 2*rect_pad, hitbox[i].y + hitbox[i].height * 0.5f, rect_w, rect_w, 0.4f, 4, theme_map[text[i]].sub, RIGHT, CENTER);
+            DrawRectangleRoundedAlign(right_x - 2*rect_w - 3*rect_pad, hitbox[i].y + hitbox[i].height * 0.5f, rect_w, rect_w, 0.4f, 4, theme_map[text[i]].main, RIGHT, CENTER);
         }
         DrawTextAlign(text[i], hitbox[i].x + hitbox[i].width * 0.5f, hitbox[i].y + hitbox[i].height * 0.5f, font_size, text_col, CENTER, CENTER);
     }

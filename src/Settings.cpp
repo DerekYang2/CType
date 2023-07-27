@@ -40,17 +40,21 @@ void init_settings()
     for (auto& str : key_ordered)
         toggle_pointers.push_back(setting_toggle[str]);
 
-    behavior_panel = new TogglePanel(SETTING_PADDING, 200, gameScreenWidth - 2 * SETTING_PADDING, toggle_pointers, {
+    float y_pos = 200;
+    
+    behavior_panel = new TogglePanel(SETTING_PADDING, y_pos, gameScreenWidth - 2 * SETTING_PADDING, toggle_pointers, {
         {"Show Live WPM", "Displays the live WPM on the test screen."},
         {"Strict Space", "When enabled, pressing space at the beginning of a word will insert a space character."},
         {"Tape Mode", "Only shows one line which scrolls horizontally."},
         {"Debug Mode", "Allows debugging functions."}
     });
     ui_objects.alloc(behavior_panel, SETTINGS);
-
+    y_pos += behavior_panel->height();
+    
     // theme toggle TODO: add TogglePanel height
-    theme_toggle = new ThemeToggle(SETTING_PADDING, 500, gameScreenWidth - 2 * SETTING_PADDING, 40, "stealth");
+    theme_toggle = new ThemeToggle(SETTING_PADDING, y_pos, gameScreenWidth - 2 * SETTING_PADDING, 40, "stealth");
     ui_objects.alloc(theme_toggle, SETTINGS);
+    y_pos += theme_toggle->height();
 }
 
 void write_settings()

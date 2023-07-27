@@ -4,6 +4,7 @@
 
 class TogglePanel : public UIObject {
     float x, y, width, offset_y, toggle_h, gap;
+    float total_h;
     // font_info
     float font_size;
     vector<pair<float, float>> text_height;
@@ -12,9 +13,11 @@ class TogglePanel : public UIObject {
 
     public:
     TogglePanel(float x, float y, float w, vector<ToggleGroup*> toggles, vector<pair<string, string>> toggle_info);
-    void update();
-    void draw();
+    void update() override;
+    void draw() override;
+    void set_pos(float x2, float y2) override;
     string selected(int idx);
+    float height();
     private:
     string fold(string str, float max_width);
 };
