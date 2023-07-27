@@ -5,6 +5,7 @@
 extern const float TOGGLE_DELAY;
 class ToggleGroup : public UIObject {
     protected:
+    Rectangle bounds{ 0, 0, gameScreenWidth, gameScreenHeight };
     Vector2 corner;
     deque<Rectangle> hitbox;
     deque<string> text;
@@ -30,7 +31,7 @@ class ToggleGroup : public UIObject {
     virtual void draw() override;
     virtual void update() override;
     virtual void set_offset(float y);
-    string get_selected();
+    virtual string get_selected();
     int selected_index();
     virtual void set_selected(string str);
     virtual Rectangle bounding_box();
@@ -38,6 +39,7 @@ class ToggleGroup : public UIObject {
     virtual float get_height() override;
     float space_width();
     virtual void set_pos(float x, float y) override;
+    void set_bounds(Rectangle rect);
     bool was_pressed();
     float get_font_size();
 };

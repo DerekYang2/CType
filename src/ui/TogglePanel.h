@@ -3,7 +3,8 @@
 #include "ToggleGroup.h"
 
 class TogglePanel : public UIObject {
-    float x, y, width, offset_y, toggle_h, gap;
+    Rectangle bounds{ 0, 0, gameScreenWidth, gameScreenHeight };
+    float x, y, width, offset_y = 0, toggle_h, gap;
     float total_h;
     // font_info
     float font_size;
@@ -16,6 +17,7 @@ class TogglePanel : public UIObject {
     void update() override;
     void draw() override;
     void set_pos(float x2, float y2) override;
+    void set_bounds(Rectangle rect);
     string selected(int idx);
     float get_height() override;
     private:

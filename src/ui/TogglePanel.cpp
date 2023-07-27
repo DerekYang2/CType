@@ -3,7 +3,6 @@
 TogglePanel::TogglePanel(float x, float y, float w, vector<ToggleGroup*> toggles, vector<pair<string, string>> toggleInfo) : x(x), y(y), width(w), toggles(toggles)
 {
     toggle_h = toggles.back()->get_height();
-    offset_y = 0;
     
     float cur_y = y;
     font_size = toggles.back()->get_font_size();
@@ -61,6 +60,15 @@ void TogglePanel::set_pos(float x2, float y2)
         cur_y += gap;
         toggles[i]->set_pos(x + width - toggles[i]->get_width(), cur_y + (sum_h - toggles[i]->get_height()) * 0.5f);  // right align x, center y
         cur_y += sum_h + gap;
+    }
+}
+
+void TogglePanel::set_bounds(Rectangle rect)
+{
+    bounds = rect;
+    for (auto toggle_group : toggles)
+    {
+        toggle_group->set_bounds(bounds);
     }
 }
 

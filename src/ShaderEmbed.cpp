@@ -2,7 +2,8 @@
 void load_sdf_shader()
 {
     char *vShaderStr = NULL;
-    const char *fShaderStr = "#version 330\n"
+    const char* fShaderStr =
+                "#version 330\n"
                 "// Input vertex attributes (from vertex shader)\n"
                 "in vec2 fragTexCoord;\n"
                 "in vec4 fragColor;\n"

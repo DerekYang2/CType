@@ -82,9 +82,23 @@ void ThemeToggle::draw()
 
 }
 
+void ThemeToggle::update()
+{
+    ToggleGroup::update();
+    if (was_pressed())
+    {
+        init_theme(text[selected]);
+    }
+}
+
 Rectangle ThemeToggle::bounding_box()
 {
     return Rectangle(corner.x, corner.y, tot_width, get_height());
+}
+
+string ThemeToggle::get_selected()
+{
+    return (text[selected]);
 }
 
 float ThemeToggle::get_width()

@@ -113,9 +113,13 @@ void ToggleGroup::update()
     pressed = false;
     // just in case collisionrec can result in two hovers
     int hover_idx = -1;
-    for (int i = 0; i < hitbox.size(); i++)
+    // Only check hover is mouse is in bounds
+    if (CheckCollisionPointRec({ mouse.x, mouse.y - offset_y }, bounds))
     {
-        if (CheckCollisionPointRec({ mouse.x, mouse.y - offset_y }, hitbox[i])) hover_idx = i;
+        for (int i = 0; i < hitbox.size(); i++)
+        {
+            if (CheckCollisionPointRec({ mouse.x, mouse.y - offset_y }, hitbox[i])) hover_idx = i;
+        }
     }
     for (int i = 0; i < hitbox.size(); i++)
         if (i != hover_idx)
@@ -309,4 +313,9 @@ bool ToggleGroup::was_pressed()
 float ToggleGroup::get_font_size()
 {
     return font_size;
+}
+
+void ToggleGroup::set_bounds(Rectangle rect)
+{
+    bounds = rect;
 }

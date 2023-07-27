@@ -84,7 +84,7 @@ mt19937 rng(std::chrono::system_clock::now().time_since_epoch().count());
 Font font; // Font: UI font
 float font_spacing;
 
-UIAlloc ui_objects(100);
+UIAlloc ui_objects(200);
 Shader shader;
 Vector2 char_dimension[CHAR_MAX + 1];
 
@@ -102,6 +102,7 @@ float drawing_x, drawing_y;
 TogglePanel* behavior_panel;
 unordered_map<string, ToggleGroup*> setting_toggle;
 vector<InputBox*> input_boxes[SCENE_COUNT];
+ThemeToggle* theme_toggle;
 
 StatusCount status_count;
 
@@ -302,8 +303,10 @@ void update_test()
 
 void update_taskbar()
 {
+
     if (taskbar->was_pressed())
     {
+
         int taskbar_scene = -1;
         if (taskbar->get_selected() == "default test")  // home or test
         {
@@ -315,7 +318,9 @@ void update_taskbar()
         if (taskbar_scene != scene)  // taskbar scene changed
         {
             if (taskbar_scene == START)
+            {
                 switch_start();
+            }
             else if (taskbar_scene == SETTINGS)
                 switch_settings();
         }
@@ -344,6 +349,7 @@ void draw_taskbar()
 
     // Redraw in front
     taskbar->draw();
+    taskbar->draw_hint();
 }
 
 void draw_start()
@@ -567,8 +573,6 @@ void init()
 //------------------------------------------------------------------------------------
 int main(void)
 {
-    fetch_themes();
-    init_theme("dino");
     /**
      * TECHNICAL INITIALIZATION
     */
@@ -623,6 +627,7 @@ int main(void)
         } else if (scene == SETTINGS)
         {
             update_settings();
+
         }
         
         io_handler[scene].update();  // update the IO handler of the current scene
