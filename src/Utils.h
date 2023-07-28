@@ -36,7 +36,7 @@ extern void DrawLabel(string text, int x, int y, int fontSize, Color label_col, 
 extern void DrawRectangleBoth(int x, int y, int width, int height, Color color, float strokeWidth, Color strokeColor = BLACK);
 extern void DrawRectangleAlign(Rectangle r, Color col, int x_align = LEFT, int y_align = TOP);
 extern void DrawRectangleAlign(float x, float y, float width, float height, Color col, int x_align = LEFT, int y_align = TOP);
-extern void DrawRectangleRoundedAlign(Rectangle r, float roundness, int segments, Color col, int x_align, int y_align);
+extern void DrawRectangleRoundedAlign(Rectangle r, float roundness, int segments, Color col, int x_align = LEFT, int y_align = TOP);
 extern void DrawRectangleRoundedAlign(float x, float y, float width, float height, float roundness, int segments, Color col, int x_align, int y_align);
 extern void DrawRectangleRoundedLinesAlign(Rectangle r, float roundness, int segments, float lineThick, Color col, int x_align, int y_align);
 extern void DrawRectangleRoundedLinesAlign(float x, float y, float width, float height, float roundness, int segments, float lineThick, Color col, int x_align, int y_align);
