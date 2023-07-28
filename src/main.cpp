@@ -1,17 +1,3 @@
-/*******************************************************************************************
-*
-*   raylib [core] example - window scale letterbox (and virtual mouse)
-*
-*   Example originally created with raylib 2.5, last _time updated with raylib 4.0
-*
-*   Example contributed by Anata (@anatagawa) and reviewed by Ramon Santamaria (@raysan5)
-*
-*   Example licensed under an unmodified zlib/libpng license, which is an OSI-certified,
-*   BSD-like license that allows static linking with closed source software
-*
-*   Copyright (c) 2019-2022 Anata (@anatagawa) and Ramon Santamaria (@raysan5)
-*
-********************************************************************************************/
 #include <iostream>
 #include "raylibcustom.h"        
 #include <math.h>
