@@ -1,15 +1,15 @@
 #include "Scrollbar.h"
 
 /**
- * Total height is mapped to rect.height, thus scale everything by rect.height/total_h
+ * Total height is mapped to bar.height, thus scale everything by bar.height/total_h
  * Theme colors:
  * normal: sub, hover: text, hold/press: main
 */
 
-Scrollbar::Scrollbar(float x, float y, float w, float h, float screen_h, float total_h) : rect{ x, y, w, h }, screen_h(screen_h), total_h(total_h)
+Scrollbar::Scrollbar(float x, float y, float w, float h, float screen_h, float total_h) : bar{ x, y, w, h }, screen_h(screen_h), total_h(total_h)
 {
     // The height of the bar is the screenheight scaled
-    thumb_h = screen_h * (rect.height / total_h);
+    thumb_h = screen_h * (bar.height / total_h);
 }
     
 void Scrollbar::update()
@@ -21,15 +21,25 @@ void Scrollbar::update()
         if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON))
             drag = false;
         float top_y = mouse.y - click_offset;  // Top of the thumb rect
-        offset = -(top_y - rect.y) / (rect.height / total_h);  // Unscale the scrollbar distance from scrollbar top
-        offset = clamp(offset, -(total_h - screen_h), 0.f);
+        // Get the offset at top_y position
+        offset = offset_at(top_y);
     } else
     {
-        if (hover && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+        Rectangle abs_bar = bar;
+        abs_bar.x -= abs_bar.width;  // Make left aligned
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
-            drag = true;
-            click_offset = mouse.y - thumb_rect().y;
+            if (hover)  // Pressed on thumb -> drag
+            {
+                drag = true;
+                click_offset = mouse.y - thumb_rect().y;
+            } else if (CheckCollisionPointRec(mouse, abs_bar))  // Pressed on bar -> set position
+            {
+                float top_y = mouse.y - thumb_h / 2;
+                offset = offset_at(top_y);
+            }
         }
+        
     }
 }
 
@@ -43,7 +53,7 @@ void Scrollbar::draw()
     {
         thumb_col = theme.text;
     }
-    DrawRectangleRoundedAlign(rect, 1, 4, theme.sub_alt, RIGHT, TOP);
+    DrawRectangleRoundedAlign(bar, 1, 4, theme.sub_alt, RIGHT, TOP);
     DrawRectangleRoundedAlign(thumb_rect(), 1, 4, thumb_col, LEFT, TOP);
 }
 
@@ -55,7 +65,7 @@ void Scrollbar::shift(float dx, float dy)
 
 void Scrollbar::set_pos(float x2, float y2)
 {
-    rect.x = x2, rect.y = y2;
+    bar.x = x2, bar.y = y2;
 }
 
 float Scrollbar::get_offset()
@@ -63,15 +73,21 @@ float Scrollbar::get_offset()
     return offset;
 }
 
-Rectangle Scrollbar::bounding_box()
+float Scrollbar::offset_at(float y)
 {
-    return rect;
+    float real_offset = -(y - bar.y) / (bar.height / total_h);  // Unscale the scrollbar distance from scrollbar top
+    return clamp(real_offset, -(total_h - screen_h), 0.f);
 }
 
-// NOTE: original rectangle.x is right aligned, subtract rect.width from x
+Rectangle Scrollbar::bounding_box()
+{
+    return bar;
+}
+
+// NOTE: original bar.x is right aligned, subtract bar.width from bar.x
 Rectangle Scrollbar::thumb_rect()
 {
     // Thumb rect subtracts offset because page movement is reverse of thumb movement
-    return Rectangle(rect.x - rect.width, rect.y - offset * (rect.height / total_h), rect.width, thumb_h);
+    return Rectangle(bar.x - bar.width, bar.y - offset * (bar.height / total_h), bar.width, thumb_h);
 }
 

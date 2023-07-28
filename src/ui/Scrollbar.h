@@ -7,10 +7,10 @@
 */
 class Scrollbar : public UIObject {
     float offset = 0;
-    Rectangle rect;
+    Rectangle bar;
     float thumb_h, screen_h, total_h;
     bool hover = false,
-        drag = false;
+         drag = false;
     float click_offset;
     public:
     // By default, x is right aligned rather than usual left
@@ -21,6 +21,7 @@ class Scrollbar : public UIObject {
     void shift(float dx, float dy) override;
     void set_pos(float x2, float y2) override;
     float get_offset();
+    float offset_at(float y);
     Rectangle bounding_box();
     Rectangle thumb_rect();
 
