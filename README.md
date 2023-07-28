@@ -10,12 +10,15 @@
 ## About 
 Long term project in progress.
 
-A low-level implementation and extremely lightweight typing test in the likeness of Monkeytype. Written from scratch with OpenGL drawing functions provided by https://github.com/raysan5/raylib. As a result, executable runs without further setup on most Windows platforms as DLLs come with Windows 10 and 11. 
+A low-level implementation and extremely lightweight typing test in the likeness of Monkeytype. Written from scratch with OpenGL drawing functions provided by https://github.com/raysan5/raylib. As a result, executable runs without further setup on most Windows platforms as DLLs come with Windows 10 and 11. Tested that it is lightweight enough to reach above 60 fps on your dying 2-core 2GB RAM chromebook.
 Test has similar behavior to Monkeytype, where pressing space too early will jump to the next word and WPM is calculated using the number of characters in correct words only rather than following the formula that uses accuracy.
 
 ## Features
 - Executable directly runs with no dependencies (on Windows)
+- Extremely lightweight
+- Completely offline
 - Input custom test time
+- Realtime setting updating and saving
 - Smooth scrolling tape mode, adaptive to instantaneous WPM
 - Theme loading with all Monkeytype CSS themes
 - Signed distance fields fragment shader for anti-aliased text
