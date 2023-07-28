@@ -92,17 +92,28 @@ void init_settings()
     });
     behavior_panel->set_bounds(boundary);
 
+    // List of UIObject pointers
+    list<UIObject*> setting_objects{ behavior_title, behavior_panel, appearance_title, theme_toggle };
+
+    // Set all UIObject positions
     float y_pos = SETTING_PADDING;
-    for (UIObject* obj : list<UIObject*>{ behavior_title, behavior_panel, appearance_title, theme_toggle })
+    for (auto obj : setting_objects)
     {
         obj->set_pos(SETTING_PADDING, y_pos);
         y_pos += obj->get_height();
-        ui_objects.alloc(obj, SETTINGS);
+        // Add obj to ui object set
+        ui_objects.alloc(obj, SETTINGS);        
     }
+
+    // Initialise scrollbar 
     float total_h = y_pos + SETTING_PADDING;  // Extra setting padding at bottom
     constexpr float bar_w = 10;
-    // Initialise scrollbar 
-    scrollbar = new Scrollbar(gameScreenWidth - bar_w/3, 0, bar_w, gameScreenHeight, gameScreenHeight, total_h);
+    scrollbar = new Scrollbar(gameScreenWidth - bar_w / 3, 0, bar_w, gameScreenHeight, gameScreenHeight, total_h);
+    // Bind all setting objects to scrollbar
+    for (auto obj : setting_objects)
+    {
+        scrollbar->add_child(obj);
+    }
     ui_objects.alloc(scrollbar, SETTINGS);
 }
 
@@ -140,8 +151,9 @@ void draw_borders()
 {
     DrawRectangle(0, 0, gameScreenWidth, SETTING_PADDING, theme.background);
     DrawRectangleAlign(0, gameScreenHeight, gameScreenWidth, SETTING_PADDING, theme.background, LEFT, BOTTOM);
-    DrawRectangle(0, 0, SETTING_PADDING, gameScreenHeight, theme.background);
-    DrawRectangleAlign(gameScreenWidth, 0, SETTING_PADDING, gameScreenHeight, theme.background, RIGHT, TOP);
+    // Drawing left right padding blocks out buttons that expand a bit
+    //DrawRectangle(0, 0, SETTING_PADDING, gameScreenHeight, theme.background);
+    //DrawRectangleAlign(gameScreenWidth, 0, SETTING_PADDING, gameScreenHeight, theme.background, RIGHT, TOP);
     draw_taskbar();
     scrollbar->draw();
 }

@@ -5,6 +5,7 @@ Textbox::Textbox(float x, float y, float width, float height, string text_str, f
     og_text = text;
     rect.x = x;
     rect.y = y;
+    corner_init = { x, y };
     if (wrapping)
     {
         text = fold(text, width);
@@ -25,6 +26,7 @@ Textbox::Textbox(float x, float y, float width, float height, string text_str, f
     og_text = text;
     rect.x = x;
     rect.y = y;
+    corner_init = { x, y };
     if (wrapping)
     {
         text = fold(text, width);
@@ -45,6 +47,7 @@ Textbox::Textbox(float x, float y, float width, string text, Color col) : text(t
     og_text = text;
     rect.x = x;
     rect.y = y;
+    corner_init = { x, y };
     rect.width = width;
     font_size = MeasureFontSize(text, width);
     rect.height = MeasureTextEx(text, font_size).y;
@@ -66,11 +69,13 @@ void Textbox::set_pos(float x, float y)
 {
     rect.x = x;
     rect.y = y;
+    corner_init = { x, y };
 }
 
-void Textbox::shift(float dx, float dy)
+void Textbox::set_offset(float dx, float dy)
 {
-    set_pos(rect.x + dx, rect.y + dy);
+    rect.x = corner_init.x + dx;
+    rect.y = corner_init.y + dy;
 }
 
 void Textbox::set_var_str(vector<string> strs)

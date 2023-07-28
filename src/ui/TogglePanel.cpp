@@ -1,6 +1,6 @@
 #include "TogglePanel.h"
 
-TogglePanel::TogglePanel(float x, float y, float w, vector<ToggleGroup*> toggles, vector<pair<string, string>> toggleInfo) : x(x), y(y), width(w), toggles(toggles)
+TogglePanel::TogglePanel(float x, float y, float w, vector<ToggleGroup*> toggles, vector<pair<string, string>> toggleInfo) : corner_init{x, y}, x(x), y(y), width(w), toggles(toggles)
 {
     toggle_h = toggles.back()->get_height();
     
@@ -51,7 +51,8 @@ void TogglePanel::set_pos(float x2, float y2)
 {
     x = x2;
     y = y2;
-    
+    corner_init = { x, y };
+
     float cur_y = y;
     for (int i = 0; i < toggles.size(); i++)
     {
@@ -62,9 +63,18 @@ void TogglePanel::set_pos(float x2, float y2)
     }
 }
 
-void TogglePanel::shift(float dx, float dy)
+void TogglePanel::set_offset(float dx, float dy)
 {
-    set_pos(x + dx, y + dy);
+    x = corner_init.x + dx;
+    y = corner_init.y + dy;
+    float cur_y = y;
+    for (int i = 0; i < toggles.size(); i++)
+    {
+        float sum_h = text_height.back().first + text_height.back().second;
+        cur_y += gap;
+        toggles[i]->set_pos(x + width - toggles[i]->get_width(), cur_y + (sum_h - toggles[i]->get_height()) * 0.5f);  // right align x, center y
+        cur_y += sum_h + gap;
+    }
 }
 
 void TogglePanel::set_bounds(Rectangle rect)

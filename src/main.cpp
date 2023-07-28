@@ -384,7 +384,6 @@ void draw_taskbar()
 void draw_start()
 {
     ClearBackground(theme.background);  // Clear render texture background color
-    BeginShaderMode(shader);
     drawer.draw();
     if ((globalFrame/30) & 1)  // if active or Inactive, blink half of the time
     {
@@ -393,7 +392,6 @@ void draw_start()
     Color text_color = theme.main;
     text_color.a = restart_alpha * 255;
     DrawTextAlign("Restarted", gameScreenWidth/2, 975, 35, text_color, CENTER, CENTER);
-    EndShaderMode();
     draw_taskbar();
 }
 
@@ -417,7 +415,6 @@ void draw_test()
         DrawRectangleRec(formatRect(Rectangle(x_pos, 500 - scale_f*stored_wpm[x_pos], 1, scale_f*stored_wpm[x_pos])), RED);
     for (int x_pos = stored_current_wpm.size() - 1; x_pos >= 0; x_pos--)
         DrawRectangleRec(formatRect(Rectangle(x_pos, 500 - scale_f*stored_current_wpm[x_pos], 1, 10)), BLUE); */
-    BeginShaderMode(shader);
 
     if (setting_toggle["show wpm"]->get_selected() == "on")
     {
@@ -429,7 +426,6 @@ void draw_test()
     // DRAW TYPING TEST TEXT
     drawer.draw();
     
-    EndShaderMode();
     if (io_handler[TEST].active_cursor())  // if active or Inactive, blink half of the time
     {
         drawer.draw_caret();
@@ -494,7 +490,7 @@ void load_base_font(string path = "default")
         font.texture = LoadTextureFromImage(atlas);
         UnloadImage(atlas);
 
-        SetTextureFilter(font.texture, TEXTURE_FILTER_BILINEAR);    // Required for SDF font  
+        SetTextureFilter(font.texture, TEXTURE_FILTER_TRILINEAR);    // Required for SDF font  
     } else 
     {
         font = load_font(path.c_str());
@@ -681,6 +677,7 @@ int main(void)
         //----------------------------------------------------------------------------------
         // Draw everything in the render texture, note this will not be rendered on screen, yet
         BeginTextureMode(target);
+        BeginShaderMode(shader);    // Activate SDF font shader    
 
         if (scene == START)
         {
@@ -705,7 +702,6 @@ int main(void)
             DrawText(TextFormat("MAX FPS: %d | ELAPSED TIME: %.2f", max_fps, frame_time), 0, gameScreenHeight - 30, 25, BLACK);
         }
         
-        BeginShaderMode(shader);    // Activate SDF font shader    
         for (const int id : scene_ids[scene])
         {
             ui_objects[id]->draw();

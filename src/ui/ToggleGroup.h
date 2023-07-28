@@ -6,7 +6,7 @@ extern const float TOGGLE_DELAY;
 class ToggleGroup : public UIObject {
     protected:
     Rectangle bounds{ 0, 0, gameScreenWidth, gameScreenHeight };
-    Vector2 corner;
+    Vector2 corner, corner_init;
     deque<Rectangle> hitbox;
     deque<string> text;
     deque<bool> hover;
@@ -37,7 +37,7 @@ class ToggleGroup : public UIObject {
     virtual float get_height() override;
     float space_width();
     virtual void set_pos(float x, float y) override;
-    virtual void shift(float dx, float dy) override;
+    virtual void set_offset(float dx, float dy) override;
     void set_bounds(Rectangle rect);
     bool was_pressed();
     float get_font_size();

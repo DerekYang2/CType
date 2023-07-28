@@ -17,11 +17,7 @@ void UIObject::set_pos(float x2, float y2)
     x = x2;  y = y2;
 }
 
-void UIObject::shift(float dx, float dy)
-{
-    x += dx;
-    y += dy;
-}
+void UIObject::set_offset(float dx, float dy) {}
 
 float UIObject::get_width()
 {

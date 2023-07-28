@@ -4,7 +4,7 @@ const float TOGGLE_DELAY = 0.1f;
 
 ToggleGroup::ToggleGroup(float x, float y, float h, int init_idx, vector<string> text_list, bool show_rectangle) : show_rect(show_rectangle)
 {
-    corner = { x, y };
+    corner = corner_init = { x, y };
     init_message = "";
     selected = init_idx;
     texture = nullptr;
@@ -44,7 +44,7 @@ ToggleGroup::ToggleGroup(float x, float y, float h, int init_idx, vector<string>
 ToggleGroup::ToggleGroup(float x, float y, float h, int init_idx, vector<string> texture_paths, vector<string> hints, bool centered, bool show_rectangle) : show_rect(show_rectangle)
 {
     tot_width = h * texture_paths.size();
-    corner = { x , y };
+    corner = corner_init = { x , y };
     if (centered)
         corner.x -= tot_width * 0.5f;
     selected = init_idx;
@@ -64,7 +64,7 @@ ToggleGroup::ToggleGroup(float x, float y, float h, int init_idx, vector<string>
 // one starting image
 ToggleGroup::ToggleGroup(float x, float y, float h, int init_idx, vector<string> text_list, string init_msg, string img_path, bool show_rectangle) : show_rect(show_rectangle)
 {
-    corner = { x, y };
+    corner = corner_init = { x, y };
     init_message = init_msg + " ";
     selected = init_idx;
     texture = &textureOf[img_path];
@@ -290,7 +290,7 @@ void ToggleGroup::set_pos(float x, float y)
     corner.x += shift_x, corner.y += shift_y;
     for (int i = 0; i < hitbox.size(); i++)
         hitbox[i].x += shift_x, hitbox[i].y += shift_y;
-    
+    corner_init = { x, y };
 }
 
 bool ToggleGroup::was_pressed()
@@ -298,9 +298,12 @@ bool ToggleGroup::was_pressed()
     return pressed;
 }
 
-void ToggleGroup::shift(float dx, float dy)
+void ToggleGroup::set_offset(float dx, float dy)
 {
-    set_pos(corner.x + dx, corner.y + dy);
+    float shift_x = (corner_init.x + dx) - corner.x, shift_y = (corner_init.y + dy) - corner.y;
+    corner.x += shift_x, corner.y += shift_y;
+    for (int i = 0; i < hitbox.size(); i++)
+        hitbox[i].x += shift_x, hitbox[i].y += shift_y;
 }
 
 float ToggleGroup::get_font_size()

@@ -6,7 +6,7 @@
  * normal: sub, hover: text, hold/press: main
 */
 
-Scrollbar::Scrollbar(float x, float y, float w, float h, float screen_h, float total_h) : bar{ x, y, w, h }, screen_h(screen_h), total_h(total_h)
+Scrollbar::Scrollbar(float x, float y, float w, float h, float screen_h, float total_h, list<UIObject*> children) : bar{ x, y, w, h }, screen_h(screen_h), total_h(total_h), children(children)
 {
     // The height of the bar is the screenheight scaled
     thumb_h = screen_h * (bar.height / total_h);
@@ -39,7 +39,11 @@ void Scrollbar::update()
                 offset = offset_at(top_y);
             }
         }
-        
+    }
+    // Update children shift
+    for (UIObject* child : children)
+    {
+        child->set_offset(0, get_offset());
     }
 }
 
@@ -66,6 +70,11 @@ void Scrollbar::shift(float dx, float dy)
 void Scrollbar::set_pos(float x2, float y2)
 {
     bar.x = x2, bar.y = y2;
+}
+
+void Scrollbar::add_child(UIObject* child)
+{
+    children.push_back(child);
 }
 
 float Scrollbar::get_offset()
