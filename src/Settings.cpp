@@ -3,6 +3,7 @@
 const float SETTING_PADDING = 100;
 string setting_path = "./data/settings.json";
 RSJresource setting_json;
+Scrollbar* scrollbar;
 
 void init_settings()
 {
@@ -76,13 +77,16 @@ void init_settings()
     theme_toggle = new ThemeToggle(SETTING_PADDING, 0, gameScreenWidth - 2 * SETTING_PADDING, 40, setting_json["appearance"]["theme"].as<string>());
     theme_toggle->set_bounds(boundary);
     init_theme(theme_toggle->get_selected());
+
+
+
     Textbox* appearance_title = new Textbox(SETTING_PADDING, 0, gameScreenWidth - 2 * SETTING_PADDING, 50, "Appearance", 40, "main", false);
 
     Textbox* behavior_title = new Textbox(SETTING_PADDING, 0, gameScreenWidth - 2 * SETTING_PADDING, 50, "Behavior", 40, "main", false);
     
     behavior_panel = new TogglePanel(SETTING_PADDING, 0, gameScreenWidth - 2 * SETTING_PADDING, toggle_pointers, {
         {"Show Live WPM", "Displays the live WPM on the test screen."},
-        {"Strict Space", "When enabled, pressing space at the beginning of a word will insert a space character."},
+        {"Strict Space", "When enbled, pressing space at the beginning of a word will insert a space character."},
         {"Tape Mode", "Only shows one line which scrolls horizontally."},
         {"Debug Mode", "Allows debugging functions."}
     });
@@ -95,6 +99,11 @@ void init_settings()
         y_pos += obj->get_height();
         ui_objects.alloc(obj, SETTINGS);
     }
+    float total_h = y_pos + SETTING_PADDING;  // Extra setting padding at bottom
+    constexpr float bar_w = 10;
+    // Initialise scrollbar 
+    scrollbar = new Scrollbar(gameScreenWidth - bar_w/3, 0, bar_w, gameScreenHeight, gameScreenHeight, total_h);
+    ui_objects.alloc(scrollbar, SETTINGS);
 }
 
 void write_settings()
@@ -118,6 +127,7 @@ void update_settings()
     {
         switch_start();
     }
+    scrollbar->update();
 }
 
 void draw_settings()
@@ -133,4 +143,5 @@ void draw_borders()
     DrawRectangle(0, 0, SETTING_PADDING, gameScreenHeight, theme.background);
     DrawRectangleAlign(gameScreenWidth, 0, SETTING_PADDING, gameScreenHeight, theme.background, RIGHT, TOP);
     draw_taskbar();
+    scrollbar->draw();
 }

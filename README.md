@@ -32,6 +32,8 @@ Test has similar behavior to Monkeytype, where pressing space too early will jum
 ## Build 
 Dependencies are Raylib and Native File Dialogue, which have libraries included. The remaining DLLs are automatically included with Windows are are linked by Makefile. Run `make all` or `mingw32-make all` in root directory of project to call on the `all` recipe. As of now, only works for Windows though can be easily adapted to work with Linux. 
 
+Release exe is not organized yet, though theoretically when static libraries are compiled with the exe, all that is needed is the exe, `fonts` directory (fonts directory content is embedded), and `data` directory+files. Regular exe compiled with Makefile `all` command should similarly run with the extra requirement of the `lib` folder. 
+
 ## Issues and Limitations
 - Weak antialiasing for shapes and lines, especially evident with circular shapes and interpolation line in results graph. Interpolation line uses a triangle fan to draw a cubic spline with some thickness. Solution requires tweaks for the OpenGL functions in Raylib library. Nvidia control panel FXAA fixes these jagged curves yet ruins the color for small text. Fragment shader FXAA also fixes curves yet is much worse by completely removing pixels, thin lines, etc. 
 - Light, small text have thin black outlines which make them difficult to read. Not an issue with light text on dark background. Only an issue for themes with small, light text on a light background.

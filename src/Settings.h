@@ -5,6 +5,7 @@
 #include "jsonparser.h"
 #include "ThemeToggle.h"
 #include "Textbox.h"
+#include "Scrollbar.h"
 // EXTERNALS USED
 extern UIAlloc ui_objects;
 extern void switch_start();
@@ -15,6 +16,7 @@ extern RSJresource setting_json;
 
 // variables
 extern const float SETTING_PADDING;
+extern Scrollbar* scrollbar;
 extern TogglePanel* behavior_panel;
 extern ToggleGroup* taskbar;
 extern ThemeToggle * theme_toggle;
