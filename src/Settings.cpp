@@ -9,7 +9,7 @@ void init_settings()
     RSJresource default_json(
     R"(
     { 
-        'general' : {
+        'behavior' : {
             'show wpm' : { options: ['off', 'on'], default: 1 }, 
             'strict space' : { options: ['off', 'on'], default: 0 }, 
             'tape mode' : { options: ['off', 'on'], default: 0 }, 
@@ -55,7 +55,7 @@ void init_settings()
     float setting_h = 20;
 
     vector<ToggleGroup*> toggle_pointers;  // issue toggle pointers not in order because of unordered map
-    for (auto& [key, value] : setting_json["general"].as_object())
+    for (auto& [key, value] : setting_json["behavior"].as_object())
     {
         vector<string> options;
         for (auto& str : value["options"].as_array())
@@ -64,16 +64,23 @@ void init_settings()
         ui_objects.alloc(setting_toggle[key], SETTINGS);
     }
 
-    vector<string> general_toggle_ordered = default_json["general"].get_keys();
-    for (auto& str : general_toggle_ordered)
+    vector<string> behavior_toggle_ordered = default_json["behavior"].get_keys();
+    for (auto& str : behavior_toggle_ordered)
     {
         toggle_pointers.push_back(setting_toggle[str]);
     }
+    Rectangle boundary{ SETTING_PADDING, SETTING_PADDING, gameScreenWidth - 2 * SETTING_PADDING, gameScreenHeight - 2 * SETTING_PADDING };  // Mouse will be registered 
+ 
+    // Initialize themes first
+    fetch_themes();
+    theme_toggle = new ThemeToggle(SETTING_PADDING, 0, gameScreenWidth - 2 * SETTING_PADDING, 40, setting_json["appearance"]["theme"].as<string>());
+    theme_toggle->set_bounds(boundary);
+    init_theme(theme_toggle->get_selected());
+    Textbox* appearance_title = new Textbox(SETTING_PADDING, 0, gameScreenWidth - 2 * SETTING_PADDING, 50, "Appearance", 40, "main", false);
 
-    Rectangle boundary{SETTING_PADDING, SETTING_PADDING, gameScreenWidth - 2 * SETTING_PADDING, gameScreenHeight - 2 * SETTING_PADDING};  // Mouse will be registered 
-    float y_pos = SETTING_PADDING;
-
-    behavior_panel = new TogglePanel(SETTING_PADDING, y_pos, gameScreenWidth - 2 * SETTING_PADDING, toggle_pointers, {
+    Textbox* behavior_title = new Textbox(SETTING_PADDING, 0, gameScreenWidth - 2 * SETTING_PADDING, 50, "Behavior", 40, "main", false);
+    
+    behavior_panel = new TogglePanel(SETTING_PADDING, 0, gameScreenWidth - 2 * SETTING_PADDING, toggle_pointers, {
         {"Show Live WPM", "Displays the live WPM on the test screen."},
         {"Strict Space", "When enabled, pressing space at the beginning of a word will insert a space character."},
         {"Tape Mode", "Only shows one line which scrolls horizontally."},
@@ -81,13 +88,8 @@ void init_settings()
     });
     behavior_panel->set_bounds(boundary);
 
-    // Initialize themes
-    fetch_themes();
-    theme_toggle = new ThemeToggle(SETTING_PADDING, y_pos, gameScreenWidth - 2 * SETTING_PADDING, 40, setting_json["appearance"]["theme"].as<string>());
-    theme_toggle->set_bounds(boundary);
-    init_theme(theme_toggle->get_selected());
-
-    for (UIObject* obj : list<UIObject*>{ behavior_panel, theme_toggle })
+    float y_pos = SETTING_PADDING;
+    for (UIObject* obj : list<UIObject*>{ behavior_title, behavior_panel, appearance_title, theme_toggle })
     {
         obj->set_pos(SETTING_PADDING, y_pos);
         y_pos += obj->get_height();
@@ -97,10 +99,10 @@ void init_settings()
 
 void write_settings()
 {
-    // update settings json general toggles
+    // update settings json behavior toggles
     for (auto &[label, toggle] : setting_toggle)
     {
-        setting_json["general"][label]["default"] = toggle->selected_index();
+        setting_json["behavior"][label]["default"] = toggle->selected_index();
     }
     setting_json["appearance"]["theme"] = RSJresource("'" + theme_toggle->get_selected() + "'");
     // update settings file
@@ -128,5 +130,7 @@ void draw_borders()
 {
     DrawRectangle(0, 0, gameScreenWidth, SETTING_PADDING, theme.background);
     DrawRectangleAlign(0, gameScreenHeight, gameScreenWidth, SETTING_PADDING, theme.background, LEFT, BOTTOM);
+    DrawRectangle(0, 0, SETTING_PADDING, gameScreenHeight, theme.background);
+    DrawRectangleAlign(gameScreenWidth, 0, SETTING_PADDING, gameScreenHeight, theme.background, RIGHT, TOP);
     draw_taskbar();
 }

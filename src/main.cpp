@@ -282,6 +282,7 @@ void update_start()
         restart_alpha = 1;
         return;
     }
+    
     if (IsKeyPressed())  // press any key except for space to start
     {
         if (setting_toggle["strict space"]->get_selected() == "on" || !IsKeyPressed(KEY_SPACE))  // if strict space on, any key start, otherwise must not be space press

@@ -4,6 +4,7 @@
 #include "TogglePanel.h"
 #include "jsonparser.h"
 #include "ThemeToggle.h"
+#include "Textbox.h"
 // EXTERNALS USED
 extern UIAlloc ui_objects;
 extern void switch_start();

@@ -38,8 +38,6 @@ ToggleGroup::ToggleGroup(float x, float y, float h, int init_idx, vector<string>
         tot_width += hitbox.back().width;
         x_pos += hitbox.back().width;
     }
-
-    offset_y = 0;
 }
 
 // all toggle images
@@ -61,8 +59,6 @@ ToggleGroup::ToggleGroup(float x, float y, float h, int init_idx, vector<string>
     // add hints to text array
     text = deque<string>(hints.begin(), hints.end());
     hint_alpha.assign(hints.size(), 0); 
-    
-    offset_y = 0;
 }
 
 // one starting image
@@ -104,8 +100,6 @@ ToggleGroup::ToggleGroup(float x, float y, float h, int init_idx, vector<string>
         tot_width += hitbox.back().width;
         x_pos += hitbox.back().width;
     }
-
-    offset_y = 0;
 }
 
 void ToggleGroup::update()
@@ -114,11 +108,11 @@ void ToggleGroup::update()
     // just in case collisionrec can result in two hovers
     int hover_idx = -1;
     // Only check hover is mouse is in bounds
-    if (CheckCollisionPointRec({ mouse.x, mouse.y - offset_y }, bounds))
+    if (CheckCollisionPointRec(mouse, bounds))
     {
         for (int i = 0; i < hitbox.size(); i++)
         {
-            if (CheckCollisionPointRec({ mouse.x, mouse.y - offset_y }, hitbox[i])) hover_idx = i;
+            if (CheckCollisionPointRec(mouse, hitbox[i])) hover_idx = i;
         }
     }
     for (int i = 0; i < hitbox.size(); i++)
@@ -248,12 +242,6 @@ void ToggleGroup::draw_hint()
     }
 }
 
-
-void ToggleGroup::set_offset(float y)
-{
-    offset_y = y;
-}
-
 string ToggleGroup::get_selected()
 {
     return trim(text[selected]);
@@ -308,6 +296,11 @@ void ToggleGroup::set_pos(float x, float y)
 bool ToggleGroup::was_pressed()
 {
     return pressed;
+}
+
+void ToggleGroup::shift(float dx, float dy)
+{
+    set_pos(corner.x + dx, corner.y + dy);
 }
 
 float ToggleGroup::get_font_size()

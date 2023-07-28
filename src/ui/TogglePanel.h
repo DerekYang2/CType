@@ -4,7 +4,7 @@
 
 class TogglePanel : public UIObject {
     Rectangle bounds{ 0, 0, gameScreenWidth, gameScreenHeight };
-    float x, y, width, offset_y = 0, toggle_h, gap;
+    float x, y, width, toggle_h, gap;
     float total_h;
     // font_info
     float font_size;
@@ -17,6 +17,7 @@ class TogglePanel : public UIObject {
     void update() override;
     void draw() override;
     void set_pos(float x2, float y2) override;
+    void shift(float dx, float dy) override;
     void set_bounds(Rectangle rect);
     string selected(int idx);
     float get_height() override;

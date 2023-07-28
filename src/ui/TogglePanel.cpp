@@ -28,7 +28,6 @@ void TogglePanel::update()
 {
     for (int i = 0; i < toggles.size(); i++)
     {
-        toggles[i]->set_offset(offset_y);
         toggles[i]->update();
     }
 }
@@ -61,6 +60,11 @@ void TogglePanel::set_pos(float x2, float y2)
         toggles[i]->set_pos(x + width - toggles[i]->get_width(), cur_y + (sum_h - toggles[i]->get_height()) * 0.5f);  // right align x, center y
         cur_y += sum_h + gap;
     }
+}
+
+void TogglePanel::shift(float dx, float dy)
+{
+    set_pos(x + dx, y + dy);
 }
 
 void TogglePanel::set_bounds(Rectangle rect)

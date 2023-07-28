@@ -20,6 +20,26 @@ Textbox::Textbox(float x, float y, float width, float height, string text_str, f
     }
 }
 
+Textbox::Textbox(float x, float y, float width, float height, string text_str, float fontSize, string themeColor, bool wrapping) : text(text_str), font_size(fontSize), theme_color(themeColor), wrapping(wrapping)
+{
+    og_text = text;
+    rect.x = x;
+    rect.y = y;
+    if (wrapping)
+    {
+        text = fold(text, width);
+        Vector2 dimension = MeasureTextEx(text, font_size);
+        rect.width = width;
+        rect.height = dimension.y;
+    } else
+    {
+        font_size = MeasureFontSize(text, width, height);
+        Vector2 dimension = MeasureTextEx(text, font_size);
+        rect.width = dimension.x;
+        rect.height = dimension.y;
+    }
+}
+
 Textbox::Textbox(float x, float y, float width, string text, Color col) : text(text), color(col), wrapping(false)
 {
     og_text = text;
@@ -32,6 +52,13 @@ Textbox::Textbox(float x, float y, float width, string text, Color col) : text(t
 
 void Textbox::draw()
 {
+    if (theme_color == "background") color = theme.background;
+    else if (theme_color == "main") color = theme.main;
+    else if (theme_color == "sub") color = theme.sub;
+    else if (theme_color == "sub_alt") color = theme.sub_alt;
+    else if (theme_color == "text") color = theme.text;
+    else if (theme_color == "error") color = theme.error;
+    else if (theme_color == "error_extra") color = theme.error_extra;
     DrawTextAlign(text, rect.x, rect.y, font_size, color);
 }
 
@@ -39,6 +66,11 @@ void Textbox::set_pos(float x, float y)
 {
     rect.x = x;
     rect.y = y;
+}
+
+void Textbox::shift(float dx, float dy)
+{
+    set_pos(rect.x + dx, rect.y + dy);
 }
 
 void Textbox::set_var_str(vector<string> strs)

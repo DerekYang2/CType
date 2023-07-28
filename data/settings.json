@@ -2,7 +2,7 @@
     "appearance": {
         "theme": "80s after dark"
     },
-    "general": {
+    "behavior": {
         "tape mode": {
             "default": 1,
             "options": [
