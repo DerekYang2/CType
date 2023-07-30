@@ -129,8 +129,8 @@ void Toggle::draw()
             col = theme.text;
         } else if (on)
         {
-            if (texture_off != nullptr)  // If dual icon toggle, view more as a button -> either theme.text or theme.sub 
-                col = theme.text;
+            if (texture_off != nullptr)  // If dual icon toggle, view more as a button -> always theme.sub
+                col = theme.sub;
             else  // single icon or text -> toggled on = theme.main
                 col = theme.main;
         } else

@@ -53,7 +53,7 @@ void init_settings()
             }
         }
     }
-    float setting_h = 20;
+    float setting_h = 25;
 
     vector<ToggleGroup*> toggle_pointers;  // issue toggle pointers not in order because of unordered map
     for (auto& [key, value] : setting_json["behavior"].as_object())
@@ -80,9 +80,9 @@ void init_settings()
 
 
 
-    Textbox* appearance_title = new Textbox(SETTING_PADDING, 0, gameScreenWidth - 2 * SETTING_PADDING, 50, "Appearance", 40, "main", false);
+    Textbox* appearance_title = new Textbox(SETTING_PADDING, 0, gameScreenWidth - 2 * SETTING_PADDING, 50, "\nAppearance", 45, "main", true);
 
-    Textbox* behavior_title = new Textbox(SETTING_PADDING, 0, gameScreenWidth - 2 * SETTING_PADDING, 50, "Behavior", 40, "main", false);
+    Textbox* behavior_title = new Textbox(SETTING_PADDING, 0, gameScreenWidth - 2 * SETTING_PADDING, 50, "Behavior", 45, "main", true);
     
     behavior_panel = new TogglePanel(SETTING_PADDING, 0, gameScreenWidth - 2 * SETTING_PADDING, toggle_pointers, {
         {"Show Live WPM", "Displays the live WPM on the test screen."},
@@ -108,7 +108,7 @@ void init_settings()
     // Initialise scrollbar 
     float total_h = y_pos + SETTING_PADDING;  // Extra setting padding at bottom
     constexpr float bar_w = 10;
-    scrollbar = new Scrollbar(gameScreenWidth - bar_w / 3, 0, bar_w, gameScreenHeight, gameScreenHeight, total_h);
+    scrollbar = new Scrollbar(gameScreenWidth - bar_w / 3, SETTING_PADDING, bar_w, gameScreenHeight - SETTING_PADDING, gameScreenHeight, total_h);
     // Bind all setting objects to scrollbar
     for (auto obj : setting_objects)
     {

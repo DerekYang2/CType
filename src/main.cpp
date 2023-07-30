@@ -388,7 +388,7 @@ void draw_taskbar()
     float padding = taskbar_rect.width * 0.05f;
     taskbar_rect.x -= padding, taskbar_rect.width += 2 * padding;
     taskbar_rect.height *= 2;  // goes of screen
-    DrawRectangleRounded(taskbar_rect, 0.15f, 10, theme.sub_alt);
+    DrawRectangleRounded(taskbar_rect, 0.15f, 5, theme.sub_alt);
 
     // Draw selected index
     int index = taskbar->selected_index();
@@ -559,7 +559,7 @@ void init()
     init_raw_data;
     for (auto& [key, texture] : textureOf)
     {
-        SetTextureFilter(texture, TEXTURE_FILTER_BILINEAR);
+        SetTextureFilter(texture, TEXTURE_FILTER_TRILINEAR);
     }
 
     load_user_data();
