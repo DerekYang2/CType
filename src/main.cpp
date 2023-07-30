@@ -247,7 +247,7 @@ void update_mouse()
     Vector2 real_mouse = GetMousePosition();
     mouse.x = (real_mouse.x - (screen_width() - (gameScreenWidth * scale)) * 0.5f) / scale;
     mouse.y = (real_mouse.y - (screen_height() - (gameScreenHeight*scale))*0.5f)/scale;
-    mouse = Vector2Clamp(mouse, (Vector2){ 0, 0 }, (Vector2){ (float)gameScreenWidth, (float)gameScreenHeight });
+    // DON'T CLAMP: mouse = Vector2Clamp(mouse, (Vector2){ 0, 0 }, (Vector2){ (float)gameScreenWidth, (float)gameScreenHeight });
 
     if (scene == TEST || scene == END)
     {
