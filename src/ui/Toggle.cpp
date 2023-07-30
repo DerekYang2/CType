@@ -1,9 +1,5 @@
 #include "Toggle.h"
 
-/**
- * TODO: Fix toggle hover color (make consistent with togglegroup)
-*/
-
 #define TOGGLE_DELAY 0.1
 Toggle::Toggle(float x, float y, float w, float h, bool initState) 
 {
@@ -48,6 +44,16 @@ Toggle::Toggle(float x, float y, float h, bool initState, string toggle_text, st
     
     hitbox = { x, y, 0, h };
     hitbox.width = MeasureTextEx(font, text.c_str(), font_size, font_size / font_spacing).x + texture->width * img_scale;
+}
+
+Toggle::Toggle(float x, float y, float h, bool initState, Texture* textureOn, Texture* textureOff)
+{
+    on = initState;
+    texture = textureOn, texture_off = textureOff;
+    img_scale = min(h / texture->width, h / texture->height);
+    img_scale_off = min(h / texture_off->width, h / texture_off->height);
+    text = "";
+    hitbox = { x, y, h, h };
 }
 
 void Toggle::set_x(float x)
@@ -99,7 +105,7 @@ void Toggle::update()
 
 void Toggle::draw()
 {
-    if (text.empty())
+    if (texture == nullptr && texture_off == nullptr)
     {
         if (hover)
         {
@@ -117,10 +123,44 @@ void Toggle::draw()
         DrawCircle(cx, hitbox.y + hitbox.height / 2, rad + hover, WHITE);
     } else
     {
-        Color col = (hover || on) ? theme.main : theme.sub;
+        Color col;
+        if (hover)
+        {
+            col = theme.text;
+        } else if (on)
+        {
+            if (texture_off != nullptr)  // If dual icon toggle, view more as a button -> either theme.text or theme.sub 
+                col = theme.text;
+            else  // single icon or text -> toggled on = theme.main
+                col = theme.main;
+        } else
+        {
+            col = theme.sub;
+        }
         if (pressWatch.s() < TOGGLE_DELAY) col = theme.sub;  // blink off when click
-        DrawTextureEx(*texture, Vector2(hitbox.x, hitbox.y), 0, img_scale, col);
-        DrawTextAlign(text, hitbox.x + texture->width * img_scale, hitbox.y + hitbox.height * 0.5f, font_size, col, LEFT, CENTER);
+        
+        Vector2 corner, corner_off;
+        // Calculate x and y position of texture
+        if (texture_off == nullptr)  // Implies texture + text, don't center icon x
+        {
+            corner.x = hitbox.x;
+            corner.y = hitbox.y + 0.5f * (hitbox.height - texture->height * img_scale);
+        } else
+        {
+            corner = { hitbox.x + 0.5f * (hitbox.width - texture->width * img_scale), hitbox.y + 0.5f * (hitbox.height - texture->height * img_scale) };
+            corner_off = {hitbox.x + 0.5f * (hitbox.width - texture_off->width * img_scale_off), hitbox.y + 0.5f * (hitbox.height - texture_off->height * img_scale_off)};
+        }
+        
+        // Center the textures
+        if (texture_off == nullptr || on)
+        {
+            DrawTextureEx(*texture, corner, 0, img_scale, col);
+        } else
+        {
+            DrawTextureEx(*texture_off, corner_off, 0, img_scale_off, col);
+        }
+        if (!text.empty())
+            DrawTextAlign(text, hitbox.x + texture->width * img_scale, hitbox.y + hitbox.height * 0.5f, font_size, col, LEFT, CENTER);
     }
 }
 

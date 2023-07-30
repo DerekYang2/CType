@@ -85,7 +85,7 @@ void Button::draw()
         if (drawFunc != NULL)
             drawFunc(hitbox);
         // shrink image a little
-        float padding = hitbox.width / 15;
+        float padding = 0;
         DrawTexturePro(*texture, Rectangle(0, 0, texture->width, (flipped?-1:1) * texture->height), Rectangle(hitbox.x + padding, hitbox.y + padding, hitbox.width - 2 * padding,  hitbox.height - 2 * padding), { 0,0 }, 0, col); //for now
         //DrawTexturePro(img_path, Rectangle(hitbox.x + padding, hitbox.y + padding, hitbox.width - 2 * padding, (flipped ? -1 : 1) * (hitbox.height - 2 * padding)), default_color);
     }

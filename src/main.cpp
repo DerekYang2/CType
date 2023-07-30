@@ -22,6 +22,10 @@
 *   SOFTWARE.
 *   
 *********************************************************************************/
+/**
+ * TODO:
+ * - Add font size templates, e.g. Title, subtitle, text, small, etc
+*/
 
 #include <iostream>
 #include "raylibcustom.h"        
@@ -137,6 +141,10 @@ TextPanelV* end_stats;
 SettingBar* setting_bar;
 ToggleGroup* taskbar;
 PopupHandler* time_popup;
+// Window buttons
+bool close_window = false;
+Button* close_button, * minimize_button;
+Toggle* fullscreen_toggle;
 // test display vars
 int display_wpm_frames = 15;  // frames to update wpm display
 int display_wpm;
@@ -361,6 +369,18 @@ void update_end()
     
 }
 
+// Updates on any scene 
+void global_update()
+{
+    close_button->update();
+    minimize_button->update();
+    fullscreen_toggle->update();
+    if ((fullscreen_toggle->toggled() && !IsWindowFullscreen()) || (!fullscreen_toggle->toggled() && IsWindowFullscreen()))  // toggle fullscreen
+    {
+        ToggleFullscreen();
+    } 
+}
+
 // TODO: do something for taskbar black background (for black themes)
 void draw_taskbar()
 {
@@ -380,7 +400,6 @@ void draw_taskbar()
     taskbar->draw();
     taskbar->draw_hint();
 }
-
 void draw_start()
 {
     ClearBackground(theme.background);  // Clear render texture background color
@@ -391,7 +410,7 @@ void draw_start()
     }
     Color text_color = theme.main;
     text_color.a = restart_alpha * 255;
-    DrawTextAlign("Restarted", gameScreenWidth/2, 975, 35, text_color, CENTER, CENTER);
+    DrawTextAlign("Restarted", gameScreenWidth / 2, 975, 35, text_color, CENTER, CENTER);
     draw_taskbar();
 }
 
@@ -452,6 +471,13 @@ void draw_popup()
     }
 }
 
+void global_draw()
+{
+    close_button->draw();
+    minimize_button->draw();
+    fullscreen_toggle->draw();
+}
+
 void draw_cursor()
 {
     if (cursor_path.empty() || !IsCursorOnScreen()) return;
@@ -493,6 +519,8 @@ void load_base_font(string path = "default")
         SetTextureFilter(font.texture, TEXTURE_FILTER_TRILINEAR);    // Required for SDF font  
     } else 
     {
+        //font = LoadFontEx(path.c_str(), small_font_size, nullptr, 0);
+        //SetTextureFilter(font.texture, TEXTURE_FILTER_BILINEAR);
         font = load_font(path.c_str());
         cout << "Font loaded: " << path << endl;
     }
@@ -527,7 +555,7 @@ void init()
     //test_shader = LoadShader(0, "./fonts/test2.frag");
     load_base_font("default");
     //set_rand_font();
-
+    
     init_raw_data;
     for (auto& [key, texture] : textureOf)
     {
@@ -540,6 +568,11 @@ void init()
     // get selected test time
     string selected_time = data_json["test time"].as_str();
     string custom_time = data_json["custom time"].as_str();
+
+    // Window UI
+    close_button = new Button(gameScreenWidth - 50, 0, 50, 50, &textureOf["exit_icon"], [] {close_window = true;});
+    fullscreen_toggle = new Toggle(gameScreenWidth - 100, 0, 50, false, &textureOf["unfullscreen"], &textureOf["fullscreen"]);
+    minimize_button = new Button(gameScreenWidth - 150, 0, 50, 50, &textureOf["minimise_icon"], [] {MinimizeWindow();});
 
     // STARTING UI ---------------------------------------------------------------
     // custom time popup
@@ -602,7 +635,7 @@ int main(void)
      * TECHNICAL INITIALIZATION
     */
     // Enable config flags for resizable window and vertical synchro
-    SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_MSAA_4X_HINT /* | FLAG_WINDOW_UNDECORATED */);
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_MSAA_4X_HINT | FLAG_WINDOW_UNDECORATED);
 
     InitWindow(windowWidth, windowHeight, "CType");
     MaximizeWindow();
@@ -631,7 +664,7 @@ int main(void)
     Stopwatch frame_timer;
     //--------------------------------------------------------------------------------------
     // Main game loop
-    while (!WindowShouldClose())        // Detect window close button or ESC key
+    while (!WindowShouldClose() && !close_window)        // Detect window close button 
     {
         frame_timer.start();
         //----------------------------------------------------------------------------------
@@ -669,6 +702,7 @@ int main(void)
             
         }
         update_taskbar();
+        global_update();
         for (const int id : scene_ids[scene])
         {
             ui_objects[id]->update();
@@ -715,6 +749,7 @@ int main(void)
         {
             draw_borders();
         }
+        global_draw();
         EndShaderMode();
         draw_logo();
         EndTextureMode();
