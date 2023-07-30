@@ -95,6 +95,15 @@ Vector2 MeasureTextEx(Font font, string text, float fontSize, float spacing, flo
     return textSize;
 }
 
+float screen_width()
+{
+    return IsWindowFullscreen() ? GetMonitorWidth(GetCurrentMonitor()) : GetScreenWidth();
+}
+
+float screen_height()
+{
+    return IsWindowFullscreen() ? GetMonitorHeight(GetCurrentMonitor()) : GetScreenHeight();
+}
 void DrawTextAlign(char c, float x, float y, float font_size, Color col, int x_align, int y_align)
 {
     return DrawTextAlign(string(1, c), x, y, font_size, col, x_align, y_align);

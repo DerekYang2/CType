@@ -245,8 +245,8 @@ void update_mouse()
     // Update virtual mouse (clamped mouse value behind game screen)
     Vector2 old_mouse = mouse;
     Vector2 real_mouse = GetMousePosition();
-    mouse.x = (real_mouse.x - (GetScreenWidth() - (gameScreenWidth * scale)) * 0.5f) / scale;
-    mouse.y = (real_mouse.y - (GetScreenHeight() - (gameScreenHeight*scale))*0.5f)/scale;
+    mouse.x = (real_mouse.x - (screen_width() - (gameScreenWidth * scale)) * 0.5f) / scale;
+    mouse.y = (real_mouse.y - (screen_height() - (gameScreenHeight*scale))*0.5f)/scale;
     mouse = Vector2Clamp(mouse, (Vector2){ 0, 0 }, (Vector2){ (float)gameScreenWidth, (float)gameScreenHeight });
 
     if (scene == TEST || scene == END)
@@ -644,7 +644,8 @@ int main(void)
     // Render texture initialization, used to hold the rendering result so we can easily resize it
     target = LoadRenderTexture(gameScreenWidth, gameScreenHeight);
     SetTextureFilter(target.texture, TEXTURE_FILTER_TRILINEAR);  // Texture scale filter to use
-    
+    SetTextureWrap(target.texture, TEXTURE_WRAP_CLAMP);  // For whatever reason, by default render texture will leak one pixel wrap around
+        
     SetTargetFPS(60);                   // Set our game to run at 60 frames-per-second
     SetExitKey(KEY_NULL);
     
@@ -669,7 +670,7 @@ int main(void)
         frame_timer.start();
         //----------------------------------------------------------------------------------
         // Compute required framebuffer scaling
-        scale = min((float)GetScreenWidth() / gameScreenWidth, (float)GetScreenHeight() / gameScreenHeight);
+        scale = min((float)screen_width() / gameScreenWidth, (float)screen_height() / gameScreenHeight);
         update_mouse();
         SetMouseCursor(MOUSE_CURSOR_DEFAULT);
 
@@ -758,8 +759,8 @@ int main(void)
         ClearBackground(BLACK);     // Clear screen background
         //if (shader_on) BeginShaderMode(test_shader);
         // Draw render texture to screen, properly scaled
-        DrawTexturePro(target.texture, (Rectangle){ 0.0f, 0.0f, (float)target.texture.width, (float)-target.texture.height },
-                           (Rectangle){ (GetScreenWidth() - ((float)gameScreenWidth*scale))*0.5f, (GetScreenHeight() - ((float)gameScreenHeight*scale))*0.5f,
+        DrawTexturePro(target.texture, (Rectangle) { 0.0f, 0.0f, (float)target.texture.width, (float)-target.texture.height },
+                           (Rectangle){ (screen_width() - ((float)gameScreenWidth*scale))*0.5f, (screen_height() - ((float)gameScreenHeight*scale))*0.5f,
                            (float)gameScreenWidth* scale, (float)gameScreenHeight* scale
         }, (Vector2) { 0, 0 }, 0.0f, WHITE);
         //draw_cursor(); // custom cursors

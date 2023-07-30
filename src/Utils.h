@@ -19,6 +19,9 @@ typedef enum {
     TOP,
     BOTTOM
 } ALIGNMENT;
+extern float screen_width();
+extern float screen_height();
+
 // override draw text ex with custom spacing
 extern void DrawTextEx(Font font, string text, Vector2 position, float fontSize, float spacing, Color tint, float line_spacing = 1.f);
 extern Vector2 MeasureTextEx(Font font, string text, float fontSize, float spacing, float line_spacing = 1.f);
