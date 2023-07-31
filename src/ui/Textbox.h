@@ -13,6 +13,7 @@ class Textbox : public UIObject {
     bool wrapping;
     string fold(string str, float max_width);
     public:
+    // Both cases 
     Textbox(float x, float y, float width, float height, string text_str, float fontSize, Color col, bool wrapping = false);
     Textbox(float x, float y, float width, float height, string text_str, float fontSize, string themeColor, bool wrapping = false);
     Textbox(float x, float y, float width, string text, Color col);   // specific scaling text constructor

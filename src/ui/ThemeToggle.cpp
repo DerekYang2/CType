@@ -73,9 +73,9 @@ void ThemeToggle::draw()
             float right_x = hitbox[i].x + hitbox[i].width + 4 * border + pressed;
             // Draw 3 preview squares
             constexpr float rect_w = 21, rect_pad = rect_w / 3;
-            DrawRectangleRoundedAlign(right_x - rect_pad, hitbox[i].y + hitbox[i].height * 0.5f, rect_w, rect_w, 0.4f, 4, theme_map[text[i]].text, RIGHT, CENTER);
-            DrawRectangleRoundedAlign(right_x - rect_w - 2*rect_pad, hitbox[i].y + hitbox[i].height * 0.5f, rect_w, rect_w, 0.4f, 4, theme_map[text[i]].sub, RIGHT, CENTER);
-            DrawRectangleRoundedAlign(right_x - 2*rect_w - 3*rect_pad, hitbox[i].y + hitbox[i].height * 0.5f, rect_w, rect_w, 0.4f, 4, theme_map[text[i]].main, RIGHT, CENTER);
+            DrawRectangleRoundedAlign(right_x - rect_pad, hitbox[i].y + hitbox[i].height * 0.5f, rect_w, rect_w, 0.3f, 3, theme_map[text[i]].text, RIGHT, CENTER);
+            DrawRectangleRoundedAlign(right_x - rect_w - 2*rect_pad, hitbox[i].y + hitbox[i].height * 0.5f, rect_w, rect_w, 0.3f, 3, theme_map[text[i]].sub, RIGHT, CENTER);
+            DrawRectangleRoundedAlign(right_x - 2*rect_w - 3*rect_pad, hitbox[i].y + hitbox[i].height * 0.5f, rect_w, rect_w, 0.3f, 3, theme_map[text[i]].main, RIGHT, CENTER);
         }
         DrawTextAlign(text[i], hitbox[i].x + hitbox[i].width * 0.5f, hitbox[i].y + hitbox[i].height * 0.5f, font_size, text_col, CENTER, CENTER);
     }

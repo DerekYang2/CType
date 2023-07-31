@@ -352,7 +352,7 @@ void TextDrawer::draw_time(string time_text, string wpm_text, float time_percent
 
 void TextDrawer::draw_caret()
 {
-    DrawRectangleRounded(Rectangle(cursor_pos.x, cursor_pos.y, 3, cursor_h), 0.8f, 8, theme.caret);
+    DrawRectangleRounded(Rectangle(cursor_pos.x, cursor_pos.y, 3, cursor_h), 1.f, 4, theme.caret);
 }
 
 void TextDrawer::add_offset(float x)

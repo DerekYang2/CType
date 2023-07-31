@@ -217,7 +217,7 @@ void InputBox::draw()
         
         DrawRectangleRounded(outer_rect, 0.3f, 7, theme.sub_alt);
         // DRAW OUTLINE
-        DrawRectangleRoundedLines(outer_rect, 0.3f, 7, 2, invalid_frames > 0 ? theme.error : theme.main);
+        DrawRectangleRoundedLines(outer_rect, 0.3f, 9, 2, invalid_frames > 0 ? theme.error : theme.main);
 
         // DRAW SELECTION
         float x_left = rect.x;
@@ -248,13 +248,13 @@ void InputBox::draw()
         if (select_l == select_r && (active_frames > 0 || (-active_frames/30) & 1))  // if active or Inactive, blink half of the time
         {
             float cursor_x = rect.x + MeasureTextEx(substrI(text, 0, text_idx), font_size).x;
-            DrawRectangleRoundedAlign(Rectangle(cursor_x, rect.y + rect.height, 3, rect.height), 0.8f, 7, theme.caret, LEFT, BOTTOM);
+            DrawRectangleRoundedAlign(Rectangle(cursor_x, rect.y + rect.height, 3, rect.height), 0.8f, 4, theme.caret, LEFT, BOTTOM);
         }
         
         rect.x -= offset_x, outer_rect.x -= offset_x;  // unoffset
     } else
     {
-        DrawRectangleRounded(outer_rect, 0.3f, 7, theme.sub_alt);
+        DrawRectangleRounded(outer_rect, 0.3f, 12, theme.sub_alt);
         // DRAW TEXT
         DrawTextAlign(text, rect.x, rect.y + rect.height, font_size, theme.main, LEFT, BOTTOM);
     }

@@ -4,6 +4,8 @@
 
 /**
  * Vertical only for now
+ * TODO: space and arrow key for moving up and down
+ * Similar to holding key or backspace, once held for certain amount of time, then scroll at const velocity
 */
 class Scrollbar : public UIObject {
     float offset = 0;

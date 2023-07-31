@@ -17,6 +17,8 @@
  * text input box rectangle = sub alt
  * text input box description + title = sub color
  * test time = main color
+ * NOTE:
+ * CSS parsing only gets tokens, custom css not supported (e.g. file rgb.css)
 */
 
 extern const string THEMES_FOLDER;
