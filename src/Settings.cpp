@@ -1,9 +1,14 @@
 #include "Settings.h"
 
+const float MENU_HEIGHT = 50;
 const float SETTING_PADDING = 100;
 string setting_path = "./data/settings.json";
 RSJresource setting_json;
 Scrollbar* scrollbar;
+Rectangle boundary;
+unordered_map<string, Button*> menu_button;
+unordered_map<string, Textbox*> heading_text;
+unordered_map<string, vector<UIObject*>> heading_objects;
 
 void init_settings()
 {
@@ -70,20 +75,34 @@ void init_settings()
     {
         toggle_pointers.push_back(setting_toggle[str]);
     }
-    Rectangle boundary{ SETTING_PADDING, SETTING_PADDING, gameScreenWidth - 2 * SETTING_PADDING, gameScreenHeight - 2 * SETTING_PADDING };  // Mouse will be registered 
- 
+
+    // Initialise UI ---------------------------------------------------------------------------
+    boundary = Rectangle(SETTING_PADDING, SETTING_PADDING + MENU_HEIGHT, gameScreenWidth - 2 * SETTING_PADDING, gameScreenHeight - 2 * SETTING_PADDING - MENU_HEIGHT);  // Mouse will be registered 
+    
+    // Menu buttons
+    list<string> headings_list{ "Behavior", "Appearance" };
+    float x_pos = SETTING_PADDING;
+    for (string heading : headings_list)
+    {
+        menu_button[heading] = new Button(x_pos, SETTING_PADDING, 100, MENU_HEIGHT, heading);
+        x_pos += menu_button[heading]->get_width();
+        ui_objects.alloc(menu_button[heading], SETTINGS);
+    }
+    
     // Initialize themes first
     fetch_themes();
     theme_toggle = new ThemeToggle(SETTING_PADDING, 0, gameScreenWidth - 2 * SETTING_PADDING, 40, setting_json["appearance"]["theme"].as<string>());
     theme_toggle->set_bounds(boundary);
     init_theme(theme_toggle->get_selected());
-
-
-
-    Textbox* appearance_title = new Textbox(SETTING_PADDING, 0, gameScreenWidth - 2 * SETTING_PADDING, 50, "\nAppearance", 45, "main", true);
-
-    Textbox* behavior_title = new Textbox(SETTING_PADDING, 0, gameScreenWidth - 2 * SETTING_PADDING, 50, "Behavior", 45, "main", true);
+    heading_objects["Appearance"].push_back(theme_toggle);
     
+    // Titles (heading)
+    for (string heading : headings_list)
+    {
+        heading_text[heading] = new Textbox(SETTING_PADDING, 0, gameScreenWidth - 2 * SETTING_PADDING, 50, "\n" + heading, 45, "main", true);
+    }
+
+    // BEHAVIOR objects
     behavior_panel = new TogglePanel(SETTING_PADDING, 0, gameScreenWidth - 2 * SETTING_PADDING, toggle_pointers, {
         {"Show Live WPM", "Displays the live WPM on the test screen."},
         {"Strict Space", "When enbled, pressing space at the beginning of a word will insert a space character."},
@@ -91,28 +110,51 @@ void init_settings()
         {"Debug Mode", "Allows debugging functions."}
     });
     behavior_panel->set_bounds(boundary);
-
-    // List of UIObject pointers
-    list<UIObject*> setting_objects{ behavior_title, behavior_panel, appearance_title, theme_toggle };
+    heading_objects["Behavior"].push_back(behavior_panel);
 
     // Set all UIObject positions
-    float y_pos = SETTING_PADDING;
-    for (auto obj : setting_objects)
+    float y_pos = boundary.y;
+
+    for (string heading : headings_list)
     {
-        obj->set_pos(SETTING_PADDING, y_pos);
-        y_pos += obj->get_height();
-        // Add obj to ui object set
-        ui_objects.alloc(obj, SETTINGS);        
+        // Heading title
+        UIObject* title_obj = heading_text[heading];
+        title_obj->set_pos(boundary.x, y_pos);
+        y_pos += title_obj->get_height();
+        ui_objects.alloc(title_obj, SETTINGS);
+        // Objects under heading 
+        for (auto obj : heading_objects[heading])
+        {
+            obj->set_pos(boundary.x, y_pos);
+            y_pos += obj->get_height();
+            // Add obj to ui object set
+            ui_objects.alloc(obj, SETTINGS);
+        }
+    }
+
+    // Set all menu button functions
+    for (string heading : headings_list)
+    {
+        float new_offset = -(heading_text[heading]->get_rect().y - boundary.y);
+        menu_button[heading]->attach_trigger([=] {
+            // Set scrollbar offset to title position
+            float cur_offset = scrollbar->get_offset();
+            scrollbar->shift(0, cur_offset - new_offset);
+        });
     }
 
     // Initialise scrollbar 
     float total_h = y_pos + SETTING_PADDING;  // Extra setting padding at bottom
     constexpr float bar_w = 10;
-    scrollbar = new Scrollbar(gameScreenWidth - bar_w / 3, SETTING_PADDING, bar_w, gameScreenHeight - SETTING_PADDING, gameScreenHeight, total_h);
+    scrollbar = new Scrollbar(gameScreenWidth - bar_w / 3, SETTING_PADDING, bar_w, gameScreenHeight - SETTING_PADDING , gameScreenHeight, total_h);
     // Bind all setting objects to scrollbar
-    for (auto obj : setting_objects)
+    for (string heading : headings_list)
     {
-        scrollbar->add_child(obj);
+        scrollbar->add_child(heading_text[heading]);
+        for (auto obj : heading_objects[heading])
+        {
+            scrollbar->add_child(obj);
+        }
     }
     ui_objects.alloc(scrollbar, SETTINGS);
 }
@@ -149,11 +191,17 @@ void draw_settings()
 // Draw padding and taskbar on top
 void draw_borders()
 {
-    DrawRectangle(0, 0, gameScreenWidth, SETTING_PADDING, theme.background);
-    DrawRectangleAlign(0, gameScreenHeight, gameScreenWidth, SETTING_PADDING, theme.background, LEFT, BOTTOM);
+    // Draw rectangle above boundary
+    DrawRectangle(0, 0, gameScreenWidth, boundary.y, theme.background);
+    // Draw rectangle below boundary
+    DrawRectangleAlign(0, gameScreenHeight, gameScreenWidth, gameScreenHeight - (boundary.y + boundary.height), theme.background, LEFT, BOTTOM);
     // Drawing left right padding blocks out buttons that expand a bit
     //DrawRectangle(0, 0, SETTING_PADDING, gameScreenHeight, theme.background);
     //DrawRectangleAlign(gameScreenWidth, 0, SETTING_PADDING, gameScreenHeight, theme.background, RIGHT, TOP);
+    for (auto& [heading, button] : menu_button)
+    {
+        button->draw();
+    }
     draw_taskbar();
     scrollbar->draw();
 }

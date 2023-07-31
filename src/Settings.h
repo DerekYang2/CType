@@ -4,6 +4,7 @@
 #include "TogglePanel.h"
 #include "jsonparser.h"
 #include "ThemeToggle.h"
+#include "Button.h"
 #include "Textbox.h"
 #include "Scrollbar.h"
 // EXTERNALS USED
@@ -23,6 +24,10 @@ extern ThemeToggle * theme_toggle;
 extern unordered_map<string, ToggleGroup*> setting_toggle;
 extern string default_settings;
 extern string setting_path;
+extern Rectangle boundary;
+extern unordered_map<string, Button*> menu_button;
+extern unordered_map<string, Textbox*> heading_text;
+extern unordered_map<string, vector<UIObject*>> heading_objects;
 
 // custom macros
 #define is_strict_space (setting_toggle["strict space"]->get_selected() == "on")
