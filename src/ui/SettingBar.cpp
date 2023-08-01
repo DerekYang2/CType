@@ -6,34 +6,33 @@
  * if toggle group selected = custom, return popuphandler input value
 */
 
-SettingBar::SettingBar(float center_x, float center_y, initializer_list<Toggle*> toggle_list, ToggleGroup* toggleGroup, PopupHandler* popupHandler) : cx(center_x), cy(center_y), toggle_group(toggleGroup), popup_handler(popupHandler)
+SettingBar::SettingBar(float center_x, float center_y, vector<Toggle*> toggle_list, ToggleGroup* toggleGroup, PopupHandler* popupHandler) : cx(center_x), cy(center_y), toggle_group(toggleGroup), popup_handler(popupHandler)
 {
     h = toggle_group->get_height();
     space_width = toggle_group->space_width();
     for (auto t : toggle_list)
         toggle_map[t->get_text()] = t;
 
-    tot_width = space_width;  // first space
+    tot_width = 0;
     for (auto t : toggle_list)
     {
-        tot_width += t->get_width();
-        tot_width += space_width;
+        tot_width += t->get_width() + 2 * space_width;
     }
     separator_x = tot_width + 1.5f*space_width; 
-    tot_width += 3 * space_width;  // separator between toggles and group
+    tot_width += 2.5f * space_width;  // separator between toggles and group
     tot_width += toggle_group->get_width();  // last space is auto handled by toggle group
 
     // fix toggle positions 
     float x_pos = cx - tot_width / 2;
     separator_x += x_pos;
-
-    x_pos += space_width;
-    for (auto& [label, toggle] : toggle_map)
+    
+    for (auto toggle : toggle_list)
     {
+        x_pos += space_width;
         toggle->set_pos(x_pos, cy - h / 2);
         x_pos += toggle->get_width() + space_width;
     }
-    x_pos += 3*space_width;
+    x_pos += 2.5*space_width;
     toggle_group->set_pos(x_pos, cy - h / 2);
 }
 

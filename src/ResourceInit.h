@@ -1,6 +1,8 @@
 #pragma once
+#include "at_icon.h"
 #include "exit_icon.h"
 #include "fullscreen.h"
+#include "hashtag_icon.h"
 #include "keyboard.h"
 #include "logo.h"
 #include "logo_icon.h"
@@ -10,6 +12,13 @@
 
 #define init_raw_data \
 Image _img = {0}; \
+_img = { 0 }; \
+_img.format = AT_ICON_FORMAT; \
+_img.width = AT_ICON_WIDTH; \
+_img.height = AT_ICON_HEIGHT; \
+_img.data = AT_ICON_DATA; \
+_img.mipmaps = 1; \
+textureOf["at_icon"] = LoadTextureFromImage(_img); \
 _img = { 0 }; \
 _img.format = EXIT_ICON_FORMAT; \
 _img.width = EXIT_ICON_WIDTH; \
@@ -24,6 +33,13 @@ _img.height = FULLSCREEN_HEIGHT; \
 _img.data = FULLSCREEN_DATA; \
 _img.mipmaps = 1; \
 textureOf["fullscreen"] = LoadTextureFromImage(_img); \
+_img = { 0 }; \
+_img.format = HASHTAG_ICON_FORMAT; \
+_img.width = HASHTAG_ICON_WIDTH; \
+_img.height = HASHTAG_ICON_HEIGHT; \
+_img.data = HASHTAG_ICON_DATA; \
+_img.mipmaps = 1; \
+textureOf["hashtag_icon"] = LoadTextureFromImage(_img); \
 _img = { 0 }; \
 _img.format = KEYBOARD_FORMAT; \
 _img.width = KEYBOARD_WIDTH; \

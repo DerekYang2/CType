@@ -11,7 +11,7 @@ class SettingBar : public UIObject {
     ToggleGroup* toggle_group;
     PopupHandler* popup_handler;
     public:
-    SettingBar(float center_x, float center_y, initializer_list<Toggle*> toggles, ToggleGroup* toggleGroup, PopupHandler* popupHandler);
+    SettingBar(float center_x, float center_y, vector<Toggle*> toggles, ToggleGroup* toggleGroup, PopupHandler* popupHandler);
     void update();
     void draw();
     bool needs_update();

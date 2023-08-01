@@ -598,18 +598,18 @@ void init()
     time_popup = new PopupHandler(gameScreenWidth * 0.5f, gameScreenHeight * 0.5f, 500, 500, p_title, p_description, input_box, p_button);
     ui_objects.alloc(time_popup, POPUP);
     
-    //new_Toggle(START, 0, 300, 50, true, "test", "settings_icon");
-    float bar_h = 25;
-    Toggle* test = new Toggle(0, 300, bar_h, true, "test", "settings_icon");
-    const vector<string> options = {"5", "15", "30", "60", "120", "custom"};
-    ToggleGroup* test_group = new ToggleGroup(0, 300, bar_h, 0, options);
+    const float bar_h = 25;
+    Toggle* punctuation = new Toggle(0, 300, bar_h, true, "punctuation", "at_icon");
+    Toggle* numbers = new Toggle(0, 300, bar_h, true, "numbers", "hashtag_icon");
+    const vector<string> options = { "5", "15", "30", "60", "120", "custom" };
+    ToggleGroup* time_toggles = new ToggleGroup(0, 300, bar_h, 0, options);
     if (find(options.begin(), options.end(), selected_time) == options.end())  // selected  time was not found in default options 
-        test_group->set_selected("custom");
+        time_toggles->set_selected("custom");
     else
-        test_group->set_selected(selected_time);
+        time_toggles->set_selected(selected_time);
     
         //new_ToggleGroup(START, 0, 300, 50, 0, { "15", "30", "60", "120" });
-    setting_bar = new SettingBar(gameScreenWidth / 2, 300, { test }, test_group, time_popup);
+    setting_bar = new SettingBar(gameScreenWidth / 2, 300, { punctuation, numbers }, time_toggles, time_popup);
     ui_objects.alloc(setting_bar, START);
 
     
