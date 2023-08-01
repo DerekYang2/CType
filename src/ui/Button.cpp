@@ -27,8 +27,16 @@ Button::Button(float x, float y, float w, float h, string text, std::function<vo
             break;
         maxFit++;
     }
-    Vector2 textSize = MeasureTextEx(font, message.c_str(), fontSize, fontSize / font_spacing);
-    msg_width = textSize.x, msg_height = textSize.y * 1.1;
+}
+
+Button::Button(float x, float y, float h, string text, std::function<void()> f) 
+{
+    reset();
+    texture = nullptr;
+    message = text;
+    fontSize = MeasureFontSize(text, INT_MAX, h / 1.2f);
+    Vector2 text_wh = MeasureTextEx(message, fontSize);
+    hitbox = Rectangle(x, y, text_wh.x * 1.2, text_wh.y * 1.2);
 }
 
 void Button::reset()
@@ -74,7 +82,8 @@ void Button::draw()
         Color col = hover ? theme.sub_alt : theme.text;  // text color
         if (pressWatch.s() <= 0.05)
             col = theme.text;
-        DrawRectangleRounded(hitbox, 0.25f, round(3*(hitbox.height/50)), (col == theme.text) ? theme.sub_alt : theme.text);  // opposite color
+
+        DrawRectangleRounded(hitbox, 0.25f, ceil(hitbox.height/12), (col == theme.text) ? theme.sub_alt : theme.text);  // opposite color
         DrawTextAlign(message, hitbox.x + (hitbox.width) * 0.5f, hitbox.y + (hitbox.height) * 0.5f, fontSize, col, CENTER, CENTER);
     } else
     {

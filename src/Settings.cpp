@@ -10,6 +10,10 @@ unordered_map<string, Button*> menu_button;
 unordered_map<string, Textbox*> heading_text;
 unordered_map<string, vector<UIObject*>> heading_objects;
 
+/**
+ * TODO: fix menu button, maybe center
+*/
+
 void init_settings()
 {
     RSJresource default_json(
@@ -37,17 +41,15 @@ void init_settings()
     setting_json = RSJresource(readFile(setting_path));
 
     // Fill any missing parameters from default
-    // Fill in sections
     auto setting_map = setting_json.as_map<string>();
-    for (auto& [key, value] : default_json.as_map<string>())
+    for (auto& [key, value] : default_json.as_map<string>())  // Fill in sections
     {
         if (!setting_map.contains(key))
         {
             setting_json[key] = value;
         }
     }
-    // Fill in each section
-    for (auto& [section, section_content] : default_json.as_object())
+    for (auto& [section, section_content] : default_json.as_object())  // Fill in each section
     {
         auto section_map = setting_json[section].as_map<string>();
         for (auto& [key, value] : section_content.as_map<string>())
@@ -84,12 +86,12 @@ void init_settings()
     float x_pos = SETTING_PADDING;
     for (string heading : headings_list)
     {
-        menu_button[heading] = new Button(x_pos, SETTING_PADDING, 100, MENU_HEIGHT, heading);
+        menu_button[heading] = new Button(x_pos, SETTING_PADDING, MENU_HEIGHT - 10, heading);
         x_pos += menu_button[heading]->get_width();
         ui_objects.alloc(menu_button[heading], SETTINGS);
     }
     
-    // Initialize themes first
+    // APPEARANCE OBJECTS: Initialize themes first
     fetch_themes();
     theme_toggle = new ThemeToggle(SETTING_PADDING, 0, gameScreenWidth - 2 * SETTING_PADDING, 40, setting_json["appearance"]["theme"].as<string>());
     theme_toggle->set_bounds(boundary);
@@ -102,7 +104,7 @@ void init_settings()
         heading_text[heading] = new Textbox(SETTING_PADDING, 0, gameScreenWidth - 2 * SETTING_PADDING, 50, "\n" + heading, 45, "main", true);
     }
 
-    // BEHAVIOR objects
+    // BEHAVIOR objects 
     behavior_panel = new TogglePanel(SETTING_PADDING, 0, gameScreenWidth - 2 * SETTING_PADDING, toggle_pointers, {
         {"Show Live WPM", "Displays the live WPM on the test screen."},
         {"Strict Space", "When enbled, pressing space at the beginning of a word will insert a space character."},

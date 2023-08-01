@@ -564,7 +564,7 @@ void init()
 
     load_user_data();
     init_settings();
-
+    set_icon();
     // get selected test time
     string selected_time = data_json["test time"].as_str();
     string custom_time = data_json["custom time"].as_str();
@@ -640,7 +640,6 @@ int main(void)
     InitWindow(windowWidth, windowHeight, "CType");
     MaximizeWindow();
     SetWindowMinSize(320, 240);
-    set_icon();
     // Render texture initialization, used to hold the rendering result so we can easily resize it
     target = LoadRenderTexture(gameScreenWidth, gameScreenHeight);
     SetTextureFilter(target.texture, TEXTURE_FILTER_TRILINEAR);  // Texture scale filter to use
