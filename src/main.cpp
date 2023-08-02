@@ -173,6 +173,7 @@ void init_test()
     wpm_logger.reset();
     // generate first chars
     generated_chars = "";
+    text_gen.set_punctuation(true);
     text_gen.set_list("english");
     text_gen.generate_text((is_tape_mode?1:3) * ceil(gameScreenWidth / char_dimension['i'].x));
 }
@@ -235,7 +236,7 @@ void end_test()
                         {t_s(final_raw_wpm), 50},
                         {TextFormat("%d%%", consistency), 50},
                         {char_status, min(50.f, MeasureFontSize(char_status, wpm_width - 65))},
-                        {"time " + t_s(test_info.time) + "\n" + text_gen.list, 25}
+                        {"time " + t_s(test_info.time) + "\n" + text_gen.list_name(), 25}
                     });
 }
 
@@ -599,8 +600,8 @@ void init()
     ui_objects.alloc(time_popup, POPUP);
     
     const float bar_h = 25;
-    Toggle* punctuation = new Toggle(0, 300, bar_h, true, "punctuation", "at_icon");
-    Toggle* numbers = new Toggle(0, 300, bar_h, true, "numbers", "hashtag_icon");
+    Toggle* punctuation = new Toggle(0, 300, bar_h, false, "punctuation", "at_icon");
+    Toggle* numbers = new Toggle(0, 300, bar_h, false, "numbers", "hashtag_icon");
     const vector<string> options = { "5", "15", "30", "60", "120", "custom" };
     ToggleGroup* time_toggles = new ToggleGroup(0, 300, bar_h, 0, options);
     if (find(options.begin(), options.end(), selected_time) == options.end())  // selected  time was not found in default options 

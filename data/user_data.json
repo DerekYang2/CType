@@ -1,7 +1,7 @@
 {
     'custom time': 12,
     'dictionary': 'english',
-    'test time': 5,
+    'test time': 30,
     'test history': [
         {
             'wpm': 0.0,
