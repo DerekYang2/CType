@@ -230,14 +230,17 @@ void end_test()
     // character status can get too wide 
     string char_status = TextFormat("%d/%d/%d/%d", status_count.correct, status_count.incorrect, status_count.missing, status_count.extra);
 
-    end_stats->init({ {"wpm", 50}, {"acc", 50}, {"raw", 25}, {"consistency", 25}, {"characters", 25}, {"test type", 25}},
+    string test_mode_append = "";
+    test_mode_append += text_gen.get_punctuation() ? "\npunctuation" : "";
+    test_mode_append += text_gen.get_numbers() ? "\nnumbers" : "";
+    end_stats->init({ {"wpm", 50}, {"acc", 50}, {"raw", 25}, {"consistency", 25}, {"characters", 25}, {"test type", 25} },
                     {
                         {t_s(final_wpm), 100},
                         {TextFormat("%d%%", final_accuracy), 100},
                         {t_s(final_raw_wpm), 50},
                         {TextFormat("%d%%", consistency), 50},
                         {char_status, min(50.f, MeasureFontSize(char_status, wpm_width - 65))},
-                        {"time " + t_s(test_info.time) + "\n" + text_gen.list_name(), 25}
+                        {"time " + t_s(test_info.time) + "\n" + text_gen.list_name() + test_mode_append, 25}
                     });
 }
 
@@ -520,7 +523,7 @@ void load_base_font(string path = "default")
         font.texture = LoadTextureFromImage(atlas);
         UnloadImage(atlas);
 
-        SetTextureFilter(font.texture, TEXTURE_FILTER_TRILINEAR);    // Required for SDF font  
+        SetTextureFilter(font.texture, TEXTURE_FILTER_BILINEAR);    // Required for SDF font  
     } else 
     {
         //font = LoadFontEx(path.c_str(), small_font_size, nullptr, 0);
@@ -563,7 +566,7 @@ void init()
     init_raw_data;
     for (auto& [key, texture] : textureOf)
     {
-        SetTextureFilter(texture, TEXTURE_FILTER_TRILINEAR);
+        SetTextureFilter(texture, TEXTURE_FILTER_BILINEAR);
     }
 
     load_user_data();
@@ -647,7 +650,7 @@ int main(void)
     SetWindowMinSize(320, 240);
     // Render texture initialization, used to hold the rendering result so we can easily resize it
     target = LoadRenderTexture(gameScreenWidth, gameScreenHeight);
-    SetTextureFilter(target.texture, TEXTURE_FILTER_TRILINEAR);  // Texture scale filter to use
+    SetTextureFilter(target.texture, TEXTURE_FILTER_BILINEAR);  // Texture scale filter to use
     SetTextureWrap(target.texture, TEXTURE_WRAP_CLAMP);  // For whatever reason, by default render texture will leak one pixel wrap around
         
     SetTargetFPS(60);                   // Set our game to run at 60 frames-per-second

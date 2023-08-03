@@ -166,3 +166,13 @@ void TextGenerator::generate_text(int buffer_space)
         generated_chars += words.back().word + " ";
     }
 }
+
+bool TextGenerator::get_punctuation()
+{
+    return punctuation;
+}
+
+bool TextGenerator::get_numbers()
+{
+    return numbers;
+}

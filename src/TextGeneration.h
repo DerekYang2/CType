@@ -19,6 +19,8 @@ class TextGenerator {
     string get_word();
     string list_name();
     void generate_text(int buffer_space);
+    bool get_punctuation(); 
+    bool get_numbers();
 };
 
 extern TextGenerator text_gen;
