@@ -39,9 +39,34 @@ string TextGenerator::get_insert()
         return ":";
 }
 
+string TextGenerator::get_number()
+{
+    int len = rand_int(1, 4);
+    string str = "";
+    for (int i = 0; i < len; i++) 
+        str += to_string(rand_int(0, 9));
+    if (punctuation)
+    {
+        float tot_words = 100;  // Probability is r_int out of tot_words
+        int r_int = rand_int(1, tot_words);
+        if (r_int <= 2)
+            str = "$" + str;
+        else if (r_int <= 4)
+            str = "-" + str;
+        else if (r_int <= 6)
+            str += "%";
+    }
+    return str;
+}
+
 void TextGenerator::set_punctuation(bool on)
 {
     punctuation = on;
+}
+
+void TextGenerator::set_numbers(bool on)
+{
+    numbers = on;
 }
 
 void TextGenerator::set_list(string list_name)
@@ -70,7 +95,11 @@ string TextGenerator::get_word()
     const int p_contract = 5, p_end = 7, p_insert = 5, p_wrap = 2;  // 5 in 100 (p in tot_words)
     
     string return_word;
-    if (punctuation && r_int <= p_contract)  // Return random contraction 
+    if (numbers && r_int <= 5) // insert random number
+    {
+        needs_capital = false;
+        return get_number();
+    } else if (punctuation && r_int <= p_contract)  // Return random contraction 
     {
         return_word = contractions[rand_int(0, contractions.size() - 1)];
         if (needs_capital)

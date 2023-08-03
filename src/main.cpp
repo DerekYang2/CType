@@ -174,6 +174,7 @@ void init_test()
     // generate first chars
     generated_chars = "";
     text_gen.set_punctuation(setting_bar->is_toggled("punctuation"));
+    text_gen.set_numbers(setting_bar->is_toggled("numbers"));
     text_gen.set_list("english");
     text_gen.generate_text((is_tape_mode?1:3) * ceil(gameScreenWidth / char_dimension['i'].x));
 }
