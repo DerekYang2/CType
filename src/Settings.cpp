@@ -60,7 +60,7 @@ void init_settings()
             }
         }
     }
-    float setting_h = 25;
+    float setting_h = 30;
 
     vector<ToggleGroup*> toggle_pointers;  // issue toggle pointers not in order because of unordered map
     for (auto& [key, value] : setting_json["behavior"].as_object())

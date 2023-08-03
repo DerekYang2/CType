@@ -13,28 +13,15 @@ ToggleGroup::ToggleGroup(float x, float y, float h, int init_idx, vector<string>
     for (int i = 0; i < text.size(); i++)
         text[i] = " " + text[i] + " ";
     
-    int maxFit = 2;
-    font_size = maxFit;
-    float padding = h / 15;
-
-    while (true)  //find the max font size that fits
-    {
-        Vector2 textSize = MeasureTextEx(font, text[0].c_str(), maxFit, maxFit / font_spacing);
-        textSize.y /= 1.5;
-        if (textSize.y + 2 * padding <= h)
-        {
-            font_size = maxFit;
-        } else
-            break;
-        maxFit++;
-    }
+    float padding = show_rectangle ? h / 15 : 0;
+    font_size = MeasureFontSize(text[0], INT_MAX, h - 2 * padding);
 
     tot_width = 0;
     float x_pos = corner.x;
     for (string& str : text)
     {
         hitbox.push_back({ x_pos, y, 0, h });
-        hitbox.back().width = MeasureTextEx(font, str.c_str(), font_size, font_size / font_spacing).x;
+        hitbox.back().width = MeasureTextEx(str, font_size).x; 
         tot_width += hitbox.back().width;
         x_pos += hitbox.back().width;
     }

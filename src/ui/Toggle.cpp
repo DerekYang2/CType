@@ -26,24 +26,10 @@ Toggle::Toggle(float x, float y, float h, bool initState, string toggle_text, st
     texture = &textureOf[img_path];
     img_scale = h / texture->height;
     text = " " + toggle_text;
-    int maxFit = 2;
-    font_size = maxFit;
-    float padding = h / 15;
-
-    while (true)  //find the max font size that fits
-    {
-        Vector2 textSize = MeasureTextEx(font, text.c_str(), maxFit, maxFit / font_spacing);
-        textSize.y /= 1.5;
-        if (textSize.y + 2 * padding <= h)
-        {
-            font_size = maxFit;
-        } else
-            break;
-        maxFit++;
-    }
-    
+    font_size = MeasureFontSize(text, INT_MAX, h);
+ 
     hitbox = { x, y, 0, h };
-    hitbox.width = MeasureTextEx(font, text.c_str(), font_size, font_size / font_spacing).x + texture->width * img_scale;
+    hitbox.width = MeasureTextEx(text, font_size).x + texture->width * img_scale;
 }
 
 Toggle::Toggle(float x, float y, float h, bool initState, Texture* textureOn, Texture* textureOff)

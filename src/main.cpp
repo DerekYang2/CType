@@ -173,7 +173,7 @@ void init_test()
     wpm_logger.reset();
     // generate first chars
     generated_chars = "";
-    text_gen.set_punctuation(true);
+    text_gen.set_punctuation(setting_bar->is_toggled("punctuation"));
     text_gen.set_list("english");
     text_gen.generate_text((is_tape_mode?1:3) * ceil(gameScreenWidth / char_dimension['i'].x));
 }
@@ -296,7 +296,7 @@ void update_start()
         switch_settings();
         return;
     }
-    if (IsKeyPressed(KEY_TAB))  // restart test 
+    if (IsKeyPressed(KEY_TAB) || setting_bar->needs_update())  // restart test 
     {
         init_test();
         restart_alpha = 1;
@@ -599,7 +599,7 @@ void init()
     time_popup = new PopupHandler(gameScreenWidth * 0.5f, gameScreenHeight * 0.5f, 500, 500, p_title, p_description, input_box, p_button);
     ui_objects.alloc(time_popup, POPUP);
     
-    const float bar_h = 25;
+    const float bar_h = 30;
     Toggle* punctuation = new Toggle(0, 300, bar_h, false, "punctuation", "at_icon");
     Toggle* numbers = new Toggle(0, 300, bar_h, false, "numbers", "hashtag_icon");
     const vector<string> options = { "5", "15", "30", "60", "120", "custom" };

@@ -11,7 +11,7 @@ SettingBar::SettingBar(float center_x, float center_y, vector<Toggle*> toggle_li
     h = toggle_group->get_height();
     space_width = toggle_group->space_width();
     for (auto t : toggle_list)
-        toggle_map[t->get_text()] = t;
+        toggle_map[trim(t->get_text())] = t;
 
     tot_width = 0;
     for (auto t : toggle_list)
@@ -32,7 +32,7 @@ SettingBar::SettingBar(float center_x, float center_y, vector<Toggle*> toggle_li
         toggle->set_pos(x_pos, cy - h / 2);
         x_pos += toggle->get_width() + space_width;
     }
-    x_pos += 2.5*space_width;
+    x_pos += 2.5f*space_width;
     toggle_group->set_pos(x_pos, cy - h / 2);
 }
 
@@ -54,7 +54,7 @@ void SettingBar::draw()
 {
     float padding = 2 * space_width;  // also equal to y padding
     float x_pad = padding - space_width; // x already has some padding
-    DrawRectangleRoundedAlign(cx, cy, tot_width + 2 * x_pad, h + 2 * padding, 0.2f, h/5, theme.sub_alt, CENTER, CENTER); 
+    DrawRectangleRoundedAlign(cx, cy, tot_width + 2 * x_pad, h + 2 * padding, 0.3f, 6, theme.sub_alt, CENTER, CENTER); 
     DrawRectangleAlign(separator_x, cy, space_width * 0.6f, h + padding, theme.background, CENTER, CENTER);
     for (auto& [label, toggle] : toggle_map)
         toggle->draw();
@@ -63,7 +63,7 @@ void SettingBar::draw()
 
 bool SettingBar::needs_update()
 {
-    bool recent_update = toggle_group->was_pressed();
+    bool recent_update = false;  // Does not include the toggle group (these toggles such as time do not require a test refresh)
     for (auto& [label, toggle] : toggle_map)
         recent_update |= toggle->was_pressed();
     return recent_update;
