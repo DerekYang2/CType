@@ -298,6 +298,8 @@ void update_start()
     }
     if (IsKeyPressed(KEY_TAB) || setting_bar->needs_update())  // restart test 
     {
+        data_json["punctuation"] = (int)setting_bar->is_toggled("punctuation");
+        data_json["numbers"] = (int)setting_bar->is_toggled("numbers");
         init_test();
         restart_alpha = 1;
         return;
@@ -566,10 +568,11 @@ void init()
     load_user_data();
     init_settings();
     set_icon();
-    // get selected test time
+    // get selected test time and other user data
     string selected_time = data_json["test time"].as_str();
     string custom_time = data_json["custom time"].as_str();
-
+    bool punctuation_on = data_json["punctuation"].as<int>();
+    bool numbers_on = data_json["numbers"].as<int>();
     // Window UI
     close_button = new Button(gameScreenWidth - 50, 0, 50, 50, &textureOf["exit_icon"], [] {close_window = true;});
     fullscreen_toggle = new Toggle(gameScreenWidth - 100, 0, 50, false, &textureOf["unfullscreen"], &textureOf["fullscreen"]);
@@ -600,8 +603,8 @@ void init()
     ui_objects.alloc(time_popup, POPUP);
     
     const float bar_h = 30;
-    Toggle* punctuation = new Toggle(0, 300, bar_h, false, "punctuation", "at_icon");
-    Toggle* numbers = new Toggle(0, 300, bar_h, false, "numbers", "hashtag_icon");
+    Toggle* punctuation = new Toggle(0, 300, bar_h, punctuation_on, "punctuation", "at_icon");
+    Toggle* numbers = new Toggle(0, 300, bar_h, numbers_on, "numbers", "hashtag_icon");
     const vector<string> options = { "5", "15", "30", "60", "120", "custom" };
     ToggleGroup* time_toggles = new ToggleGroup(0, 300, bar_h, 0, options);
     if (find(options.begin(), options.end(), selected_time) == options.end())  // selected  time was not found in default options 

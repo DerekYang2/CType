@@ -7,7 +7,7 @@
 // EXTERNALS
 extern UIAlloc ui_objects;
 //
-extern string data_path;
+extern string DATA_PATH;
 extern RSJresource data_json;
 extern void load_user_data();
 extern void write_user_data();
