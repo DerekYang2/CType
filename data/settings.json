@@ -1,35 +1,35 @@
 {
-    "appearance": {
-        "theme": "blueberry light"
-    },
     "behavior": {
-        "tape mode": {
-            "default": 0,
+        "show wpm": {
             "options": [
                 "off",
                 "on"
-            ]
-        },
-        "strict space": {
-            "default": 0,
-            "options": [
-                "off",
-                "on"
-            ]
+            ],
+            "default": 1
         },
         "debug mode": {
-            "default": 0,
             "options": [
                 "off",
                 "on"
-            ]
+            ],
+            "default": 0
         },
-        "show wpm": {
-            "default": 1,
+        "strict space": {
             "options": [
                 "off",
                 "on"
-            ]
+            ],
+            "default": 0
+        },
+        "tape mode": {
+            "options": [
+                "off",
+                "on"
+            ],
+            "default": 0
         }
+    },
+    "appearance": {
+        "theme": "8008"
     }
 }

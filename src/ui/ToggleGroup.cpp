@@ -218,14 +218,15 @@ void ToggleGroup::draw_hint()
 {
     if (textures.empty()) return;
     float img_w = hitbox[0].width;
+    const float font_size = font_measure.small();
     for (int i = 0; i < hint_alpha.size(); i++)
     {
         string hint_text = " " + text[i] + " ";
-        Vector2 text_dim = MeasureTextEx(hint_text, 22);
-        text_dim.y += 2 * MeasureTextEx(" ", 22).x;
+        Vector2 text_dim = MeasureTextEx(hint_text, font_size);
+        text_dim.y += 2 * MeasureTextEx(" ", font_size).x;
         DrawRectangleRoundedAlign({ corner.x + (i + 0.5f) * img_w, corner.y, text_dim.x, text_dim.y }, 0.25f, 7, rgba(15, 15, 15, hint_alpha[i]), CENTER, BOTTOM);
         if (hint_alpha[i] * 2 >= HINT_ALPHA)  // if alpha is half of max, draw text
-            DrawTextAlign(hint_text, corner.x + (i + 0.5f) * img_w, corner.y - text_dim.y * 0.5f, 22, WHITE, CENTER, CENTER);
+            DrawTextAlign(hint_text, corner.x + (i + 0.5f) * img_w, corner.y - text_dim.y * 0.5f, font_size, WHITE, CENTER, CENTER);
     }
 }
 

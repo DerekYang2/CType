@@ -60,7 +60,7 @@ void init_settings()
             }
         }
     }
-    float setting_h = 30;
+    float setting_h = font_measure.large_size;
 
     vector<ToggleGroup*> toggle_pointers;  // issue toggle pointers not in order because of unordered map
     for (auto& [key, value] : setting_json["behavior"].as_object())
@@ -86,7 +86,7 @@ void init_settings()
     float x_pos = SETTING_PADDING;
     for (string heading : headings_list)
     {
-        menu_button[heading] = new Button(x_pos, SETTING_PADDING, MENU_HEIGHT - 10, heading);
+        menu_button[heading] = new Button(x_pos, SETTING_PADDING, MENU_HEIGHT - 6, heading);
         x_pos += menu_button[heading]->get_width();
         ui_objects.alloc(menu_button[heading], SETTINGS);
     }
@@ -101,13 +101,13 @@ void init_settings()
     // Titles (heading)
     for (string heading : headings_list)
     {
-        heading_text[heading] = new Textbox(SETTING_PADDING, 0, gameScreenWidth - 2 * SETTING_PADDING, 50, "\n" + heading, 45, "main", true);
+        heading_text[heading] = new Textbox(SETTING_PADDING, 0, gameScreenWidth - 2 * SETTING_PADDING, 50, "\n" + heading, font_measure.title(), "main", true);
     }
 
     // BEHAVIOR objects 
     behavior_panel = new TogglePanel(SETTING_PADDING, 0, gameScreenWidth - 2 * SETTING_PADDING, toggle_pointers, {
         {"Show Live WPM", "Displays the live WPM on the test screen."},
-        {"Strict Space", "When enbled, pressing space at the beginning of a word will insert a space character."},
+        {"Strict Space", "When enabled, pressing space at the beginning of a word will insert a space character."},
         {"Tape Mode", "Only shows one line which scrolls horizontally."},
         {"Debug Mode", "Allows debugging functions."}
     });

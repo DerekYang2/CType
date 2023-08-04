@@ -296,7 +296,7 @@ void Graph::draw_hint()
     string wpm_str = t_s((int)round(pos_to_value(normal_y, max_v)));
     string instant_str = t_s((int)round(pos_to_value(instant_y, max_v)));
     string error_str = t_s(errors_hint);
-    float hint_fs = 25;
+    float hint_fs = font_measure.small();
     float time_h = MeasureTextEx(time_str, hint_fs).y, normal_h = MeasureTextEx(wpm_str, hint_fs).y, instant_h = MeasureTextEx(instant_str, hint_fs).y, error_h = MeasureTextEx(error_str, hint_fs).y;
     
     float text_max_w = max({ MeasureTextEx("wpm  " + wpm_str, hint_fs).x, MeasureTextEx("instant  " + instant_str, hint_fs).x, MeasureTextEx("errors  " + error_str, hint_fs).x });
@@ -361,7 +361,7 @@ void Graph::draw()
     Color line_col = too_dark ? rgba(255, 255, 255, 0.3) : rgba(0, 0, 0, 0.3);
 
     DrawRectangleLinesEx(rect, 1, line_col);
-    float grid_font_sz = 25;
+    float grid_font_sz = font_measure.small();
     // DRAW y-grid
     for (float y = rect.y + rect.height; y >= rect.y; y -= grid_y_gap)
     {

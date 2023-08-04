@@ -14,19 +14,7 @@ Button::Button(float x, float y, float w, float h, string text, std::function<vo
     texture = nullptr;
     message = text;
     hitbox = Rectangle(x, y, w, h);
-    int maxFit = 2;
-    float padding = w / 15;
-    while (true)  //find the max font size that fits
-    {
-        Vector2 textSize = MeasureTextEx(font, text.c_str(), maxFit, maxFit / font_spacing);
-        textSize.y /= 1.5;
-        if (textSize.x + 2 * padding <= hitbox.width && textSize.y + 2 * padding <= hitbox.height)
-        {
-            fontSize = maxFit;
-        } else
-            break;
-        maxFit++;
-    }
+    fontSize = MeasureFontSize(text, hitbox.width * 0.8f, hitbox.height * 0.8f);
 }
 
 Button::Button(float x, float y, float h, string text, std::function<void()> f) 
@@ -83,7 +71,7 @@ void Button::draw()
         if (pressWatch.s() <= 0.05)
             col = theme.text;
 
-        DrawRectangleRounded(hitbox, 0.25f, ceil(hitbox.height/12), (col == theme.text) ? theme.sub_alt : theme.text);  // opposite color
+        DrawRectangleRounded(hitbox, 0.25f, max(2, (int)ceil(hitbox.height/14)), (col == theme.text) ? theme.sub_alt : theme.text);  // opposite color
         DrawTextAlign(message, hitbox.x + (hitbox.width) * 0.5f, hitbox.y + (hitbox.height) * 0.5f, fontSize, col, CENTER, CENTER);
     } else
     {

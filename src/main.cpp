@@ -74,6 +74,9 @@ int gameScreenWidth = 1920, gameScreenHeight = 1080;
 int windowWidth = gameScreenWidth, windowHeight = gameScreenHeight;
 bool mouse_focus = true;
 
+// FONT SIZES
+FontMeasure font_measure(23, 27, 35, 50);
+
 // GLOBAL VARS
 unordered_set<int> scene_ids[SCENE_COUNT];
 int scene = START;
@@ -161,7 +164,7 @@ bool pending_popup_draw = false;
 
 void init_test()
 {
-    drawer = TextDrawer(font, 40);
+    drawer = TextDrawer(font, font_measure.large());
     reset_IOHandler(TEST);
     char_status.clear();
     words.clear();
@@ -233,14 +236,15 @@ void end_test()
     string test_mode_append = "";
     test_mode_append += text_gen.get_punctuation() ? "\npunctuation" : "";
     test_mode_append += text_gen.get_numbers() ? "\nnumbers" : "";
-    end_stats->init({ {"wpm", 50}, {"acc", 50}, {"raw", 25}, {"consistency", 25}, {"characters", 25}, {"test type", 25} },
+    const float extra_large_size = MeasureFontSize("A", INT_MAX, 80);
+    end_stats->init({ {"wpm", font_measure.title()}, {"acc", font_measure.title()}, {"raw", font_measure.medium()}, {"consistency", font_measure.medium()}, {"characters", font_measure.medium()}, {"test type", font_measure.medium()} },
                     {
-                        {t_s(final_wpm), 100},
-                        {TextFormat("%d%%", final_accuracy), 100},
-                        {t_s(final_raw_wpm), 50},
-                        {TextFormat("%d%%", consistency), 50},
-                        {char_status, min(50.f, MeasureFontSize(char_status, wpm_width - 65))},
-                        {"time " + t_s(test_info.time) + "\n" + text_gen.list_name() + test_mode_append, 25}
+                        {t_s(final_wpm), extra_large_size},
+                        {TextFormat("%d%%", final_accuracy), extra_large_size},
+                        {t_s(final_raw_wpm), font_measure.title()},
+                        {TextFormat("%d%%", consistency), font_measure.title()},
+                        {char_status, min(font_measure.title(), MeasureFontSize(char_status, wpm_width - 65))},
+                        {"time " + t_s(test_info.time) + "\n" + text_gen.list_name() + test_mode_append, font_measure.medium()}
                     });
 }
 
@@ -417,7 +421,7 @@ void draw_start()
     }
     Color text_color = theme.main;
     text_color.a = restart_alpha * 255;
-    DrawTextAlign("Restarted", gameScreenWidth / 2, 975, 35, text_color, CENTER, CENTER);
+    DrawTextAlign("Restarted", gameScreenWidth / 2, 975, font_measure.large(), text_color, CENTER, CENTER);
     draw_taskbar();
 }
 
@@ -513,7 +517,7 @@ void load_base_font(string path = "default")
         string full_path = path;
         // SDF font generation from TTF font
         font = { 0 };
-        const float font_base = 64;
+        const float font_base = 48;
         font.baseSize = font_base;
         font.glyphCount = 95;
         // Parameters > font size: 16, no glyphs array provided (0), glyphs count: 0 (defaults to 95)
@@ -532,6 +536,7 @@ void load_base_font(string path = "default")
         cout << "Font loaded: " << path << endl;
     }
     font_spacing = 12;  // Default Font 
+    font_measure.set_font(font);
 }
 
 void set_rand_font()
@@ -584,10 +589,10 @@ void init()
 
     // STARTING UI ---------------------------------------------------------------
     // custom time popup
-    Textbox* p_title = new Textbox(0, 0, 450, 50, "Test Duration", 15, theme.main, false);
-    Textbox* p_description = new Textbox(0, 0, 400, 50, "Enter a custom test duration in seconds, between 2 and 10000.\nYour selected duration is:\n%s", 25, theme.sub, true);
-    Button* p_button = new Button(0, 0, 200, 50, "Ok", nullptr);
-    InputBox* input_box = new InputBox(0, 0, 380, 35, custom_time, true, [](string s) -> string {
+    Textbox* p_title = new Textbox(0, 0, 450, font_measure.title_size, "Test Duration", 15, theme.main, false);
+    Textbox* p_description = new Textbox(0, 0, 400, 50, "Enter a custom test duration in seconds, between 2 and 10000.\nYour selected duration is:\n%s", font_measure.medium(), theme.sub, true);
+    Button* p_button = new Button(0, 0, 200, font_measure.title_size, "Ok", nullptr);
+    InputBox* input_box = new InputBox(0, 0, 380, font_measure.large_size, custom_time, true, [](string s) -> string {
         // format s as time 
         try
         {
@@ -606,7 +611,7 @@ void init()
     time_popup = new PopupHandler(gameScreenWidth * 0.5f, gameScreenHeight * 0.5f, 500, 500, p_title, p_description, input_box, p_button);
     ui_objects.alloc(time_popup, POPUP);
     
-    const float bar_h = 30;
+    const float bar_h = font_measure.medium_size * 1.15f;
     Toggle* punctuation = new Toggle(0, 300, bar_h, punctuation_on, "punctuation", "at_icon");
     Toggle* numbers = new Toggle(0, 300, bar_h, numbers_on, "numbers", "hashtag_icon");
     const vector<string> options = { "5", "15", "30", "60", "120", "custom" };
@@ -643,7 +648,7 @@ int main(void)
      * TECHNICAL INITIALIZATION
     */
     // Enable config flags for resizable window and vertical synchro
-    SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_MSAA_4X_HINT | FLAG_WINDOW_UNDECORATED);
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_MSAA_4X_HINT | FLAG_WINDOW_UNDECORATED | FLAG_VSYNC_HINT);
 
     InitWindow(windowWidth, windowHeight, "CType");
     MaximizeWindow();

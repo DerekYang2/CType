@@ -41,7 +41,6 @@ Release exe is not organized yet, though theoretically when static libraries are
 ## Issues and Limitations
 - Weak antialiasing for shapes and lines, especially evident with circular shapes and interpolation line in results graph. Interpolation line uses a triangle fan to draw a cubic spline with some thickness. Solution requires tweaks for the OpenGL functions in Raylib library. Nvidia control panel FXAA fixes these jagged curves yet ruins the color for small text. Fragment shader FXAA also fixes curves yet is much worse by completely removing pixels, thin lines, etc. 
 - Issue with Raylib SDF font loading: light, small text have thin black outlines which make them difficult to read. Not an issue with light text on dark background. Only an issue for themes with small, light text on a light background. 
-- Window title bar is by default white and not customizable through Raylib.
 - Native file dialog default folder path results in error.
 - Only regular ASCII character support for now.
 - Screen scaling keeps a 1920x1080 ratio with black padding to fill the rest, possibly add custom ratio.

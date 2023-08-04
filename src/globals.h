@@ -4,6 +4,7 @@
 #include "Theme.h"
 #include "Word.h"
 #include "Utils.h"
+#include "FontMeasure.h"
 #define shader_path "./fonts/sdf.fs"
 // Window Variables
 extern int windowWidth, windowHeight;
@@ -58,6 +59,7 @@ extern int word_i;
 // Init mt19937 with random seed
 extern mt19937 rng;
 extern Font font; // Font: UI font
+extern FontMeasure font_measure;
 extern float font_spacing;
 extern Shader shader;
 extern Vector2 char_dimension[CHAR_MAX + 1];
