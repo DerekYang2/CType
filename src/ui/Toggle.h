@@ -16,6 +16,7 @@ class Toggle: public UIObject
     Texture* texture = nullptr, *texture_off = nullptr;
     float font_size;
     float img_scale, img_scale_off;
+    float space_width = 0;  // space between text and icon
     Stopwatch pressWatch;  
 // store time of last pressed
     bool on;

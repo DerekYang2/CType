@@ -11,7 +11,7 @@ TogglePanel::TogglePanel(float x, float y, float w, vector<ToggleGroup*> toggles
     
     for (auto& [label, detail] : toggleInfo)
     {
-        string fold_detail = fold(detail, width - toggles[idx]->get_width());
+        string fold_detail = fold(detail, width - toggles[idx]->get_width() * 1.1f);
         toggle_info.push_back({ label, fold_detail });
         text_height.push_back({ MeasureTextEx(label, font_size).y, MeasureTextEx(fold_detail, font_size).y });
         float sum_h = text_height.back().first + text_height.back().second;

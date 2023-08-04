@@ -25,11 +25,12 @@ Toggle::Toggle(float x, float y, float h, bool initState, string toggle_text, st
     on = initState;
     texture = &textureOf[img_path];
     img_scale = h / texture->height;
-    text = " " + toggle_text;
+    text = toggle_text;
     font_size = MeasureFontSize(text, INT_MAX, h);
- 
+    space_width = MeasureTextEx(" ", font_size).x;
+    
     hitbox = { x, y, 0, h };
-    hitbox.width = MeasureTextEx(text, font_size).x + texture->width * img_scale;
+    hitbox.width = MeasureTextEx(text, font_size).x + space_width + texture->width * img_scale;
 }
 
 Toggle::Toggle(float x, float y, float h, bool initState, Texture* textureOn, Texture* textureOff)
@@ -91,7 +92,7 @@ void Toggle::update()
 
 void Toggle::draw()
 {
-    if (texture == nullptr && texture_off == nullptr)
+    if (texture == nullptr && texture_off == nullptr)  // Radio button toggle 
     {
         if (hover)
         {
@@ -107,7 +108,7 @@ void Toggle::draw()
                 DrawRectangleRounded(hitbox, 1, 0, { 200, 200, 200, 255 });
         }
         DrawCircle(cx, hitbox.y + hitbox.height / 2, rad + hover, WHITE);
-    } else
+    } else  // Icon + text OR dual icon toggle
     {
         Color col;
         if (hover)
@@ -146,7 +147,7 @@ void Toggle::draw()
             DrawTextureEx(*texture_off, corner_off, 0, img_scale_off, col);
         }
         if (!text.empty())
-            DrawTextAlign(text, hitbox.x + texture->width * img_scale, hitbox.y + hitbox.height * 0.5f, font_size, col, LEFT, CENTER);
+            DrawTextAlign(text, hitbox.x + texture->width * img_scale + space_width, hitbox.y + hitbox.height * 0.5f, font_size, col, LEFT, CENTER);
     }
 }
 

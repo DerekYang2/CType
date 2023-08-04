@@ -5,25 +5,47 @@ const float TOGGLE_DELAY = 0.1f;
 ToggleGroup::ToggleGroup(float x, float y, float h, int init_idx, vector<string> text_list, bool show_rectangle) : show_rect(show_rectangle)
 {
     corner = corner_init = { x, y };
-    init_message = "";
+    // init_message = "";
     selected = init_idx;
-    texture = nullptr;
+    // texture = nullptr;
     
     text = deque<string>(text_list.begin(), text_list.end());
-    for (int i = 0; i < text.size(); i++)
-        text[i] = " " + text[i] + " ";
-    
-    float padding = show_rectangle ? h / 15 : 0;
-    font_size = MeasureFontSize(text[0], INT_MAX, h - 2 * padding);
+
+    if (show_rect)
+    {
+        font_size = MeasureFontSize(text[0], INT_MAX, h); 
+        h += 2 * (h/15);
+        padding = MeasureTextEx("o", font_size).x;
+    } else
+    {
+        font_size = MeasureFontSize(text[0], INT_MAX, h);  // No height padding
+        padding = MeasureTextEx("O", font_size).x;  // Only padding for width
+    }
 
     tot_width = 0;
     float x_pos = corner.x;
-    for (string& str : text)
+
+    if (show_rect)
     {
-        hitbox.push_back({ x_pos, y, 0, h });
-        hitbox.back().width = MeasureTextEx(str, font_size).x; 
-        tot_width += hitbox.back().width;
-        x_pos += hitbox.back().width;
+        for (string str : text)
+        {
+            const float text_w = MeasureTextEx(str, font_size).x + 2 * padding;
+            hitbox.push_back({ x_pos, y, text_w, h });
+            tot_width += hitbox.back().width;
+            x_pos += hitbox.back().width;
+        }
+    } else
+    {
+        for (string str : text)
+        {
+            // If no rectangle, text padding manually handled 
+            const float text_w = MeasureTextEx(str, font_size).x;
+            hitbox.push_back({ x_pos, y, text_w, h });
+            tot_width += hitbox.back().width;
+            x_pos += hitbox.back().width + padding;
+        }
+        // Add padding to total width
+        tot_width += padding * ((int)text.size()-1);
     }
 }
 
@@ -48,6 +70,7 @@ ToggleGroup::ToggleGroup(float x, float y, float h, int init_idx, vector<string>
     hint_alpha.assign(hints.size(), 0); 
 }
 
+/*
 // one starting image
 ToggleGroup::ToggleGroup(float x, float y, float h, int init_idx, vector<string> text_list, string init_msg, string img_path, bool show_rectangle) : show_rect(show_rectangle)
 {
@@ -87,7 +110,7 @@ ToggleGroup::ToggleGroup(float x, float y, float h, int init_idx, vector<string>
         tot_width += hitbox.back().width;
         x_pos += hitbox.back().width;
     }
-}
+} */
 
 void ToggleGroup::update()
 {
@@ -142,11 +165,11 @@ void ToggleGroup::draw()
     {
         //DrawRectangle(corner.x, corner.y, tot_width, hitbox[0].height, BLACK);
         float x_pos = corner.x;
-        if (texture != nullptr)
+/*         if (texture != nullptr)
         {
             DrawTextureEx(*texture, corner, 0, img_scale, theme.main);
             x_pos += texture->width * img_scale;
-        }
+        } */
 
         const float stroke_w = 1.f;
         for (int i = 0; i < hitbox.size(); i++)
@@ -178,7 +201,7 @@ void ToggleGroup::draw()
                 if (pressed) 
                     rect_col = theme.sub;  // blink sub when click
                 float border = (i == selected)? stroke_w : 0;
-                DrawRectangleRoundedAlign(x_pos + hitbox[i].width * 0.5f, hitbox[i].y + hitbox[i].height * 0.5f, hitbox[i].width + 2 * border + 2 * pressed, hitbox[i].height + MeasureTextEx(" ", font_size).x + 2 * border + 2 * pressed, 0.4f, 5, rect_col, CENTER, CENTER);
+                DrawRectangleRoundedAlign(x_pos + hitbox[i].width * 0.5f, hitbox[i].y + hitbox[i].height * 0.5f, hitbox[i].width + 2 * border + 2 * pressed, hitbox[i].height + 2 * border + 2 * pressed, 0.4f, 5, rect_col, CENTER, CENTER);
                 DrawTextAlign(text[i], x_pos + hitbox[i].width*0.5f, hitbox[i].y + hitbox[i].height * 0.5f, font_size, text_col, CENTER, CENTER);
                 x_pos += hitbox[i].width;
             } else
@@ -196,8 +219,9 @@ void ToggleGroup::draw()
                 }
                 if (i == selected && pressWatch.s() < TOGGLE_DELAY)  // just pressed 
                     text_col = theme.sub;  // blink sub when click
-                DrawTextAlign(text[i], x_pos + hitbox[i].width * 0.5f, hitbox[i].y + hitbox[i].height * 0.5f, font_size, text_col, CENTER, CENTER);
-                x_pos += hitbox[i].width;
+                // X left align, y center
+                DrawTextAlign(text[i], x_pos, hitbox[i].y + hitbox[i].height * 0.5f, font_size, text_col, LEFT, CENTER);
+                x_pos += hitbox[i].width + padding;
             }
         }
     } else
@@ -269,7 +293,7 @@ float ToggleGroup::get_height()
 
 float ToggleGroup::space_width()
 {
-    return MeasureTextEx(font, " ", font_size, font_size / font_spacing).x;
+    return padding;
 }
 
 void ToggleGroup::set_pos(float x, float y)

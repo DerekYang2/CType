@@ -60,7 +60,7 @@ void init_settings()
             }
         }
     }
-    float setting_h = font_measure.large_size;
+    float setting_h = font_measure.large_height;
 
     vector<ToggleGroup*> toggle_pointers;  // issue toggle pointers not in order because of unordered map
     for (auto& [key, value] : setting_json["behavior"].as_object())

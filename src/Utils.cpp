@@ -634,12 +634,12 @@ Font load_font(string path)
 
     // SDF font generation from TTF font
     Font ret_font = { 0 };
-    const float font_base = 64;
+    const float font_base = 48;
     ret_font.baseSize = font_base;
     ret_font.glyphCount = 95;
-    // Parameters > font size: 16, no glyphs array provided (0), glyphs count: 0 (defaults to 95)
+    // Parameters > font size: 48, no glyphs array provided (0), glyphs count: 0 (defaults to 95)
     ret_font.glyphs = LoadFontData(fileData, fileSize, font_base, 0, 0, FONT_SDF);
-    // Parameters > glyphs count: 95, font size: 16, glyphs padding in image: 0 px, pack method: 1 (Skyline algorythm)
+    // Parameters > glyphs count: 95, font size: 48, glyphs padding in image: 0 px, pack method: 1 (Skyline algorythm)
     Image atlas = GenImageFontAtlas(ret_font.glyphs, &ret_font.recs, 95, font_base, 0, 1);
     ret_font.texture = LoadTextureFromImage(atlas);
     UnloadImage(atlas);

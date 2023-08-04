@@ -419,6 +419,7 @@ void draw_start()
     {
         drawer.draw_caret();
     }
+
     Color text_color = theme.main;
     text_color.a = restart_alpha * 255;
     DrawTextAlign("Restarted", gameScreenWidth / 2, 975, font_measure.large(), text_color, CENTER, CENTER);
@@ -565,7 +566,7 @@ void init()
 {
     load_sdf_shader();
     //test_shader = LoadShader(0, "./fonts/test2.frag");
-    load_base_font("default");
+    load_base_font("./fonts/Lato.ttf");
     //set_rand_font();
     
     init_raw_data;
@@ -589,10 +590,10 @@ void init()
 
     // STARTING UI ---------------------------------------------------------------
     // custom time popup
-    Textbox* p_title = new Textbox(0, 0, 450, font_measure.title_size, "Test Duration", 15, theme.main, false);
+    Textbox* p_title = new Textbox(0, 0, 450, font_measure.title_height, "Test Duration", 15, theme.main, false);
     Textbox* p_description = new Textbox(0, 0, 400, 50, "Enter a custom test duration in seconds, between 2 and 10000.\nYour selected duration is:\n%s", font_measure.medium(), theme.sub, true);
-    Button* p_button = new Button(0, 0, 200, font_measure.title_size, "Ok", nullptr);
-    InputBox* input_box = new InputBox(0, 0, 380, font_measure.large_size, custom_time, true, [](string s) -> string {
+    Button* p_button = new Button(0, 0, 200, font_measure.title_height, "Ok", nullptr);
+    InputBox* input_box = new InputBox(0, 0, 380, font_measure.large_height, custom_time, true, [](string s) -> string {
         // format s as time 
         try
         {
@@ -611,7 +612,7 @@ void init()
     time_popup = new PopupHandler(gameScreenWidth * 0.5f, gameScreenHeight * 0.5f, 500, 500, p_title, p_description, input_box, p_button);
     ui_objects.alloc(time_popup, POPUP);
     
-    const float bar_h = font_measure.medium_size * 1.15f;
+    const float bar_h = font_measure.medium_height * 1.15f;
     Toggle* punctuation = new Toggle(0, 300, bar_h, punctuation_on, "punctuation", "at_icon");
     Toggle* numbers = new Toggle(0, 300, bar_h, numbers_on, "numbers", "hashtag_icon");
     const vector<string> options = { "5", "15", "30", "60", "120", "custom" };

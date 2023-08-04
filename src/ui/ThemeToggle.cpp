@@ -18,7 +18,7 @@ ThemeToggle::ThemeToggle(float x, float y, float w, float h, string init_theme) 
     for (int i = 0; i < text.size(); i++)
         hitbox.push_back({ 0, 0, 0, h });
     
-    float padding = h / 5;
+    padding = h / 5;
     float rect_w = (tot_width - (THEME_PER_ROW-1) * padding) / (THEME_PER_ROW);
     for (int i = 0; i < hitbox.size(); i++)
     {

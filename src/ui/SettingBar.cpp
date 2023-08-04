@@ -9,30 +9,31 @@
 SettingBar::SettingBar(float center_x, float center_y, vector<Toggle*> toggle_list, ToggleGroup* toggleGroup, PopupHandler* popupHandler) : cx(center_x), cy(center_y), toggle_group(toggleGroup), popup_handler(popupHandler)
 {
     h = toggle_group->get_height();
-    space_width = toggle_group->space_width();
+    space_width = toggleGroup->space_width();
     for (auto t : toggle_list)
         toggle_map[trim(t->get_text())] = t;
 
     tot_width = 0;
     for (auto t : toggle_list)
     {
-        tot_width += t->get_width() + 2 * space_width;
+        tot_width += t->get_width() + space_width;
     }
-    separator_x = tot_width + 1.5f*space_width; 
-    tot_width += 2.5f * space_width;  // separator between toggles and group
+    separator_x = tot_width + space_width;
+    tot_width += 2 * space_width + space_width * 0.3f;  // separator between toggles and group (add separator width)
     tot_width += toggle_group->get_width();  // last space is auto handled by toggle group
-
+    tot_width += space_width;  // Padding at the very end
+    
     // fix toggle positions 
     float x_pos = cx - tot_width / 2;
     separator_x += x_pos;
-    
+    // Set positions
     for (auto toggle : toggle_list)
     {
         x_pos += space_width;
         toggle->set_pos(x_pos, cy - h / 2);
-        x_pos += toggle->get_width() + space_width;
+        x_pos += toggle->get_width();
     }
-    x_pos += 2.5f*space_width;
+    x_pos += 2*space_width + space_width * 0.3f;
     toggle_group->set_pos(x_pos, cy - h / 2);
 }
 
@@ -52,10 +53,9 @@ void SettingBar::update()
 
 void SettingBar::draw()
 {
-    float padding = 2 * space_width;  // also equal to y padding
-    float x_pad = padding - space_width; // x already has some padding
-    DrawRectangleRoundedAlign(cx, cy, tot_width + 2 * x_pad, h + 2 * padding, 0.3f, 6, theme.sub_alt, CENTER, CENTER); 
-    DrawRectangleAlign(separator_x, cy, space_width * 0.6f, h + padding, theme.background, CENTER, CENTER);
+    float padding = space_width;  // also equal to y padding
+    DrawRectangleRoundedAlign(cx, cy, tot_width, h + 2 * padding, 0.3f, 4, theme.sub_alt, CENTER, CENTER); 
+    DrawRectangleAlign(separator_x, cy, space_width * 0.3f, h + padding, theme.background, LEFT, CENTER);
     for (auto& [label, toggle] : toggle_map)
         toggle->draw();
     toggle_group->draw();

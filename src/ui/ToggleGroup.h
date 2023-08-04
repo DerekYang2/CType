@@ -11,13 +11,14 @@ class ToggleGroup : public UIObject {
     deque<string> text;
     deque<bool> hover;
     deque<float> hint_alpha;
-    Texture* texture;
+    // Texture* texture;
     vector<Texture*> textures;
     vector<float> img_scales;
-    string init_message;
+    // string init_message;
     float font_size;
     float img_scale;
     float tot_width;
+    float padding = 0;
     bool pressed;
     int selected;
     Stopwatch pressWatch;
@@ -25,7 +26,7 @@ class ToggleGroup : public UIObject {
     public:
     ToggleGroup(float x, float y, float h, int init_idx, vector<string> text_list, bool show_rectangle = false);
     ToggleGroup(float x, float y, float h, int init_idx, vector<string> texture_paths, vector<string> hints, bool centered = false, bool show_rectangle = false);
-    ToggleGroup(float x, float y, float h, int init_idx, vector<string> text_list, string init_msg, string img_path, bool show_rectangle = false);
+    //ToggleGroup(float x, float y, float h, int init_idx, vector<string> text_list, string init_msg, string img_path, bool show_rectangle = false);
     virtual void draw_hint() override;
     virtual void draw() override;
     virtual void update() override;
