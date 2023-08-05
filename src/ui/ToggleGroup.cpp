@@ -201,7 +201,7 @@ void ToggleGroup::draw()
                 if (pressed) 
                     rect_col = theme.sub;  // blink sub when click
                 float border = (i == selected)? stroke_w : 0;
-                DrawRectangleRoundedAlign(x_pos + hitbox[i].width * 0.5f, hitbox[i].y + hitbox[i].height * 0.5f, hitbox[i].width + 2 * border + 2 * pressed, hitbox[i].height + 2 * border + 2 * pressed, 0.3f, 4, rect_col, CENTER, CENTER);
+                DrawRectangleRoundedAlign(x_pos + hitbox[i].width * 0.5f, hitbox[i].y + hitbox[i].height * 0.5f, hitbox[i].width + 2 * border + 2 * pressed, hitbox[i].height + 2 * border + 2 * pressed, 0.35f, roundedSegments(hitbox[i].height), rect_col, CENTER, CENTER);
                 DrawTextAlign(text[i], x_pos + hitbox[i].width*0.5f, hitbox[i].y + hitbox[i].height * 0.5f, font_size, text_col, CENTER, CENTER);
                 x_pos += hitbox[i].width;
             } else
@@ -243,14 +243,13 @@ void ToggleGroup::draw_hint()
     if (textures.empty()) return;
     float img_w = hitbox[0].width;
     const float font_size = font_measure.small();
+    const float padding = MeasureTextEx("o", font_size).x;
     for (int i = 0; i < hint_alpha.size(); i++)
     {
-        string hint_text = " " + text[i] + " ";
-        Vector2 text_dim = MeasureTextEx(hint_text, font_size);
-        text_dim.y += 2 * MeasureTextEx(" ", font_size).x;
-        DrawRectangleRoundedAlign({ corner.x + (i + 0.5f) * img_w, corner.y, text_dim.x, text_dim.y }, 0.25f, 7, rgba(15, 15, 15, hint_alpha[i]), CENTER, BOTTOM);
+        Vector2 text_dim = MeasureTextEx(text[i], font_size);
+        DrawRectangleRoundedAlign({ corner.x + (i + 0.5f) * img_w, corner.y + padding, text_dim.x + 2 * padding, text_dim.y + 2 * padding}, 0.4f, 5, rgba(15, 15, 15, hint_alpha[i]), CENTER, BOTTOM);
         if (hint_alpha[i] * 2 >= HINT_ALPHA)  // if alpha is half of max, draw text
-            DrawTextAlign(hint_text, corner.x + (i + 0.5f) * img_w, corner.y - text_dim.y * 0.5f, font_size, WHITE, CENTER, CENTER);
+            DrawTextAlign(text[i], corner.x + (i + 0.5f) * img_w, corner.y - text_dim.y * 0.5f, font_size, WHITE, CENTER, CENTER);
     }
 }
 
