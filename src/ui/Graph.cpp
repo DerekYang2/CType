@@ -388,7 +388,7 @@ void Graph::draw()
     {
         if (x > rect.x && x < rect.x + rect.width)  // no need to redraw
             DrawLine(x, rect.y, x, rect.y + rect.height, line_col);
-        DrawTextAlign(t_s(sec), x, rect.y + rect.height + 10, grid_font_sz, theme.sub, CENTER, TOP);
+        DrawTextAlign(t_s(min((int)time, sec)), x, rect.y + rect.height + 10, grid_font_sz, theme.sub, CENTER, TOP);
         sec += sec_gap;
     }    
     // RAW curve polygon

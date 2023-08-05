@@ -24,7 +24,11 @@
 *********************************************************************************/
 /**
  * TODO:
- * - Add font size templates, e.g. Title, subtitle, text, small, etc
+ * - Select dictionary 
+ * - User data page
+ * - Words mode
+ * - Test results buttons
+ * - Change font settings 
 */
 
 #include <iostream>
@@ -139,6 +143,8 @@ int final_accuracy;
 int max_word_length;
 int consistency;
 float elapsed;
+// Local UI variables
+Button* restart_button;
 Graph* graph;
 TextPanelV* end_stats;
 SettingBar* setting_bar;
@@ -342,7 +348,13 @@ void update_test()
     {
         end_test();
     }
-    if (IsKeyPressed(KEY_TAB))  // restart test
+
+    // Only activate button if cursor is on screen
+    if (!IsCursorHidden())
+        restart_button->update();
+    
+    // Restart test
+    if (IsKeyPressed(KEY_TAB))  
     {
         switch_start();
         restart_alpha = 1;
@@ -461,6 +473,8 @@ void draw_test()
     {
         drawer.draw_caret();
     }
+    if (!IsCursorHidden() && elapsed >= 0.5f)
+        restart_button->draw();
 }
 
 void draw_end()
@@ -629,7 +643,10 @@ void init()
     
     taskbar = new ToggleGroup(gameScreenWidth/2, gameScreenHeight - 75, 75, 0, { "keyboard", "settings_icon" }, { start_label, settings_label }, true);
     ui_objects.alloc(taskbar, {START, SETTINGS});
-    
+
+    // TEST UI ---------------------------------------------------------------
+    restart_button = new Button(0, 0, 50, "restart", [] { switch_start(); restart_alpha = 1; });
+    restart_button->set_pos(0.5f * (gameScreenWidth - restart_button->get_width()), gameScreenHeight - 2 * restart_button->get_height());
     // ENDING UI ---------------------------------------------------------------
     new_Button(END, 100, 900, 300, 100, "restart", [] { switch_start(); });
     graph = new Graph(wpm_width + (gameScreenWidth - (graph_width + wpm_width)) * 0.5f, graph_top, graph_width, graph_height, 4), ui_objects.alloc(graph, END);
