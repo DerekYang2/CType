@@ -201,7 +201,7 @@ void ToggleGroup::draw()
                 if (pressed) 
                     rect_col = theme.sub;  // blink sub when click
                 float border = (i == selected)? stroke_w : 0;
-                DrawRectangleRoundedAlign(x_pos + hitbox[i].width * 0.5f, hitbox[i].y + hitbox[i].height * 0.5f, hitbox[i].width + 2 * border + 2 * pressed, hitbox[i].height + 2 * border + 2 * pressed, 0.4f, 5, rect_col, CENTER, CENTER);
+                DrawRectangleRoundedAlign(x_pos + hitbox[i].width * 0.5f, hitbox[i].y + hitbox[i].height * 0.5f, hitbox[i].width + 2 * border + 2 * pressed, hitbox[i].height + 2 * border + 2 * pressed, 0.3f, 4, rect_col, CENTER, CENTER);
                 DrawTextAlign(text[i], x_pos + hitbox[i].width*0.5f, hitbox[i].y + hitbox[i].height * 0.5f, font_size, text_col, CENTER, CENTER);
                 x_pos += hitbox[i].width;
             } else

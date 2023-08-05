@@ -26,6 +26,7 @@ extern float screen_height();
 extern void DrawTextEx(Font font, string text, Vector2 position, float fontSize, float spacing, Color tint, float line_spacing = 1.f);
 extern Vector2 MeasureTextEx(Font font, string text, float fontSize, float spacing, float line_spacing = 1.f);
 
+extern int roundedSegments(float height);
 extern bool IsKeyPressed();
 extern char convertKey(int key);
 extern int convertChar(char c);

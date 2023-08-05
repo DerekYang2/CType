@@ -70,11 +70,7 @@ void Button::draw()
         Color col = hover ? theme.sub_alt : theme.text;  // text color
         if (pressWatch.s() <= 0.05)
             col = theme.text;
-        int segments = 0;
-        if (hitbox.height <= 30) segments = 3;
-        else if (hitbox.height <= 50) segments = 4;
-        else segments = 5;
-        DrawRectangleRounded(hitbox, 0.3f, segments, (col == theme.text) ? theme.sub_alt : theme.text);  // opposite color
+        DrawRectangleRounded(hitbox, 0.3f, roundedSegments(hitbox.height), (col == theme.text) ? theme.sub_alt : theme.text);  // opposite color
         DrawTextAlign(message, hitbox.x + (hitbox.width) * 0.5f, hitbox.y + (hitbox.height) * 0.5f, fontSize, col, CENTER, CENTER);
     } else
     {

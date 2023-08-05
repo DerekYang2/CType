@@ -300,6 +300,11 @@ bool replace(std::string& str, const std::string& from, const std::string& to)
     return true;
 }
 
+int roundedSegments(float height)
+{
+    return floor(height / 10);
+}
+
 bool IsKeyPressed()
 {
     return IsKeyPressed(KEY_APOSTROPHE) ||
