@@ -19,7 +19,7 @@ ToggleGroup::ToggleGroup(float x, float y, float h, int init_idx, vector<string>
     } else
     {
         font_size = MeasureFontSize(text[0], INT_MAX, h);  // No height padding
-        padding = MeasureTextEx("O", font_size).x;  // Only padding for width
+        padding = 2*MeasureTextEx("O", font_size).x;  // Only padding for width
     }
 
     tot_width = 0;

@@ -1,6 +1,6 @@
 {
     "appearance": {
-        "theme": "blueberry light"
+        "theme": "catppuccin"
     },
     "behavior": {
         "tape mode": {
@@ -11,7 +11,7 @@
             ]
         },
         "strict space": {
-            "default": 0,
+            "default": 1,
             "options": [
                 "off",
                 "on"
@@ -25,7 +25,7 @@
             ]
         },
         "show wpm": {
-            "default": 1,
+            "default": 0,
             "options": [
                 "off",
                 "on"

@@ -591,7 +591,7 @@ void init()
     // STARTING UI ---------------------------------------------------------------
     // custom time popup
     Textbox* p_title = new Textbox(0, 0, 450, font_measure.title_height, "Test Duration", 15, theme.main, false);
-    Textbox* p_description = new Textbox(0, 0, 400, 50, "Enter a custom duration in seconds, between 2 and 10 000.\nCustom duration is:\n%s", font_measure.medium(), theme.sub, true);
+    Textbox* p_description = new Textbox(0, 0, 400, 50, "Enter a custom duration in seconds, between 2 and 10000.\nCustom duration is:\n%s", font_measure.medium(), theme.sub, true);
     Button* p_button = new Button(0, 0, 200, font_measure.title_height, "Ok", nullptr);
     InputBox* input_box = new InputBox(0, 0, 380, font_measure.large_height, custom_time, true, [](string s) -> string {
         // format s as time 
