@@ -1,4 +1,6 @@
 #include "Theme.h"
+#include <filesystem>
+#include "jsonparser.h"
 
 const string THEMES_FOLDER = "themes";
 const string THEMES_JSON = THEMES_FOLDER + "/_themes.json";

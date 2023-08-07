@@ -1,8 +1,6 @@
 #pragma once
 #include "raylibcustom.h"
-#include <filesystem>
 #include "Utils.h"
-#include "jsonparser.h"
 /**
  * main color for graph, already toggled buttons
  * button/toggle hovers = text color

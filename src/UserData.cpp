@@ -6,7 +6,7 @@
  * test time is saved as the custom string, setting selected will not work because toggle label is custom, not the value of custom
 */
 
-string DATA_PATH = "./data/user_data.json";
+string DATA_PATH = "data/user_data.json";
 RSJresource data_json;
 
 void load_user_data()

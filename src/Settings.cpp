@@ -2,7 +2,7 @@
 
 const float MENU_HEIGHT = 50;
 const float SETTING_PADDING = 100;
-string setting_path = "./data/settings.json";
+string setting_path = "data/settings.json";
 RSJresource setting_json;
 Scrollbar* scrollbar;
 Rectangle boundary;
@@ -114,6 +114,11 @@ void init_settings()
     behavior_panel->set_bounds(boundary);
     heading_objects["Behavior"].push_back(behavior_panel);
 
+    // APPEARANCE objects continue
+    VerticalToggle * vertical_toggle = new VerticalToggle(SETTING_PADDING, 0, gameScreenWidth - 2 * SETTING_PADDING, setting_h, 5, {"option1", "option2", "option3", "option4", "option5", "option6", "option7"}, "option1"); 
+    vertical_toggle->set_bounds(boundary);
+    heading_objects["Appearance"].push_back(vertical_toggle);
+    
     // Set all UIObject positions
     float y_pos = boundary.y;
 

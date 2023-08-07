@@ -36,9 +36,12 @@ void PopupHandler::update()
 {
     if (active)
     {
-        input_box->update();
-        button->update();
-        description->set_var_str({input_box->get_text()});
+        if (input_box != nullptr)
+            input_box->update();
+        if (button != nullptr)
+            button->update();
+        if (description != nullptr)
+            description->set_var_str({ input_box->get_text() });
         
         if ((!CheckCollisionPointRec(mouse, rect) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) || IsKeyPressed(KEY_ENTER))
         {
@@ -47,8 +50,10 @@ void PopupHandler::update()
     }
     if (return_call)
     {
-        button->reset();
-        input_box->unfocus();
+        if (button != nullptr)
+            button->reset();
+        if (input_box != nullptr)
+            input_box->unfocus();
         active = return_call = false;
         scene = init_id;
     }
@@ -57,17 +62,22 @@ void PopupHandler::update()
 void PopupHandler::draw()
 {
     DrawRectangleRounded(rect, 0.2f, 10, theme.background);
-    title->draw();
-    input_box->draw();
-    description->draw();
-    button->draw();
+    if (title != nullptr) 
+        title->draw();
+    if (input_box != nullptr)
+        input_box->draw();
+    if (description != nullptr)
+        description->draw();
+    if (button != nullptr)
+        button->draw();
 }
 
 void PopupHandler::set_active()
 {
     active = true;
     init_id = scene;
-    input_box->focus();
+    if (input_box != nullptr)
+        input_box->focus();
 }
 
 string PopupHandler::input_text()

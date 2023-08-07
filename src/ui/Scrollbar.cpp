@@ -8,6 +8,8 @@
 
 Scrollbar::Scrollbar(float x, float y, float w, float h, float screen_h, float total_h, list<UIObject*> children) : bar{ x, y, w, h }, screen_h(screen_h), total_h(total_h), children(children)
 {
+    // Screen height must not be greater than total height
+    if (screen_h > total_h) screen_h = total_h;
     // The height of the bar is the screenheight scaled
     thumb_h = screen_h * (bar.height / total_h);
 }

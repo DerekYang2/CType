@@ -7,6 +7,7 @@
 #include "Button.h"
 #include "Textbox.h"
 #include "Scrollbar.h"
+#include "VerticalToggle.h"
 // EXTERNALS USED
 extern UIAlloc ui_objects;
 extern void switch_start();
