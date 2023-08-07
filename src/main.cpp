@@ -24,11 +24,13 @@
 *********************************************************************************/
 /**
  * TODO:
- * - Select dictionary 
+ * - Select dictionary
+ * - Move includes from h to cpp files
  * - User data page
  * - Words mode
  * - Test results buttons
- * - Change font settings 
+ * - Change font settings
+ * - Typing sound effects
 */
 
 #include <iostream>
@@ -61,6 +63,7 @@
 #include "RectPreview.h"
 #include "Settings.h"
 #include "UserData.h"
+#include "FileExplorer.h"
 // Init extern variables ------------------------------------------------------------------
 /* Theme theme(
     rgb(232, 233, 236), // background
@@ -150,6 +153,7 @@ TextPanelV* end_stats;
 SettingBar* setting_bar;
 ToggleGroup* taskbar;
 PopupHandler* time_popup;
+
 // Window buttons
 bool close_window = false;
 Button* close_button, * minimize_button;
@@ -580,7 +584,7 @@ void init()
 {
     load_sdf_shader();
     //test_shader = LoadShader(0, "./fonts/test2.frag");
-    load_base_font("./fonts/RobotoMono.ttf");
+    load_base_font("./fonts/SourceCodePro.ttf");
     //set_rand_font();
     
     init_raw_data;
@@ -604,8 +608,8 @@ void init()
 
     // STARTING UI ---------------------------------------------------------------
     // custom time popup
-    Textbox* p_title = new Textbox(0, 0, 450, font_measure.title_height, "Test Duration", 15, theme.main, false);
-    Textbox* p_description = new Textbox(0, 0, 400, 50, "Enter a custom duration in seconds, between 2 and 10000.\nCustom duration is:\n%s", font_measure.medium(), theme.sub, true);
+    Textbox* p_title = new Textbox(0, 0, 450, font_measure.title_height, "Test Duration", 15, "main", false);
+    Textbox* p_description = new Textbox(0, 0, 400, 50, "Enter a custom duration in seconds, between 2 and 10000.\nCustom duration is:\n%s", font_measure.medium(), "sub", true);
     Button* p_button = new Button(0, 0, 200, font_measure.title_height, "Ok", nullptr);
     InputBox* input_box = new InputBox(0, 0, 380, font_measure.large_height, custom_time, true, [](string s) -> string {
         // format s as time 
@@ -645,7 +649,7 @@ void init()
     ui_objects.alloc(taskbar, {START, SETTINGS});
 
     // TEST UI ---------------------------------------------------------------
-    restart_button = new Button(0, 0, 50, "restart", [] { switch_start(); restart_alpha = 1; });
+    restart_button = new Button(0, 0, font_measure.large_height, "restart", [] { switch_start(); restart_alpha = 1; });
     restart_button->set_pos(0.5f * (gameScreenWidth - restart_button->get_width()), gameScreenHeight - 2 * restart_button->get_height());
     // ENDING UI ---------------------------------------------------------------
     new_Button(END, 100, 900, 300, 100, "restart", [] { switch_start(); });
@@ -681,6 +685,9 @@ int main(void)
     
     init();
     init_test();
+    
+    open_path(absolute_path("fonts"));
+    
 
     // HideCursor();  // only hide for custom cursor
     // example shader init

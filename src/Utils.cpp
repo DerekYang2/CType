@@ -95,6 +95,16 @@ Vector2 MeasureTextEx(Font font, string text, float fontSize, float spacing, flo
     return textSize;
 }
 
+string current_dir()
+{
+    return GetApplicationDirectory();
+}
+
+string absolute_path(string relative_path)
+{
+    return current_dir() + relative_path;
+}
+
 float screen_width()
 {
     return IsWindowFullscreen() ? GetMonitorWidth(GetCurrentMonitor()) : GetScreenWidth();
@@ -298,6 +308,22 @@ bool replace(std::string& str, const std::string& from, const std::string& to)
         return false;
     str.replace(start_pos, from.length(), to);
     return true;
+}
+
+Rectangle RectangleIntersection(Rectangle rect1, Rectangle rect2) {
+    Rectangle intersection;
+
+    float left = std::max(rect1.x, rect2.x);
+    float right = std::min(rect1.x + rect1.width, rect2.x + rect2.width);
+    float top = std::max(rect1.y, rect2.y);
+    float bottom = std::min(rect1.y + rect1.height, rect2.y + rect2.height);
+
+    intersection.x = left;
+    intersection.y = top;
+    intersection.width = std::max(0.0f, right - left);
+    intersection.height = std::max(0.0f, bottom - top);
+
+    return intersection;
 }
 
 int roundedSegments(float height)

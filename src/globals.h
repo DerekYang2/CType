@@ -5,7 +5,7 @@
 #include "Word.h"
 #include "Utils.h"
 #include "FontMeasure.h"
-#define shader_path "./fonts/sdf.fs"
+
 // Window Variables
 extern int windowWidth, windowHeight;
 extern int gameScreenWidth, gameScreenHeight;

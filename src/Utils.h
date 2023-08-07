@@ -4,7 +4,8 @@
 #include "Theme.h"
 
 extern int GetCodepointNext(const char* text, int* codepointSize);
-
+extern string current_dir();
+extern string absolute_path(string relative_path);
 extern Font font;
 extern float font_spacing;
 
@@ -26,6 +27,7 @@ extern float screen_height();
 extern void DrawTextEx(Font font, string text, Vector2 position, float fontSize, float spacing, Color tint, float line_spacing = 1.f);
 extern Vector2 MeasureTextEx(Font font, string text, float fontSize, float spacing, float line_spacing = 1.f);
 
+extern Rectangle RectangleIntersection(Rectangle rect1, Rectangle rect2);
 extern int roundedSegments(float height);
 extern bool IsKeyPressed();
 extern char convertKey(int key);
@@ -41,9 +43,9 @@ extern void DrawRectangleBoth(int x, int y, int width, int height, Color color, 
 extern void DrawRectangleAlign(Rectangle r, Color col, int x_align = LEFT, int y_align = TOP);
 extern void DrawRectangleAlign(float x, float y, float width, float height, Color col, int x_align = LEFT, int y_align = TOP);
 extern void DrawRectangleRoundedAlign(Rectangle r, float roundness, int segments, Color col, int x_align = LEFT, int y_align = TOP);
-extern void DrawRectangleRoundedAlign(float x, float y, float width, float height, float roundness, int segments, Color col, int x_align, int y_align);
-extern void DrawRectangleRoundedLinesAlign(Rectangle r, float roundness, int segments, float lineThick, Color col, int x_align, int y_align);
-extern void DrawRectangleRoundedLinesAlign(float x, float y, float width, float height, float roundness, int segments, float lineThick, Color col, int x_align, int y_align);
+extern void DrawRectangleRoundedAlign(float x, float y, float width, float height, float roundness, int segments, Color col, int x_align = LEFT, int y_align = TOP);
+extern void DrawRectangleRoundedLinesAlign(Rectangle r, float roundness, int segments, float lineThick, Color col, int x_align = LEFT, int y_align = TOP);
+extern void DrawRectangleRoundedLinesAlign(float x, float y, float width, float height, float roundness, int segments, float lineThick, Color col, int x_align = LEFT, int y_align = TOP);
 extern void DrawCircleSector(float x, float y, float r, float start_angle, float end_angle, Color col);
 extern void DrawRing(float cx, float cy, float innerRadius, float outerRadius, Color color); // Draw ring
 extern void DrawRing(float cx, float cy, float innerRadius, float outerRadius, float startAngle, float endAngle, Color color); // Draw ring
