@@ -87,6 +87,7 @@ FontMeasure font_measure(23, 27, 35, 50);
 // GLOBAL VARS
 unordered_set<int> scene_ids[SCENE_COUNT];
 int scene = START;
+int pending_scene = -1;
 Vector2 mouse;
 int globalFrame; // Frames printed in the game scene
 unordered_map<string, Texture> textureOf;
@@ -172,6 +173,7 @@ int mouse_frames;
 float scale;
 bool pending_popup_draw = false;
 
+
 void init_test()
 {
     drawer = TextDrawer(font, font_measure.large());
@@ -197,19 +199,19 @@ void init_test()
 void switch_start()
 {
     taskbar->set_selected(start_label);
-    scene = START;
+    pending_scene = START;
     init_test();
 }
 
 void switch_settings()
 {
-    scene = SETTINGS;
+    pending_scene = SETTINGS;
     taskbar->set_selected(settings_label);
 }
 
 void switch_popup()
 {
-    scene = POPUP;
+    pending_scene = POPUP;
     pending_popup_draw = true;
 }
 
@@ -640,12 +642,29 @@ void init()
     else
         time_toggles->set_selected(selected_time);
     
-        //new_ToggleGroup(START, 0, 300, 50, 0, { "15", "30", "60", "120" });
+    //new_ToggleGroup(START, 0, 300, 50, 0, { "15", "30", "60", "120" });
     setting_bar = new SettingBar(gameScreenWidth / 2, 300, { punctuation, numbers }, time_toggles, time_popup);
     ui_objects.alloc(setting_bar, START);
 
+    // dictionary button
+    p_title = new Textbox(0, 0, 450, font_measure.title_height, "Select language", 15, "main", false);
+    p_description = new Textbox(0, 0, 600, 50, "Select a dictionary file from the directory:\n" + current_dir(), font_measure.medium(), "sub", true);
+    p_button = new Button(0, 0, 200, font_measure.title_height, "Ok", nullptr);
+    vector<string> option_vector;
+    for (int i = 0; i <= 20; i++) 
+        option_vector.push_back("option " + to_string(i));
+    PopupHandler* dictionary_popup = new PopupHandler(gameScreenWidth * 0.5f, gameScreenHeight * 0.5f, 700, 40, 10, p_title, p_description, p_button, option_vector, "option 1");
+    ui_objects.alloc(dictionary_popup, POPUP);
     
-    taskbar = new ToggleGroup(gameScreenWidth/2, gameScreenHeight - 75, 75, 0, { "keyboard", "settings_icon" }, { start_label, settings_label }, true);
+    Button* dictionary_button = new Button(0, 0, 50, "dictionary", [dictionary_popup] {
+        dictionary_popup->set_active();
+        switch_popup();
+    });
+    dictionary_button->set_pos(0.5f * (gameScreenWidth - dictionary_button->get_width()), 500);
+    ui_objects.alloc(dictionary_button, START);
+
+    
+    taskbar = new ToggleGroup(gameScreenWidth / 2, gameScreenHeight - 75, 75, 0, { "keyboard", "settings_icon" }, { start_label, settings_label }, true);
     ui_objects.alloc(taskbar, {START, SETTINGS});
 
     // TEST UI ---------------------------------------------------------------
@@ -686,7 +705,7 @@ int main(void)
     init();
     init_test();
     
-    open_path(absolute_path("fonts"));
+    //open_path(absolute_path("fonts"));
     
 
     // HideCursor();  // only hide for custom cursor
@@ -710,12 +729,22 @@ int main(void)
         scale = min((float)screen_width() / gameScreenWidth, (float)screen_height() / gameScreenHeight);
         update_mouse();
         SetMouseCursor(MOUSE_CURSOR_DEFAULT);
-
-        // update alloc 
+        // Update pending scene
+        if (pending_scene != -1)
+            scene = pending_scene;
+        pending_scene = -1;
+        // Update alloc 
         ui_objects.update();
         // Update
         globalFrame++;
         update_rect_preview();
+        // Update UI objects
+        for (const int id : scene_ids[scene])
+        {
+            ui_objects[id]->update();
+        }
+        update_taskbar();
+        
         // must be if instead of of else if so start transitions into test directly
         if (scene == START)
         {
@@ -723,7 +752,6 @@ int main(void)
         } else if (scene == SETTINGS)
         {
             update_settings();
-
         }
         
         io_handler[scene].update();  // update the IO handler of the current scene
@@ -739,12 +767,8 @@ int main(void)
         {
             
         }
-        update_taskbar();
+
         global_update();
-        for (const int id : scene_ids[scene])
-        {
-            ui_objects[id]->update();
-        }
         //shader_on = IsKeyDown(KEY_ENTER);
         //----------------------------------------------------------------------------------
         // Draw everything in the render texture, note this will not be rendered on screen, yet
@@ -807,7 +831,6 @@ int main(void)
         EndDrawing();
         //--------------------------------------------------------------------------------------
     }
-
     // De-Initialization
     //--------------------------------------------------------------------------------------
     write_settings();                   // update settings file

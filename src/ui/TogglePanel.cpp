@@ -108,9 +108,11 @@ string TogglePanel::fold(string str, float max_width)
         float remain = max_width - MeasureTextEx(substrI(str, start_pos, i), font_size).x;
         if (remain < 0)
         {
-            fold_str += substrI(str, start_pos, prev_space);
+            // check if there is a previous space after start_pos
+            int fold_pos = (prev_space <= start_pos)? i-1 : prev_space;
+            fold_str += substrI(str, start_pos, fold_pos);
             fold_str += "\n";
-            start_pos = prev_space + 1;
+            start_pos = fold_pos + 1;
             i = start_pos;
         }
         if (char_str == " ")

@@ -32,17 +32,56 @@ PopupHandler::PopupHandler(float x, float y, float width, float height, Textbox*
     }
 }
 
+PopupHandler::PopupHandler(float x, float y, float width, float toggle_height, int rows, Textbox* title, Textbox* description, Button* button, vector<string> options, string init_option): title(title), description(description), input_box(nullptr), button(button)
+{
+    active = return_call = false;
+
+    panel = new VerticalToggle(x, y, width, toggle_height, rows, options, init_option);
+
+    float padding = toggle_height;
+
+    float height_sum = padding;
+    if (title != nullptr) height_sum += title->get_height() + padding;
+    if (description != nullptr) height_sum += description->get_height() + padding;
+    if (panel != nullptr) height_sum += panel->get_height() + padding;
+    if (button != nullptr) height_sum += button->get_height() + padding;
+    
+    rect = Rectangle(x, y, width, height_sum);
+    // Center rect by default
+    rect.x -= rect.width * 0.5f, rect.y -= rect.height * 0.5f;
+
+    // Set all proper positions
+    float cx = rect.x + rect.width * 0.5f, y_pos = rect.y + padding;
+    if (title != nullptr)
+        title->set_pos(cx - title->get_width() * 0.5f, y_pos), y_pos += title->get_height() + padding;
+    if (description != nullptr)
+        description->set_pos(cx - description->get_width() * 0.5f, y_pos), y_pos += description->get_height() + padding;
+    if (panel != nullptr)
+        panel->set_pos(cx - panel->get_width() * 0.5f, y_pos), y_pos += panel->get_height() + padding;
+    if (button != nullptr)
+    {
+        button->attach_trigger([&] {
+            return_call = true;
+        });
+        button->set_pos(cx - button->get_width() * 0.5f, y_pos), y_pos += button->get_height() + padding;
+    }
+}
+
 void PopupHandler::update()
 {
     if (active)
     {
         if (input_box != nullptr)
             input_box->update();
+        if (panel != nullptr)
+            panel->update();
         if (button != nullptr)
             button->update();
         if (description != nullptr)
-            description->set_var_str({ input_box->get_text() });
-        
+        {
+            if (input_box != nullptr)
+                description->set_var_str({ input_box->get_text() });
+        }
         if ((!CheckCollisionPointRec(mouse, rect) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) || IsKeyPressed(KEY_ENTER))
         {
             return_call = true;
@@ -61,15 +100,20 @@ void PopupHandler::update()
 
 void PopupHandler::draw()
 {
-    DrawRectangleRounded(rect, 0.2f, 10, theme.background);
-    if (title != nullptr) 
-        title->draw();
-    if (input_box != nullptr)
-        input_box->draw();
-    if (description != nullptr)
-        description->draw();
-    if (button != nullptr)
-        button->draw();
+    if (active)
+    {
+        DrawRectangleRounded(rect, 0.1f, 10, theme.background);
+        if (title != nullptr)
+            title->draw();
+        if (input_box != nullptr)
+            input_box->draw();
+        if (panel != nullptr)
+            panel->draw();
+        if (description != nullptr)
+            description->draw();
+        if (button != nullptr)
+            button->draw();
+    }
 }
 
 void PopupHandler::set_active()
@@ -82,7 +126,16 @@ void PopupHandler::set_active()
 
 string PopupHandler::input_text()
 {
-    return input_box->get_text();
+    if (input_box != nullptr)
+        return input_box->get_text();
+    return "";
+}
+
+string PopupHandler::get_selected()
+{
+    if (panel != nullptr)
+        return panel->get_selected();
+    return "";
 }
 
 string PopupHandler::input_number()

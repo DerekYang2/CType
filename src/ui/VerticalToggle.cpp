@@ -38,7 +38,9 @@ void VerticalToggle::update()
 {
     // update scrollbar 
     if (CheckCollisionPointRec(mouse, RectangleIntersection(total_bounds, total_hitbox)))
+    {
         scrollbar->update();
+    }
     set_local_offset(0, scrollbar->get_offset());
     // Update bound for toggles
     Rectangle local_bounds = Rectangle(corner.x + padding, corner.y + padding, tot_width - 2 * padding, visible_h);
@@ -52,7 +54,7 @@ void VerticalToggle::update()
 
 void VerticalToggle::draw()
 {
-    DrawRectangleRoundedLinesAlign(total_hitbox, 0.3f, roundedSegments(total_hitbox.height), 2.f, theme.text);
+    //DrawRectangleRoundedLinesAlign(total_hitbox, 0.3f, roundedSegments(total_hitbox.height), 2.f, theme.text);
     DrawRectangleRoundedAlign(total_hitbox, 0.3f, roundedSegments(total_hitbox.height), theme.background);
     DrawRectangleRec(bounds, theme.sub_alt);
     for (int i = 0; i < hitbox.size(); i++)
@@ -95,6 +97,7 @@ void VerticalToggle::set_pos(float x2, float y2)
     total_hitbox = Rectangle(corner.x, corner.y, tot_width, total_hitbox.height);
     const float bar_w = 10;
     scrollbar->set_pos(corner.x + tot_width - bar_w / 3, corner.y + padding);
+    set_local_offset(0, scrollbar->get_offset());
 }
 
 void VerticalToggle::set_offset(float dx, float dy)
@@ -112,10 +115,6 @@ void VerticalToggle::set_offset(float dx, float dy)
 
 void VerticalToggle::set_local_offset(float dx, float dy)
 {
-    if (globalFrame % 20 == 0)
-    {
-        cout << local_init_corner.y << " " << dy << " " << hitbox[0].y << endl;
-    }
     float shift_x = (local_init_corner.x + dx) - hitbox[0].x, shift_y = (local_init_corner.y + dy) - hitbox[0].y;
     for (int i = 0; i < hitbox.size(); i++)
         hitbox[i].x += shift_x, hitbox[i].y += shift_y;

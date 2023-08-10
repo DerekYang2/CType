@@ -1,6 +1,8 @@
 #pragma once
 #include "WordList.h"
-
+/**
+ * TODO: Handle dictionary words with spaces
+*/
 class TextGenerator {
     vector<string> contractions;
     string list;

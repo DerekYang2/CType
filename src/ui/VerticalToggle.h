@@ -11,7 +11,7 @@ class VerticalToggle : public ToggleGroup {
     float padding;
     float visible_h;
     Rectangle total_hitbox;
-    Rectangle total_bounds;  // Bounds of this vertical toggle
+    Rectangle total_bounds{ 0, 0, gameScreenWidth, gameScreenHeight };  // Bounds of this vertical toggle
     Vector2 local_init_corner;
     public:
     VerticalToggle(float x, float y, float w, float h, int rows, vector<string> options, string init_option);
