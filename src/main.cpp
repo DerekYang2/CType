@@ -647,8 +647,8 @@ void init()
     ui_objects.alloc(setting_bar, START);
 
     // dictionary button
-    p_title = new Textbox(0, 0, 450, font_measure.title_height, "Select language", 15, "main", false);
-    p_description = new Textbox(0, 0, 600, 50, "Select a dictionary file from the directory:\n" + current_dir(), font_measure.medium(), "sub", true);
+    p_title = new Textbox(0, 0, 450, font_measure.title_height, "Select Language", 15, "main", false);
+    p_description = new Textbox(0, 0, 600, 50, "Dictionary directory: " + current_dir() + "\nCurrently selected: \n%s", font_measure.small(), "sub", true);
     p_button = new Button(0, 0, 200, font_measure.title_height, "Ok", nullptr);
     vector<string> option_vector;
     for (int i = 0; i <= 20; i++) 

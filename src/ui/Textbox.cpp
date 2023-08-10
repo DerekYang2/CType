@@ -136,7 +136,7 @@ string Textbox::fold(string str, float max_width)
             start_pos = fold_pos + 1;
             i = start_pos;
         }
-        if (char_str == " ")
+        if (char_str == " " || char_str == "\n")
             prev_space = i;
     }
     // final line

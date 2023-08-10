@@ -1,5 +1,9 @@
 #include "VerticalToggle.h"
 
+/**
+ * TOOD: Crop when toggle width is too wide
+*/
+
 VerticalToggle::VerticalToggle(float x, float y, float w, float h, int rows, vector<string> options, string init_option) : ToggleGroup(x, y, h, 0, { "anything" }, true)
 {
     tot_width = w;
@@ -69,7 +73,14 @@ void VerticalToggle::draw()
         {
             text_col = theme.text;
         }
-        DrawTextAlign(text[i], hitbox[i].x, hitbox[i].y + hitbox[i].height * 0.5f, font_size, text_col, LEFT, CENTER);
+        // Draw selection indicator
+        if (i == selected)
+        {
+            float radius = hitbox[i].height;
+            DrawRectangleRoundedAlign(hitbox[i].x + 0.5f * radius, hitbox[i].y + 0.5f * hitbox[i].height, radius * 0.5f, radius * 0.5f, 0.4f, 4, text_col, CENTER, CENTER);
+        }
+        // Shift text over by hitbox height
+        DrawTextAlign(text[i], hitbox[i].x + hitbox[i].height, hitbox[i].y + hitbox[i].height * 0.5f, font_size, text_col, LEFT, CENTER);
     }
 
     // Draw top/bottom paddings
@@ -87,6 +98,7 @@ void VerticalToggle::set_bounds(Rectangle boundRect)
 
 void VerticalToggle::set_pos(float x2, float y2)
 {
+    y2 -= padding;  // Remove extra padding
     float shift_x = x2 - corner.x, shift_y = y2 - corner.y;
     corner.x += shift_x, corner.y += shift_y;
     for (int i = 0; i < hitbox.size(); i++)
@@ -132,7 +144,7 @@ float VerticalToggle::get_width()
 
 float VerticalToggle::get_height()
 {
-    return total_hitbox.height;
+    return total_hitbox.height - 2*padding;
 }
 
 string VerticalToggle::get_selected()

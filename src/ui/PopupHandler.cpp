@@ -81,6 +81,8 @@ void PopupHandler::update()
         {
             if (input_box != nullptr)
                 description->set_var_str({ input_box->get_text() });
+            if (panel != nullptr)
+                description->set_var_str({ panel->get_selected() });
         }
         if ((!CheckCollisionPointRec(mouse, rect) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) || IsKeyPressed(KEY_ENTER))
         {
