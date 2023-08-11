@@ -362,6 +362,11 @@ void TextDrawer::add_offset(float x)
 
 float TextDrawer::get_top_y()
 {
-    return top_y;
+    float bottom = bottom_y;
+    if (!is_tape_mode)
+    {
+        bottom -= 1.5f * char_dimension['I'].y;
+    }
+    return bottom - cursor_h;
 }
 

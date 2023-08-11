@@ -8,6 +8,7 @@
 #include "Textbox.h"
 #include "Scrollbar.h"
 #include "VerticalToggle.h"
+
 // EXTERNALS USED
 extern UIAlloc ui_objects;
 extern void switch_start();
@@ -21,7 +22,8 @@ extern const float SETTING_PADDING;
 extern Scrollbar* scrollbar;
 extern TogglePanel* behavior_panel;
 extern ToggleGroup* taskbar;
-extern ThemeToggle * theme_toggle;
+extern ThemeToggle* theme_toggle;
+
 extern unordered_map<string, ToggleGroup*> setting_toggle;
 extern string default_settings;
 extern string setting_path;

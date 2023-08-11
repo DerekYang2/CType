@@ -9,13 +9,12 @@ class ToggleSpawn : public UIObject {
     Button* button;
     Texture* texture;
     float cx;
-    float img_scale;
-    float space_width;
     
     public:
     ToggleSpawn(float c_x, float y, float height, PopupHandler* popup, Texture* texture);
     void update() override;
     void draw() override;
+    void set_pos(float x2, float y2) override;
     bool needs_update();
     string get_selected();
 };

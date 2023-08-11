@@ -27,6 +27,19 @@ Button::Button(float x, float y, float h, string text, std::function<void()> f) 
     hitbox = Rectangle(x, y, text_wh.x * 1.2, text_wh.y * 1.2);
 }
 
+Button::Button(float x, float y, float h, string text, Texture* texture_pointer, std::function<void()> f) : triggerFunc(f), height(h)
+{
+    reset();
+    texture = texture_pointer;
+    img_scale = height / texture->height;
+    message = text;
+    fontSize = MeasureFontSize(text, INT_MAX, height);
+    space_width = MeasureTextEx("o", fontSize).x;
+
+    hitbox = { x, y, 0, height };
+    hitbox.width = MeasureTextEx(message, fontSize).x + space_width + texture->width * img_scale;
+}
+
 void Button::reset()
 {
     hover = false;
@@ -48,9 +61,7 @@ void Button::set_pos(float x, float y)
 void Button::set_text(string text)
 {
     message = text;
-    fontSize = MeasureFontSize(text, INT_MAX, height / 1.2f);
-    Vector2 text_wh = MeasureTextEx(message, fontSize);
-    hitbox = Rectangle(x, y, text_wh.x * 1.2, text_wh.y * 1.2);
+    hitbox.width = MeasureTextEx(message, fontSize).x + space_width + texture->width * img_scale;
 }
 
 void Button::update()
@@ -88,9 +99,18 @@ void Button::draw()
             col = theme.sub;
         if (drawFunc != NULL)
             drawFunc(hitbox);
-        // shrink image a little
         float padding = 0;
-        DrawTexturePro(*texture, Rectangle(0, 0, texture->width, (flipped?-1:1) * texture->height), Rectangle(hitbox.x + padding, hitbox.y + padding, hitbox.width - 2 * padding,  hitbox.height - 2 * padding), { 0,0 }, 0, col); //for now
+        if (message.empty())  // Texture
+        {
+            DrawTexturePro(*texture, Rectangle(0, 0, texture->width, (flipped ? -1 : 1) * texture->height), Rectangle(hitbox.x + padding, hitbox.y + padding, hitbox.width - 2 * padding, hitbox.height - 2 * padding), { 0,0 }, 0, col); //for now
+        } else  // Texture and text
+        {
+            Vector2 corner;
+            corner.x = hitbox.x;
+            corner.y = hitbox.y + 0.5f * (hitbox.height - texture->height * img_scale);
+            DrawTextureEx(*texture, corner, 0, img_scale, col);
+            DrawTextAlign(message, hitbox.x + texture->width * img_scale + space_width, hitbox.y + (hitbox.height) * 0.5f, fontSize, col, LEFT, CENTER);
+        }
         //DrawTexturePro(img_path, Rectangle(hitbox.x + padding, hitbox.y + padding, hitbox.width - 2 * padding, (flipped ? -1 : 1) * (hitbox.height - 2 * padding)), default_color);
     }
 

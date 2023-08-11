@@ -155,6 +155,7 @@ TextPanelV* end_stats;
 SettingBar* setting_bar;
 ToggleGroup* taskbar;
 PopupHandler* time_popup;
+ToggleSpawn* dictionary_spawn;
 
 // Window buttons
 bool close_window = false;
@@ -307,6 +308,8 @@ void update_mouse()
 
 void update_start()
 {
+    // Tape mode <-> normal mode changes drawer.y position
+    dictionary_spawn->set_pos(gameScreenWidth * 0.5f, drawer.get_top_y() - 2 * font_measure.medium_height);
     if (restart_alpha > 0)
     {
         restart_alpha -= 1.f / 60;
@@ -658,14 +661,7 @@ void init()
     ui_objects.alloc(dictionary_popup, POPUP);
     
     drawer = TextDrawer(font, font_measure.large());  // Create drawer to button position
-    ToggleSpawn* dictionary_spawn = new ToggleSpawn(gameScreenWidth * 0.5f, drawer.get_top_y() - 50 * 1.5f, 50, dictionary_popup, &textureOf["settings_icon"]);
-    
-/*     Button* dictionary_button = new Button(0, 0, 50, "dictionary", [=] {
-        dictionary_popup->set_active();
-        switch_popup();
-    });
-
-    dictionary_button->set_pos(0.5f * (gameScreenWidth - dictionary_button->get_width()), drawer.get_top_y() - dictionary_button->get_height()); */
+    dictionary_spawn = new ToggleSpawn(gameScreenWidth * 0.5f, drawer.get_top_y() - 2*font_measure.medium_height, font_measure.medium_height, dictionary_popup, &textureOf["settings_icon"]);
     ui_objects.alloc(dictionary_spawn, {START, POPUP});
 
     

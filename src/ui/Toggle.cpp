@@ -27,7 +27,7 @@ Toggle::Toggle(float x, float y, float h, bool initState, string toggle_text, st
     img_scale = h / texture->height;
     text = toggle_text;
     font_size = MeasureFontSize(text, INT_MAX, h);
-    space_width = MeasureTextEx(" ", font_size).x;
+    space_width = MeasureTextEx("o", font_size).x;
     
     hitbox = { x, y, 0, h };
     hitbox.width = MeasureTextEx(text, font_size).x + space_width + texture->width * img_scale;
