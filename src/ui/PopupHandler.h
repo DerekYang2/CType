@@ -26,4 +26,5 @@ class PopupHandler : public UIObject {
     string get_selected();
     string input_number();
     bool is_numeric();
+    bool needs_update();
 };

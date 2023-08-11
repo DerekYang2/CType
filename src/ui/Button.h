@@ -14,8 +14,9 @@ class Button : public UIObject
     float fontSize;
     string message; //for now
     int stroke = 2;
-
-public:
+    float height;
+    
+    public:
     bool flipped = false;
     Button(float x, float y, float w, float h, Texture *texture_pointer, std::function<void()> f = NULL);
     Button(float x, float y, float w, float h, string text, std::function<void()> f = NULL);
@@ -24,6 +25,7 @@ public:
     void attachDraw(std::function<void(Rectangle)> f);
     void attach_trigger(std::function<void()> f);
     void set_pos(float x, float y) override;
+    void set_text(string text);
     void update();
     void setStroke(int strokeWidth);
     void draw() override;

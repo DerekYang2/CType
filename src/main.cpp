@@ -63,6 +63,7 @@
 #include "RectPreview.h"
 #include "Settings.h"
 #include "UserData.h"
+#include "ToggleSpawn.h"
 #include "FileExplorer.h"
 // Init extern variables ------------------------------------------------------------------
 /* Theme theme(
@@ -656,12 +657,16 @@ void init()
     PopupHandler* dictionary_popup = new PopupHandler(gameScreenWidth * 0.5f, gameScreenHeight * 0.5f, 700, 40, 10, p_title, p_description, p_button, option_vector, "option 1");
     ui_objects.alloc(dictionary_popup, POPUP);
     
-    Button* dictionary_button = new Button(0, 0, 50, "dictionary", [dictionary_popup] {
+    drawer = TextDrawer(font, font_measure.large());  // Create drawer to button position
+    ToggleSpawn* dictionary_spawn = new ToggleSpawn(gameScreenWidth * 0.5f, drawer.get_top_y() - 50 * 1.5f, 50, dictionary_popup, &textureOf["settings_icon"]);
+    
+/*     Button* dictionary_button = new Button(0, 0, 50, "dictionary", [=] {
         dictionary_popup->set_active();
         switch_popup();
     });
-    dictionary_button->set_pos(0.5f * (gameScreenWidth - dictionary_button->get_width()), 500);
-    ui_objects.alloc(dictionary_button, START);
+
+    dictionary_button->set_pos(0.5f * (gameScreenWidth - dictionary_button->get_width()), drawer.get_top_y() - dictionary_button->get_height()); */
+    ui_objects.alloc(dictionary_spawn, {START, POPUP});
 
     
     taskbar = new ToggleGroup(gameScreenWidth / 2, gameScreenHeight - 75, 75, 0, { "keyboard", "settings_icon" }, { start_label, settings_label }, true);

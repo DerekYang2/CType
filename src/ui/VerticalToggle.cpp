@@ -151,3 +151,8 @@ string VerticalToggle::get_selected()
 {
     return trim(text[selected]);
 }
+
+bool VerticalToggle::was_pressed()
+{
+    return pressed;
+}

@@ -30,6 +30,7 @@ class TextDrawer {
     void draw_time(string time_text, string wpm_text, float time_percent, float dash_percent, bool left_align);
     void draw_caret();
     void add_offset(float x);
+    float get_top_y();
 };
 
 extern TextDrawer drawer;

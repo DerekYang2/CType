@@ -25,4 +25,5 @@ class VerticalToggle : public ToggleGroup {
     float get_width() override;
     float get_height() override;
     string get_selected() override;
+    bool was_pressed() override;  
 };

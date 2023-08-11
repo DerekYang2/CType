@@ -149,3 +149,10 @@ bool PopupHandler::is_numeric()
 {
     return input_box->is_numeric();
 }
+
+bool PopupHandler::needs_update()
+{
+    if (panel != nullptr)
+        return panel->was_pressed();
+    return false;
+}

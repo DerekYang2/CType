@@ -1,6 +1,6 @@
 #include "Button.h"
 
-Button::Button(float x, float y, float w, float h, Texture *texture_pointer, std::function<void()> f) : triggerFunc(f)
+Button::Button(float x, float y, float w, float h, Texture *texture_pointer, std::function<void()> f) : triggerFunc(f), height(h)
 {
     reset();
     message = "";
@@ -8,7 +8,7 @@ Button::Button(float x, float y, float w, float h, Texture *texture_pointer, std
     hitbox = Rectangle(x, y, w, h);
 }
 
-Button::Button(float x, float y, float w, float h, string text, std::function<void()> f): triggerFunc(f)
+Button::Button(float x, float y, float w, float h, string text, std::function<void()> f): triggerFunc(f), height(h)
 {
     reset();
     texture = nullptr;
@@ -17,7 +17,7 @@ Button::Button(float x, float y, float w, float h, string text, std::function<vo
     fontSize = MeasureFontSize(text, hitbox.width * 0.8f, hitbox.height * 0.8f);
 }
 
-Button::Button(float x, float y, float h, string text, std::function<void()> f) : triggerFunc(f)
+Button::Button(float x, float y, float h, string text, std::function<void()> f) : triggerFunc(f), height(h)
 {
     reset();
     texture = nullptr;
@@ -43,6 +43,14 @@ void Button::attach_trigger(std::function<void()> f)
 void Button::set_pos(float x, float y) 
 {
     hitbox.x = x, hitbox.y = y;
+}
+
+void Button::set_text(string text)
+{
+    message = text;
+    fontSize = MeasureFontSize(text, INT_MAX, height / 1.2f);
+    Vector2 text_wh = MeasureTextEx(message, fontSize);
+    hitbox = Rectangle(x, y, text_wh.x * 1.2, text_wh.y * 1.2);
 }
 
 void Button::update()

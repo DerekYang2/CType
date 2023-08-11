@@ -360,3 +360,8 @@ void TextDrawer::add_offset(float x)
     offset_x += x;
 }
 
+float TextDrawer::get_top_y()
+{
+    return top_y;
+}
+

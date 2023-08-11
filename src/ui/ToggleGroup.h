@@ -40,6 +40,6 @@ class ToggleGroup : public UIObject {
     virtual void set_pos(float x, float y) override;
     virtual void set_offset(float dx, float dy) override;
     void set_bounds(Rectangle rect);
-    bool was_pressed();
+    virtual bool was_pressed();
     float get_font_size();
 };
