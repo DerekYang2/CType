@@ -2,6 +2,7 @@
 #include "at_icon.h"
 #include "exit_icon.h"
 #include "fullscreen.h"
+#include "globe.h"
 #include "hashtag_icon.h"
 #include "keyboard.h"
 #include "logo.h"
@@ -33,6 +34,13 @@ _img.height = FULLSCREEN_HEIGHT; \
 _img.data = FULLSCREEN_DATA; \
 _img.mipmaps = 1; \
 textureOf["fullscreen"] = LoadTextureFromImage(_img); \
+_img = { 0 }; \
+_img.format = GLOBE_FORMAT; \
+_img.width = GLOBE_WIDTH; \
+_img.height = GLOBE_HEIGHT; \
+_img.data = GLOBE_DATA; \
+_img.mipmaps = 1; \
+textureOf["globe"] = LoadTextureFromImage(_img); \
 _img = { 0 }; \
 _img.format = HASHTAG_ICON_FORMAT; \
 _img.width = HASHTAG_ICON_WIDTH; \

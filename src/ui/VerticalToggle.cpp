@@ -50,10 +50,6 @@ void VerticalToggle::update()
     Rectangle local_bounds = Rectangle(corner.x + padding, corner.y + padding, tot_width - 2 * padding, visible_h);
     bounds = RectangleIntersection(total_bounds, local_bounds);
     ToggleGroup::update();
-    if (was_pressed())
-    {
-       // text_gen.set_list(text[selected]);
-    }
 }
 
 void VerticalToggle::draw()

@@ -310,6 +310,7 @@ void update_start()
 {
     // Tape mode <-> normal mode changes drawer.y position
     dictionary_spawn->set_pos(gameScreenWidth * 0.5f, drawer.get_top_y() - 2 * font_measure.medium_height);
+
     if (restart_alpha > 0)
     {
         restart_alpha -= 1.f / 60;
@@ -599,6 +600,7 @@ void init()
         SetTextureFilter(texture, TEXTURE_FILTER_BILINEAR);
     }
 
+    init_dictionary_names();
     load_user_data();
     init_settings();
     set_icon();
@@ -650,7 +652,7 @@ void init()
     setting_bar = new SettingBar(gameScreenWidth / 2, 300, { punctuation, numbers }, time_toggles, time_popup);
     ui_objects.alloc(setting_bar, START);
 
-    // dictionary button
+    // dictionary panel
     p_title = new Textbox(0, 0, 450, font_measure.title_height, "Select Language", 15, "main", false);
     p_description = new Textbox(0, 0, 600, 50, "Dictionary directory: " + current_dir() + "\nCurrently selected: \n%s", font_measure.small(), "sub", true);
     p_button = new Button(0, 0, 200, font_measure.title_height, "Ok", nullptr);
@@ -659,9 +661,10 @@ void init()
         option_vector.push_back("option " + to_string(i));
     PopupHandler* dictionary_popup = new PopupHandler(gameScreenWidth * 0.5f, gameScreenHeight * 0.5f, 700, 40, 10, p_title, p_description, p_button, option_vector, "option 1");
     ui_objects.alloc(dictionary_popup, POPUP);
-    
+
+    // dictionary panel spawner
     drawer = TextDrawer(font, font_measure.large());  // Create drawer to button position
-    dictionary_spawn = new ToggleSpawn(gameScreenWidth * 0.5f, drawer.get_top_y() - 2*font_measure.medium_height, font_measure.medium_height, dictionary_popup, &textureOf["settings_icon"]);
+    dictionary_spawn = new ToggleSpawn(gameScreenWidth * 0.5f, drawer.get_top_y() - 2*font_measure.medium_height, font_measure.medium_height, dictionary_popup, &textureOf["globe"]);
     ui_objects.alloc(dictionary_spawn, {START, POPUP});
 
     
@@ -705,7 +708,6 @@ int main(void)
     
     init();
     init_test();
-    
     //open_path(absolute_path("fonts"));
     
 

@@ -1,4 +1,8 @@
 #include "WordList.h"
+#include "jsonparser.h"
+#include <filesystem>
+const string DICTIONARY_FOLDER = "languages";
+vector<string> dictionary_names;
 
 unordered_map<string, vector<string>> word_list({
 {
@@ -7,3 +11,48 @@ unordered_map<string, vector<string>> word_list({
 },
 });
 
+void init_all_dictionaries()
+{
+    namespace fs = std::filesystem;
+    for (const auto& file : fs::directory_iterator(DICTIONARY_FOLDER))
+    {
+        if (file.is_directory()) continue;
+        string filepath = file.path().string();
+        string extension = file.path().extension().string();
+        string name = file.path().stem().string();
+        // Replace all '_' with ' ' 
+        if (extension == ".json")
+        {
+            RSJresource dictionary(readFile(filepath));
+            word_list[name] = dictionary["words"].as_vector<string>();
+        }
+    }
+    for (string word : word_list["code_c"]) cout << word << endl;
+}
+
+void init_dictionary_names()
+{
+    namespace fs = std::filesystem;
+    for (const auto& file : fs::directory_iterator(DICTIONARY_FOLDER))
+    {
+        if (file.is_directory()) continue;
+        string filepath = file.path().string();
+        string extension = file.path().extension().string();
+        string name = file.path().stem().string();
+        // Replace all '_' with ' ' 
+        if (extension == ".json")
+        {
+            dictionary_names.push_back(name);
+            cout << name << endl;
+        }
+    }
+}
+
+void load_dictionary(string file_name)
+{
+    if (word_list.contains(file_name))
+        return;
+    string file_path = DICTIONARY_FOLDER + "/" + file_name + ".json";
+    RSJresource dictionary(readFile(file_path));
+    word_list[file_name] = dictionary["words"].as_vector<string>();
+}
