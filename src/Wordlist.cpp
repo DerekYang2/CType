@@ -24,10 +24,10 @@ void init_all_dictionaries()
         if (extension == ".json")
         {
             RSJresource dictionary(readFile(filepath));
+            replace(name.begin(), name.end(), '_', ' ');
             word_list[name] = dictionary["words"].as_vector<string>();
         }
     }
-    for (string word : word_list["code_c"]) cout << word << endl;
 }
 
 void init_dictionary_names()
@@ -39,11 +39,11 @@ void init_dictionary_names()
         string filepath = file.path().string();
         string extension = file.path().extension().string();
         string name = file.path().stem().string();
-        // Replace all '_' with ' ' 
         if (extension == ".json")
         {
+            // Replace all '_' with ' ' 
+            replace(name.begin(), name.end(), '_', ' ');
             dictionary_names.push_back(name);
-            cout << name << endl;
         }
     }
 }
@@ -52,7 +52,10 @@ void load_dictionary(string file_name)
 {
     if (word_list.contains(file_name))
         return;
-    string file_path = DICTIONARY_FOLDER + "/" + file_name + ".json";
+    string original_name = file_name;
+    // Return all ' ' to '_'
+    replace(original_name.begin(), original_name.end(), ' ', '_');
+    string file_path = DICTIONARY_FOLDER + "/" + original_name + ".json";
     RSJresource dictionary(readFile(file_path));
     word_list[file_name] = dictionary["words"].as_vector<string>();
 }

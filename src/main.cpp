@@ -654,12 +654,9 @@ void init()
 
     // dictionary panel
     p_title = new Textbox(0, 0, 450, font_measure.title_height, "Select Language", 15, "main", false);
-    p_description = new Textbox(0, 0, 600, 50, "Dictionary directory: " + current_dir() + "\nCurrently selected: \n%s", font_measure.small(), "sub", true);
+    p_description = new Textbox(0, 0, 600, 50, "Dictionary directory: " + absolute_path(DICTIONARY_FOLDER) + "\nCurrently selected: \n%s", font_measure.small(), "sub", true);
     p_button = new Button(0, 0, 200, font_measure.title_height, "Ok", nullptr);
-    vector<string> option_vector;
-    for (int i = 0; i <= 20; i++) 
-        option_vector.push_back("option " + to_string(i));
-    PopupHandler* dictionary_popup = new PopupHandler(gameScreenWidth * 0.5f, gameScreenHeight * 0.5f, 700, 40, 10, p_title, p_description, p_button, option_vector, "option 1");
+    PopupHandler* dictionary_popup = new PopupHandler(gameScreenWidth * 0.5f, gameScreenHeight * 0.5f, 700, 40, 10, p_title, p_description, p_button, dictionary_names, "english");
     ui_objects.alloc(dictionary_popup, POPUP);
 
     // dictionary panel spawner

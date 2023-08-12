@@ -9,11 +9,11 @@ VerticalToggle::VerticalToggle(float x, float y, float w, float h, int rows, vec
     tot_width = w;
     text.clear();
     text = deque<string>(options.begin(), options.end());
-    sort(text.begin(), text.end());
     for (int i = 0; i < text.size(); i++)
     {
         if (text[i] == init_option) selected = i;
     }
+    
     font_size = MeasureFontSize("A", INT_MAX, h / 1.5f);
     padding = h * 1.1f;
     float rect_w = tot_width - 2 * padding;
