@@ -4,7 +4,7 @@
     },
     "behavior": {
         "tape mode": {
-            "default": 1,
+            "default": 0,
             "options": [
                 "off",
                 "on"

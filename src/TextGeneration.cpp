@@ -85,83 +85,16 @@ void TextGenerator::set_list(string list_name)
         max_word_length = max(max_word_length, (int)word.length());
 }
 
-string TextGenerator::get_word()
+// Might be one word or more 
+void TextGenerator::add_sentence(string sentence)
 {
-    // Very first word
-    if (punctuation && generated_chars.empty())
-        needs_capital = true;
-    
-    float tot_words = 100;  // Probability is r_int out of tot_words
-    int r_int = rand_int(1, tot_words);
-    const int p_contract = 7, p_end = 8, p_insert = 6, p_wrap = 2, p_number = 7;  // (p in tot_words chance)
-    
-    string return_word;
-    if (punctuation && r_int <= p_contract)  // Return random contraction 
+    // Break by space
+    stringstream ss(sentence);
+    string current_str;
+    while (ss >> current_str)
     {
-        return_word = contractions[rand_int(0, contractions.size() - 1)];
-        if (needs_capital)
-        {
-            return_word[0] = toupper(return_word[0]);
-            needs_capital = false;
-        }
-        return return_word;
-    } else  // Return from word list
-    {
-        // Return random number
-        if (numbers && r_int <= p_contract + p_number)
-        {
-            needs_capital = false;
-            return get_number();
-        }
-        if (idx == 0) // entering range 1, reshuffle [0, midpoint)
-        {
-            shuffle(word_list[list].begin(), word_list[list].begin() + midpoint, rng);
-        }
-        if (idx == midpoint)  // entering range 2, reshuffle [midpoint, len)
-        {
-            shuffle(word_list[list].begin() + midpoint, word_list[list].end(), rng);
-        }
-        int cur_idx = idx;
-        idx = (idx + 1) % len;  // update idx
-        return_word = word_list[list][cur_idx];
-        // Add punctuation
-        if (punctuation)
-        {
-            bool next_capital = false;
-            if (r_int <= p_contract + p_number + p_end)  
-            {
-                return_word += get_ending();
-                next_capital = true;
-            } else if (r_int <= p_contract + p_number + p_end + p_insert)  
-            {
-                return_word += get_insert();
-            } else if (r_int <= p_contract + p_number + p_end + p_insert + p_wrap)
-            {
-                if (!needs_capital)  // Not a starting word
-                {
-                    if (rand() <= 0.6)
-                        return_word = "\"" + return_word + "\"";
-                    else 
-                        return_word = "(" + return_word + ")";
-                }
-            }
-            if (needs_capital)
-            {
-                needs_capital = false;
-                for (int i = 0; i < return_word.length(); i++)
-                {
-                    if ('a' <= return_word[i] && return_word[i] <= 'z')
-                    {
-                        return_word[i] = toupper(return_word[i]);
-                        break;
-                    }
-                }
-            }
-            
-            needs_capital = next_capital;
-        }
-    
-        return return_word;
+        words.push_back(Word(current_str));
+        generated_chars += current_str + " ";
     }
 }
 
@@ -174,8 +107,83 @@ void TextGenerator::generate_text(int buffer_space)
 {
     while (generated_chars.size() - empty_i <= buffer_space)
     {
-        words.push_back(get_word());
-        generated_chars += words.back().word + " ";
+        // Very first word
+        if (punctuation && generated_chars.empty())
+            needs_capital = true;
+        
+        float tot_words = 100;  // Probability is r_int out of tot_words
+        int r_int = rand_int(1, tot_words);
+        const int p_contract = 7, p_end = 8, p_insert = 6, p_wrap = 2, p_number = 7;  // (p in tot_words chance)
+        
+        string return_word;
+        if (punctuation && r_int <= p_contract)  // Return random contraction 
+        {
+            return_word = contractions[rand_int(0, contractions.size() - 1)];
+            if (needs_capital)
+            {
+                return_word[0] = toupper(return_word[0]);
+                needs_capital = false;
+            }
+            add_sentence(return_word);
+        } else  // Return from word list
+        {
+            // Return random number
+            if (numbers && r_int <= p_contract + p_number)
+            {
+                needs_capital = false;
+                add_sentence(get_number());
+            } else
+            {
+                if (idx == 0) // entering range 1, reshuffle [0, midpoint)
+                {
+                    shuffle(word_list[list].begin(), word_list[list].begin() + midpoint, rng);
+                }
+                if (idx == midpoint)  // entering range 2, reshuffle [midpoint, len)
+                {
+                    shuffle(word_list[list].begin() + midpoint, word_list[list].end(), rng);
+                }
+                int cur_idx = idx;
+                idx = (idx + 1) % len;  // update idx
+                return_word = word_list[list][cur_idx];
+                // Add punctuation
+                if (punctuation)
+                {
+                    bool next_capital = false;
+                    if (r_int <= p_contract + p_number + p_end)
+                    {
+                        return_word += get_ending();
+                        next_capital = true;
+                    } else if (r_int <= p_contract + p_number + p_end + p_insert)
+                    {
+                        return_word += get_insert();
+                    } else if (r_int <= p_contract + p_number + p_end + p_insert + p_wrap)
+                    {
+                        if (!needs_capital)  // Not a starting word
+                        {
+                            if (rand() <= 0.6)
+                                return_word = "\"" + return_word + "\"";
+                            else
+                                return_word = "(" + return_word + ")";
+                        }
+                    }
+                    if (needs_capital)
+                    {
+                        needs_capital = false;
+                        for (int i = 0; i < return_word.length(); i++)
+                        {
+                            if (isalpha(return_word[i]))
+                            {
+                                return_word[i] = toupper(return_word[i]);
+                                break;
+                            }
+                        }
+                    }
+
+                    needs_capital = next_capital;
+                }
+                add_sentence(return_word);
+            }
+        }
     }
 }
 
