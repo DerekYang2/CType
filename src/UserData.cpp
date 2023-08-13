@@ -1,11 +1,5 @@
 #include "UserData.h"
 
-/**
- * TODO: custom time saving does not work as of now
- * main: 539, test_group->set_selected(data_json["test time"].as_str());
- * test time is saved as the custom string, setting selected will not work because toggle label is custom, not the value of custom
-*/
-
 string DATA_PATH = "data/user_data.json";
 RSJresource data_json;
 

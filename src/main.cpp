@@ -22,9 +22,11 @@
 *   SOFTWARE.
 *   
 *********************************************************************************/
+
 /**
  * TODO:
  * - Select dictionary
+ * - Fix ending page text stats
  * - Move includes from h to cpp files
  * - User data page
  * - Words mode
@@ -325,6 +327,7 @@ void update_start()
     {
         data_json["punctuation"] = (int)setting_bar->is_toggled("punctuation");
         data_json["numbers"] = (int)setting_bar->is_toggled("numbers");
+        data_json["dictionary"] = "'" + dictionary_spawn->get_selected() + "'";
         init_test();
         restart_alpha = 1;
         return;
@@ -604,11 +607,13 @@ void init()
     load_user_data();
     init_settings();
     set_icon();
-    // get selected test time and other user data
-    string selected_time = data_json["test time"].as_str();
-    string custom_time = data_json["custom time"].as_str();
+    
+    // Get selected test time and other user data
+    string selected_time = data_json["test time"].as<string>();
+    string custom_time = data_json["custom time"].as<string>();
     bool punctuation_on = data_json["punctuation"].as<int>();
     bool numbers_on = data_json["numbers"].as<int>();
+    string selected_dictionary = data_json["dictionary"].as<string>();
     // Window UI
     close_button = new Button(gameScreenWidth - 50, 0, 50, 50, &textureOf["exit_icon"], [] {close_window = true;});
     fullscreen_toggle = new Toggle(gameScreenWidth - 100, 0, 50, false, &textureOf["unfullscreen"], &textureOf["fullscreen"]);
@@ -660,7 +665,7 @@ void init()
     p_title = new Textbox(0, 0, 450, font_measure.title_height, "Select Language", 15, "main", false);
     p_description = new Textbox(0, 0, 600, 50, "Dictionary directory: " + absolute_path(DICTIONARY_FOLDER) + "\nCurrently selected: \n%s", font_measure.small(), "sub", true);
     p_button = new Button(0, 0, 200, font_measure.title_height, "Ok", nullptr);
-    PopupHandler* dictionary_popup = new PopupHandler(gameScreenWidth * 0.5f, gameScreenHeight * 0.5f, 700, 40, 10, p_title, p_description, p_button, dictionary_names, "english");
+    PopupHandler* dictionary_popup = new PopupHandler(gameScreenWidth * 0.5f, gameScreenHeight * 0.5f, 700, 40, 10, p_title, p_description, p_button, dictionary_names, selected_dictionary);
     ui_objects.alloc(dictionary_popup, POPUP);
 
     // dictionary panel spawner
@@ -680,7 +685,6 @@ void init()
     end_stats = new TextPanelV(0.5f * (gameScreenWidth - (wpm_width + graph_width)), graph_top, wpm_width, graph_height + 20), ui_objects.alloc(end_stats, END);
 
     reset_IOHandler(POPUP);
-
 }
 
 
