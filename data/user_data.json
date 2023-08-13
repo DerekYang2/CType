@@ -1,25 +1,25 @@
 {
+    "custom time": 12,
+    "dictionary": "english",
+    "numbers": 0,
+    "test time": 5,
+    "punctuation": 1,
     "test history": [
         {
-            "test type": "test",
-            "characters": "0/0/0/0",
-            "consistency": 0.0,
-            "accuracy": 0.0,
+            "wpm": 0.0,
             "raw": 0.0,
-            "wpm": 0.0
+            "accuracy": 0.0,
+            "consistency": 0.0,
+            "characters": "0/0/0/0",
+            "test type": "test"
         },
         {
-            "test type": "test2",
-            "characters": "0/0/1/0",
-            "consistency": 0.0,
-            "accuracy": 0.0,
+            "wpm": 100.0,
             "raw": 0.0,
-            "wpm": 100.0
+            "accuracy": 0.0,
+            "consistency": 0.0,
+            "characters": "0/0/1/0",
+            "test type": "test2"
         }
-    ],
-    "punctuation": 1,
-    "test time": 5,
-    "numbers": 0,
-    "dictionary": "english 450k",
-    "custom time": 12
+    ]
 }

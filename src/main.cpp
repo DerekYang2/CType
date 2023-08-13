@@ -25,7 +25,6 @@
 
 /**
  * TODO:
- * - Select dictionary
  * - Fix ending page text stats
  * - Move includes from h to cpp files
  * - User data page
@@ -658,9 +657,35 @@ void init()
     ui_objects.alloc(setting_bar, START);
 
     // List of dictionaries
+    unordered_set<string> in_list;
+    vector<string> english_list = { "english", "english 1k", "english 5k", "english 10k", "english 25k", "english 450k", "english commonly misspelled", "english contractions", "english doubleletter" };
+    english_list.erase(std::remove_if(english_list.begin(), english_list.end(), [](string str) { return !word_list.contains(str);}), english_list.end());  // remove if not in word_list
+    in_list.insert(english_list.begin(), english_list.end());
+    vector<string> code_list;
+    for (auto& [key, value] : word_list)
+    {
+        if (starts_with(key, "code "))
+        {
+            code_list.push_back(key);
+            in_list.insert(key);
+        }
+    }
+    sort(code_list.begin(), code_list.end());
+    
+    vector<string> other_list;
+    for (auto& [key, value] : word_list)
+    {
+        // If not in a previous list
+        if (!in_list.contains(key))
+            other_list.push_back(key);
+    }
+    sort(other_list.begin(), other_list.end());
     vector<string> dictionary_names;
-    for (auto& [key, value] : word_list) dictionary_names.push_back(key);
-    sort(dictionary_names.begin(), dictionary_names.end());
+    // Add lists with proper order into dictionary_names
+    dictionary_names.insert(dictionary_names.end(), english_list.begin(), english_list.end());
+    dictionary_names.insert(dictionary_names.end(), other_list.begin(), other_list.end());
+    dictionary_names.insert(dictionary_names.end(), code_list.begin(), code_list.end());
+
     // Dictionary panel
     p_title = new Textbox(0, 0, 450, font_measure.title_height, "Select Language", 15, "main", false);
     p_description = new Textbox(0, 0, 600, 50, "Dictionary directory: " + absolute_path(DICTIONARY_FOLDER) + "\nCurrently selected: \n%s", font_measure.small(), "sub", true);
