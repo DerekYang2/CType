@@ -72,6 +72,7 @@ void TextGenerator::set_numbers(bool on)
 void TextGenerator::set_list(string list_name)
 {
     list = list_name;
+    load_dictionary(list);
     len = word_list[list].size();
     midpoint = (len + 1) / 2;  // ceiling division by 2
     // range 1: [0, midpoint), range 2: [midpoint, len)

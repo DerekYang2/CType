@@ -2,7 +2,6 @@
 #include "jsonparser.h"
 #include <filesystem>
 const string DICTIONARY_FOLDER = "languages";
-vector<string> dictionary_names;
 
 unordered_map<string, vector<string>> word_list({
 {
@@ -43,19 +42,19 @@ void init_dictionary_names()
         {
             // Replace all '_' with ' ' 
             replace(name.begin(), name.end(), '_', ' ');
-            dictionary_names.push_back(name);
+            word_list[name].clear();
         }
     }
 }
 
-void load_dictionary(string file_name)
+void load_dictionary(string list_name)
 {
-    if (word_list.contains(file_name))
+    if (word_list[list_name].size() > 0)  // Already loaded
         return;
-    string original_name = file_name;
+    string file_name = list_name;
     // Return all ' ' to '_'
-    replace(original_name.begin(), original_name.end(), ' ', '_');
-    string file_path = DICTIONARY_FOLDER + "/" + original_name + ".json";
+    replace(file_name.begin(), file_name.end(), ' ', '_');
+    string file_path = DICTIONARY_FOLDER + "/" + file_name + ".json";
     RSJresource dictionary(readFile(file_path));
-    word_list[file_name] = dictionary["words"].as_vector<string>();
+    word_list[list_name] = dictionary["words"].as_vector<string>();
 }

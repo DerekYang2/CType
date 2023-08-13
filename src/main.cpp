@@ -192,8 +192,8 @@ void init_test()
     generated_chars = "";
     text_gen.set_punctuation(setting_bar->is_toggled("punctuation"));
     text_gen.set_numbers(setting_bar->is_toggled("numbers"));
-    text_gen.set_list("english");
-    text_gen.generate_text((is_tape_mode?1:3) * ceil(gameScreenWidth / char_dimension['i'].x));
+    text_gen.set_list(dictionary_spawn->get_selected());
+    text_gen.generate_text((is_tape_mode ? 1 : 3) * ceil(gameScreenWidth / char_dimension['i'].x));
 }
 
 // scene switch functions
@@ -321,7 +321,7 @@ void update_start()
         switch_settings();
         return;
     }
-    if (IsKeyPressed(KEY_TAB) || setting_bar->needs_update())  // restart test 
+    if (IsKeyPressed(KEY_TAB) || setting_bar->needs_update() || (dictionary_spawn->get_selected() != text_gen.list_name()))  // restart test 
     {
         data_json["punctuation"] = (int)setting_bar->is_toggled("punctuation");
         data_json["numbers"] = (int)setting_bar->is_toggled("numbers");
@@ -591,7 +591,7 @@ void init()
 {
     load_sdf_shader();
     //test_shader = LoadShader(0, "./fonts/test2.frag");
-    load_base_font("./fonts/SourceCodePro.ttf");
+    load_base_font("./fonts/RobotoMono.ttf");
     //set_rand_font();
     
     init_raw_data;
@@ -652,7 +652,11 @@ void init()
     setting_bar = new SettingBar(gameScreenWidth / 2, 300, { punctuation, numbers }, time_toggles, time_popup);
     ui_objects.alloc(setting_bar, START);
 
-    // dictionary panel
+    // List of dictionaries
+    vector<string> dictionary_names;
+    for (auto& [key, value] : word_list) dictionary_names.push_back(key);
+    sort(dictionary_names.begin(), dictionary_names.end());
+    // Dictionary panel
     p_title = new Textbox(0, 0, 450, font_measure.title_height, "Select Language", 15, "main", false);
     p_description = new Textbox(0, 0, 600, 50, "Dictionary directory: " + absolute_path(DICTIONARY_FOLDER) + "\nCurrently selected: \n%s", font_measure.small(), "sub", true);
     p_button = new Button(0, 0, 200, font_measure.title_height, "Ok", nullptr);
@@ -663,7 +667,6 @@ void init()
     drawer = TextDrawer(font, font_measure.large());  // Create drawer to button position
     dictionary_spawn = new ToggleSpawn(gameScreenWidth * 0.5f, drawer.get_top_y() - 2*font_measure.medium_height, font_measure.medium_height, dictionary_popup, &textureOf["globe"]);
     ui_objects.alloc(dictionary_spawn, {START, POPUP});
-
     
     taskbar = new ToggleGroup(gameScreenWidth / 2, gameScreenHeight - 75, 75, 0, { "keyboard", "settings_icon" }, { start_label, settings_label }, true);
     ui_objects.alloc(taskbar, {START, SETTINGS});
