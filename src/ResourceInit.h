@@ -8,6 +8,7 @@
 #include "logo.h"
 #include "logo_icon.h"
 #include "minimise_icon.h"
+#include "reload.h"
 #include "settings_icon.h"
 #include "unfullscreen.h"
 
@@ -76,6 +77,13 @@ _img.height = MINIMISE_ICON_HEIGHT; \
 _img.data = MINIMISE_ICON_DATA; \
 _img.mipmaps = 1; \
 textureOf["minimise_icon"] = LoadTextureFromImage(_img); \
+_img = { 0 }; \
+_img.format = RELOAD_FORMAT; \
+_img.width = RELOAD_WIDTH; \
+_img.height = RELOAD_HEIGHT; \
+_img.data = RELOAD_DATA; \
+_img.mipmaps = 1; \
+textureOf["reload"] = LoadTextureFromImage(_img); \
 _img = { 0 }; \
 _img.format = SETTINGS_ICON_FORMAT; \
 _img.width = SETTINGS_ICON_WIDTH; \

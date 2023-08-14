@@ -614,9 +614,9 @@ void init()
     bool numbers_on = data_json["numbers"].as<int>();
     string selected_dictionary = data_json["dictionary"].as<string>();
     // Window UI
-    close_button = new Button(gameScreenWidth - 50, 0, 50, 50, &textureOf["exit_icon"], [] {close_window = true;});
+    close_button = new Button(gameScreenWidth - 50, 0, 50, &textureOf["exit_icon"], [] {close_window = true;});
     fullscreen_toggle = new Toggle(gameScreenWidth - 100, 0, 50, false, &textureOf["unfullscreen"], &textureOf["fullscreen"]);
-    minimize_button = new Button(gameScreenWidth - 150, 0, 50, 50, &textureOf["minimise_icon"], [] {MinimizeWindow();});
+    minimize_button = new Button(gameScreenWidth - 150, 0, 50, &textureOf["minimise_icon"], [] {MinimizeWindow();});
 
     // STARTING UI ---------------------------------------------------------------
     // custom time popup
@@ -661,6 +661,7 @@ void init()
     vector<string> english_list = { "english", "english 1k", "english 5k", "english 10k", "english 25k", "english 450k", "english commonly misspelled", "english contractions", "english doubleletter" };
     english_list.erase(std::remove_if(english_list.begin(), english_list.end(), [](string str) { return !word_list.contains(str);}), english_list.end());  // remove if not in word_list
     in_list.insert(english_list.begin(), english_list.end());
+
     vector<string> code_list;
     for (auto& [key, value] : word_list)
     {
@@ -697,13 +698,14 @@ void init()
     drawer = TextDrawer(font, font_measure.large());  // Create drawer to button position
     dictionary_spawn = new ToggleSpawn(gameScreenWidth * 0.5f, drawer.get_top_y() - 2*font_measure.medium_height, font_measure.medium_height, dictionary_popup, &textureOf["globe"]);
     ui_objects.alloc(dictionary_spawn, {START, POPUP});
-    
-    taskbar = new ToggleGroup(gameScreenWidth / 2, gameScreenHeight - 75, 75, 0, { "keyboard", "settings_icon" }, { start_label, settings_label }, true);
+
+    const float taskbar_height = 75;
+    taskbar = new ToggleGroup(gameScreenWidth / 2, gameScreenHeight - taskbar_height, taskbar_height, 0, { "keyboard", "settings_icon" }, { start_label, settings_label }, true);
     ui_objects.alloc(taskbar, {START, SETTINGS});
 
     // TEST UI ---------------------------------------------------------------
-    restart_button = new Button(0, 0, font_measure.large_height, "restart", [] { switch_start(); restart_alpha = 1; });
-    restart_button->set_pos(0.5f * (gameScreenWidth - restart_button->get_width()), gameScreenHeight - 2 * restart_button->get_height());
+    restart_button = new Button(0.5f * (gameScreenWidth - font_measure.large_height), drawer.get_bottom_y() + font_measure.large_height, font_measure.large_height, &textureOf["reload"], [] { switch_start(); restart_alpha = 1; });    
+    ui_objects.alloc(restart_button, START);  // Auto handled in start scene, manually handled in test scene
     // ENDING UI ---------------------------------------------------------------
     new_Button(END, 100, 900, 300, 100, "restart", [] { switch_start(); });
     graph = new Graph(wpm_width + (gameScreenWidth - (graph_width + wpm_width)) * 0.5f, graph_top, graph_width, graph_height, 4), ui_objects.alloc(graph, END);

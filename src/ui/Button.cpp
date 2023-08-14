@@ -1,11 +1,12 @@
 #include "Button.h"
 
-Button::Button(float x, float y, float w, float h, Texture *texture_pointer, std::function<void()> f) : triggerFunc(f), height(h)
+Button::Button(float x, float y, float h, Texture *texture_pointer, std::function<void()> f) : triggerFunc(f), height(h)
 {
     reset();
     message = "";
     texture = texture_pointer;
-    hitbox = Rectangle(x, y, w, h);
+    img_scale = height / texture->height;
+    hitbox = { x, y, texture->width * img_scale, height };
 }
 
 Button::Button(float x, float y, float w, float h, string text, std::function<void()> f): triggerFunc(f), height(h)
@@ -99,15 +100,14 @@ void Button::draw()
             col = theme.sub;
         if (drawFunc != NULL)
             drawFunc(hitbox);
-        float padding = 0;
+        // float padding = 0;
         if (message.empty())  // Texture
         {
-            DrawTexturePro(*texture, Rectangle(0, 0, texture->width, (flipped ? -1 : 1) * texture->height), Rectangle(hitbox.x + padding, hitbox.y + padding, hitbox.width - 2 * padding, hitbox.height - 2 * padding), { 0,0 }, 0, col); //for now
+            DrawTextureEx(*texture, { hitbox.x, hitbox.y }, 0, img_scale, col);
+            // DrawTexturePro(*texture, Rectangle(0, 0, texture->width, (flipped ? -1 : 1) * texture->height), Rectangle(hitbox.x + padding, hitbox.y + padding, hitbox.width - 2 * padding, hitbox.height - 2 * padding), { 0,0 }, 0, col); //for now
         } else  // Texture and text
         {
-            Vector2 corner;
-            corner.x = hitbox.x;
-            corner.y = hitbox.y + 0.5f * (hitbox.height - texture->height * img_scale);
+            Vector2 corner { hitbox.x, hitbox.y + 0.5f * (hitbox.height - texture->height * img_scale) };
             DrawTextureEx(*texture, corner, 0, img_scale, col);
             DrawTextAlign(message, hitbox.x + texture->width * img_scale + space_width, hitbox.y + (hitbox.height) * 0.5f, fontSize, col, LEFT, CENTER);
         }

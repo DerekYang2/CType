@@ -20,7 +20,7 @@ class Button : public UIObject
     float space_width;
     public:
     bool flipped = false;
-    Button(float x, float y, float w, float h, Texture *texture_pointer, std::function<void()> f = NULL);
+    Button(float x, float y, float h, Texture *texture_pointer, std::function<void()> f = NULL);
     Button(float x, float y, float w, float h, string text, std::function<void()> f = NULL);
     Button(float x, float y, float h, string text, std::function<void()> f = NULL);
     Button(float x, float y, float h, string text, Texture *texture_pointer, std::function<void()> f = NULL);

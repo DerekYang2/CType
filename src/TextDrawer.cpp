@@ -370,3 +370,14 @@ float TextDrawer::get_top_y()
     return bottom - cursor_h;
 }
 
+float TextDrawer::get_bottom_y()
+{
+    if (!is_tape_mode)
+    {
+        return bottom_y + 1.5f * char_dimension['I'].y;
+    } else
+    {
+        return bottom_y;
+    }
+}
+

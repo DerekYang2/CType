@@ -31,6 +31,7 @@ class TextDrawer {
     void draw_caret();
     void add_offset(float x);
     float get_top_y();
+    float get_bottom_y();
 };
 
 extern TextDrawer drawer;
