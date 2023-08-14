@@ -487,7 +487,10 @@ void draw_test()
         drawer.draw_caret();
     }
     if (!IsCursorHidden() && elapsed >= 0.5f)
+    {
         restart_button->draw();
+        restart_button->draw_hint();
+    }
 }
 
 void draw_end()
@@ -704,7 +707,7 @@ void init()
     ui_objects.alloc(taskbar, {START, SETTINGS});
 
     // TEST UI ---------------------------------------------------------------
-    restart_button = new Button(0.5f * (gameScreenWidth - font_measure.large_height), drawer.get_bottom_y() + font_measure.large_height, font_measure.large_height, &textureOf["reload"], [] { switch_start(); restart_alpha = 1; });    
+    restart_button = new Button(0.5f * (gameScreenWidth - font_measure.large_height), drawer.get_bottom_y() + font_measure.large_height, font_measure.large_height, &textureOf["reload"], [] { switch_start(); restart_alpha = 1; }, "restart test");    
     ui_objects.alloc(restart_button, START);  // Auto handled in start scene, manually handled in test scene
     // ENDING UI ---------------------------------------------------------------
     new_Button(END, 100, 900, 300, 100, "restart", [] { switch_start(); });

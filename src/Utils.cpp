@@ -253,6 +253,7 @@ char shiftChar(char original)
 
 float MeasureFontSize(string text, float width, float height)
 {
+    if (text.empty()) return 0;
     float fontSize = 0;
     int maxFit = 2;
     float padding = 0;

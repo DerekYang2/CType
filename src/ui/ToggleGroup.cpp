@@ -246,10 +246,11 @@ void ToggleGroup::draw_hint()
     const float padding = MeasureTextEx("o", font_size).x;
     for (int i = 0; i < hint_alpha.size(); i++)
     {
-        Vector2 text_dim = MeasureTextEx(text[i], font_size);
-        DrawRectangleRoundedAlign({ corner.x + (i + 0.5f) * img_w, corner.y + padding, text_dim.x + 2 * padding, text_dim.y + 2 * padding}, 0.4f, 5, rgba(15, 15, 15, hint_alpha[i]), CENTER, BOTTOM);
+        const Vector2 text_dim = MeasureTextEx(text[i], font_size);
+        const Vector2 hint_dim { text_dim.x + 2 * padding, text_dim.y + padding };
+        DrawRectangleRoundedAlign({ corner.x + (i + 0.5f) * img_w, corner.y, hint_dim.x, hint_dim.y }, 0.4f, 5, rgba(15, 15, 15, hint_alpha[i]), CENTER, BOTTOM);
         if (hint_alpha[i] * 2 >= HINT_ALPHA)  // if alpha is half of max, draw text
-            DrawTextAlign(text[i], corner.x + (i + 0.5f) * img_w, corner.y - text_dim.y * 0.5f, font_size, WHITE, CENTER, CENTER);
+            DrawTextAlign(text[i], corner.x + (i + 0.5f) * img_w, corner.y - hint_dim.y * 0.5f, font_size, WHITE, CENTER, CENTER);
     }
 }
 

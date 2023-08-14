@@ -1,12 +1,13 @@
 #include "Button.h"
 
-Button::Button(float x, float y, float h, Texture *texture_pointer, std::function<void()> f) : triggerFunc(f), height(h)
+Button::Button(float x, float y, float h, Texture *texture_pointer, std::function<void()> f, string hint) : triggerFunc(f), height(h), hint(hint)
 {
     reset();
     message = "";
     texture = texture_pointer;
     img_scale = height / texture->height;
     hitbox = { x, y, texture->width * img_scale, height };
+    fontSize = MeasureFontSize(hint, INT_MAX, hitbox.height * 0.8f);
 }
 
 Button::Button(float x, float y, float w, float h, string text, std::function<void()> f): triggerFunc(f), height(h)
@@ -45,6 +46,7 @@ void Button::reset()
 {
     hover = false;
     pressWatch = Stopwatch();
+    hint_alpha = 0;
 }
 
 void Button::attachDraw(std::function<void(Rectangle)> f) { drawFunc = f; }
@@ -68,7 +70,14 @@ void Button::set_text(string text)
 void Button::update()
 {
     hover = CheckCollisionPointRec(mouse, hitbox);
-    if (hover) SetMouseCursor(MOUSE_CURSOR_POINTING_HAND); //cursor_path = "link_cursor";
+    if (hover)
+    {
+        SetMouseCursor(MOUSE_CURSOR_POINTING_HAND); //cursor_path = "link_cursor";
+        hint_alpha = clamp(hint_alpha + 0.1f, 0.f, HINT_ALPHA);
+    } else
+    {
+        hint_alpha = clamp(hint_alpha - 0.1f, 0.f, HINT_ALPHA);
+    }
     if (hover && IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && pressWatch.s() > delay)
     {
         pressWatch.start();
@@ -114,6 +123,18 @@ void Button::draw()
         //DrawTexturePro(img_path, Rectangle(hitbox.x + padding, hitbox.y + padding, hitbox.width - 2 * padding, (flipped ? -1 : 1) * (hitbox.height - 2 * padding)), default_color);
     }
 
+}
+
+// TODO: shift hint up (for button and toggle group)
+void Button::draw_hint()
+{
+    if (hint.empty()) return;
+    const float padding = MeasureTextEx("o", fontSize).x;
+    const Vector2 text_dim = MeasureTextEx(hint, fontSize);
+    const Vector2 hint_dim { text_dim.x + 2 * padding, text_dim.y + padding };
+    DrawRectangleRoundedAlign({ hitbox.x + 0.5f * hitbox.width, hitbox.y, hint_dim.x, hint_dim.y}, 0.4f, 5, rgba(15, 15, 15, hint_alpha), CENTER, BOTTOM);
+    if (hint_alpha * 2 >= HINT_ALPHA)  // if alpha is half of max, draw text 
+        DrawTextAlign(hint, hitbox.x + 0.5f * hitbox.width, hitbox.y - hint_dim.y * 0.5f, fontSize, WHITE, CENTER, CENTER);
 }
 
 float Button::get_width()

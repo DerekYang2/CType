@@ -12,15 +12,18 @@ class Button : public UIObject
     Stopwatch pressWatch;
     const float delay = 0.15;
     float fontSize;
-    string message = "";
-    int stroke = 2;
     float height;
+    string message = "";
+    string hint = "";
+    int stroke = 2;
+
     // For texture and text button (constructor 3)
     float img_scale;
     float space_width;
+    float hint_alpha = 0;
     public:
     bool flipped = false;
-    Button(float x, float y, float h, Texture *texture_pointer, std::function<void()> f = NULL);
+    Button(float x, float y, float h, Texture *texture_pointer, std::function<void()> f = NULL, string hint = "");
     Button(float x, float y, float w, float h, string text, std::function<void()> f = NULL);
     Button(float x, float y, float h, string text, std::function<void()> f = NULL);
     Button(float x, float y, float h, string text, Texture *texture_pointer, std::function<void()> f = NULL);
@@ -32,6 +35,7 @@ class Button : public UIObject
     void update();
     void setStroke(int strokeWidth);
     void draw() override;
+    void draw_hint() override;
     float get_width();
     float get_height();
 };
