@@ -140,7 +140,7 @@ void ToggleGroup::update()
             hint_alpha[hover_idx] = clamp(hint_alpha[hover_idx] + 0.1f, 0.f, HINT_ALPHA);  // increase current alpha
         }
 
-        SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
+        set_cursor(MOUSE_CURSOR_POINTING_HAND);
         //cursor_path = "link_cursor";
     } else if (!textures.empty())   // no hover idx
     {

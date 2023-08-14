@@ -79,7 +79,7 @@ void Toggle::update()
 {
     pressed = false;
     hover = CheckCollisionPointRec(mouse, hitbox);
-    if (hover) SetMouseCursor(MOUSE_CURSOR_POINTING_HAND); //cursor_path = "link_cursor";
+    if (hover) set_cursor(MOUSE_CURSOR_POINTING_HAND); //cursor_path = "link_cursor";
     if (hover && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         flip();
     if (text.empty())

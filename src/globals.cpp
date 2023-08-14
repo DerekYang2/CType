@@ -1,5 +1,10 @@
 #include "globals.h"
 
+void set_cursor(int id)
+{
+    cursor_id = id;
+}
+
 // overloads
 //Addition overloads: componentwise addition
 Vector2 operator+(const Vector2& a, const Vector2& b) {

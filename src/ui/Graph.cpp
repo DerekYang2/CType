@@ -259,7 +259,7 @@ void Graph::update()
     error_index = -1;  // reset to nothing
     if (show_hint)
     {
-        SetMouseCursor(MOUSE_CURSOR_POINTING_HAND); // cursor_path = "link_cursor";
+        set_cursor(MOUSE_CURSOR_POINTING_HAND); // cursor_path = "link_cursor";
         if (errors.empty())
         {
             errors_hint = 0;

@@ -2,6 +2,10 @@
 #include "globals.h"
 #include "ToggleGroup.h"
 
+/**
+ * Vertical panel with descriptions and toggle groups (used in settings page)
+*/
+
 class TogglePanel : public UIObject {
     Rectangle bounds{ 0, 0, gameScreenWidth, gameScreenHeight };
     Vector2 corner_init;

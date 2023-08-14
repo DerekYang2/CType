@@ -72,7 +72,7 @@ void Button::update()
     hover = CheckCollisionPointRec(mouse, hitbox);
     if (hover)
     {
-        SetMouseCursor(MOUSE_CURSOR_POINTING_HAND); //cursor_path = "link_cursor";
+        set_cursor(MOUSE_CURSOR_POINTING_HAND); //cursor_path = "link_cursor";
         hint_alpha = clamp(hint_alpha + 0.1f, 0.f, HINT_ALPHA);
     } else
     {

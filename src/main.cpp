@@ -138,8 +138,10 @@ string default_settings;
 
 // END init extern variables ----------------------------------------------------------------
 const string start_label = "default test", settings_label = "settings";
-string cursor_path = "arrow_cursor";
+string cursor_path = "arrow_cursor";  // For custom cursor
 float cursor_height = 22.f;
+int cursor_id = MOUSE_CURSOR_DEFAULT;
+
 // render textures
 RenderTexture2D target;
 
@@ -175,7 +177,6 @@ float graph_height = 600 ;
 int mouse_frames;
 float scale;
 bool pending_popup_draw = false;
-
 
 void init_test()
 {
@@ -414,7 +415,9 @@ void global_update()
     if ((fullscreen_toggle->toggled() && !IsWindowFullscreen()) || (!fullscreen_toggle->toggled() && IsWindowFullscreen()))  // toggle fullscreen
     {
         ToggleFullscreen();
-    } 
+    }
+    // Update cursor
+    SetMouseCursor(cursor_id);
 }
 
 // TODO: do something for taskbar black background (for black themes)
@@ -765,7 +768,7 @@ int main(void)
         // Compute required framebuffer scaling
         scale = min((float)screen_width() / gameScreenWidth, (float)screen_height() / gameScreenHeight);
         update_mouse();
-        SetMouseCursor(MOUSE_CURSOR_DEFAULT);
+        set_cursor(MOUSE_CURSOR_DEFAULT);
         // Update pending scene
         if (pending_scene != -1)
             scene = pending_scene;

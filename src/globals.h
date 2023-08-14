@@ -36,7 +36,8 @@ extern int empty_i;  // position of the first empty position in generated_chars
 extern string generated_chars;
 extern int max_word_length;
 extern string cursor_path;
-
+extern int cursor_id;  // Enum of cursor
+extern void set_cursor(int id);
 /**
  * 
  * STATUS:

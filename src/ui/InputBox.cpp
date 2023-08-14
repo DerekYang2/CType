@@ -137,7 +137,7 @@ void InputBox::update()
     if (invalid_frames > 0) invalid_frames--;
     bool colliding = CheckCollisionPointRec(mouse, rect);
     if (colliding)
-        SetMouseCursor(MOUSE_CURSOR_IBEAM);
+        set_cursor(MOUSE_CURSOR_IBEAM);
 
     // place before active for direct carry through
     if (!active)
