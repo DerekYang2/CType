@@ -249,18 +249,32 @@ void end_test()
     // character status can get too wide 
     string char_status = TextFormat("%d/%d/%d/%d", status_count.correct, status_count.incorrect, status_count.missing, status_count.extra);
 
+    
     string test_mode_append = "";
     test_mode_append += text_gen.get_punctuation() ? "\npunctuation" : "";
     test_mode_append += text_gen.get_numbers() ? "\nnumbers" : "";
     const float extra_large_size = MeasureFontSize("A", INT_MAX, 80);
+    string cropped_list = text_gen.list_name();
+    if (cropped_list.size() > 20)
+        cropped_list = cropped_list.substr(0, 17) + "...";
     end_stats->init({ {"wpm", font_measure.title()}, {"acc", font_measure.title()}, {"raw", font_measure.medium()}, {"consistency", font_measure.medium()}, {"characters", font_measure.medium()}, {"test type", font_measure.medium()} },
+                    // Values
                     {
                         {t_s(final_wpm), extra_large_size},
                         {TextFormat("%d%%", final_accuracy), extra_large_size},
                         {t_s(final_raw_wpm), font_measure.title()},
                         {TextFormat("%d%%", consistency), font_measure.title()},
                         {char_status, min(font_measure.title(), MeasureFontSize(char_status, wpm_width - 65))},
-                        {"time " + t_s(test_info.time) + "\n" + text_gen.list_name() + test_mode_append, font_measure.medium()}
+                        {"time " + t_s(test_info.time) + "\n" + cropped_list + test_mode_append, font_measure.medium()}
+                    },
+                    // Hints 
+                    {
+                        TextFormat("%.2f wpm", wpm_logger.wpm()),
+                        TextFormat("%.2f%% characters correct", 100 * wpm_logger.accuracy()),
+                        TextFormat("%.2f wpm", wpm_logger.raw_wpm()),
+                        TextFormat("%.2f%% variance", 100 * (1 - test_info.variation())),
+                        "correct/incorrect/missing/extra",
+                        text_gen.list_name()
                     });
 }
 

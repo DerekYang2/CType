@@ -1,6 +1,6 @@
 #include "Textbox.h"
 
-Textbox::Textbox(float x, float y, float width, float height, string text_str, float fontSize, Color col, bool wrapping) : text(text_str), font_size(fontSize), color(col), wrapping(wrapping)
+Textbox::Textbox(float x, float y, float width, float height, string text_str, float fontSize, Color col, bool wrapping, string hintStr) : text(text_str), font_size(fontSize), color(col), wrapping(wrapping), hint(hintStr)
 {
     og_text = text;
     rect.x = x;
@@ -21,7 +21,7 @@ Textbox::Textbox(float x, float y, float width, float height, string text_str, f
     }
 }
 
-Textbox::Textbox(float x, float y, float width, float height, string text_str, float fontSize, string themeColor, bool wrapping) : text(text_str), font_size(fontSize), theme_color(themeColor), wrapping(wrapping)
+Textbox::Textbox(float x, float y, float width, float height, string text_str, float fontSize, string themeColor, bool wrapping, string hintStr) : text(text_str), font_size(fontSize), theme_color(themeColor), wrapping(wrapping), hint(hintStr)
 {
     og_text = text;
     rect.x = x;
@@ -53,6 +53,18 @@ Textbox::Textbox(float x, float y, float width, string text, Color col) : text(t
     rect.height = MeasureTextEx(text, font_size).y;
 }
 
+void Textbox::update()
+{
+    const bool hover = CheckCollisionPointRec(mouse, rect);
+    if (hover)
+    {
+        hint_alpha = clamp(hint_alpha + 0.1f, 0.f, HINT_ALPHA);
+    } else
+    {
+        hint_alpha = clamp(hint_alpha - 0.1f, 0.f, HINT_ALPHA);
+    }
+}
+
 void Textbox::draw()
 {
     if (theme_color == "background") color = theme.background;
@@ -63,6 +75,18 @@ void Textbox::draw()
     else if (theme_color == "error") color = theme.error;
     else if (theme_color == "error_extra") color = theme.error_extra;
     DrawTextAlign(text, rect.x, rect.y, font_size, color);
+}
+
+void Textbox::draw_hint()
+{
+    if (hint.empty()) return;
+    const float hint_font_size = font_measure.small();
+    const float padding = MeasureTextEx("o", hint_font_size).x;
+    const Vector2 text_dim = MeasureTextEx(hint, hint_font_size);
+    const Vector2 hint_dim { text_dim.x + 2 * padding, text_dim.y + padding };
+    DrawRectangleRoundedAlign({ rect.x + 0.5f * rect.width, rect.y, hint_dim.x, hint_dim.y}, 0.4f, 5, rgba(15, 15, 15, hint_alpha), CENTER, BOTTOM);
+    if (hint_alpha * 2 >= HINT_ALPHA)  // if alpha is half of max, draw text 
+        DrawTextAlign(hint, rect.x + 0.5f * rect.width, rect.y - hint_dim.y * 0.5f, hint_font_size, WHITE, CENTER, CENTER);
 }
 
 void Textbox::set_pos(float x, float y)
