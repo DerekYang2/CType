@@ -10,7 +10,7 @@ Textbox::Textbox(float x, float y, float width, float height, string text_str, f
     {
         text = fold(text, width);
         Vector2 dimension = MeasureTextEx(text, font_size);
-        rect.width = width;
+        rect.width = dimension.x;
         rect.height = dimension.y;
     } else
     {
@@ -31,7 +31,7 @@ Textbox::Textbox(float x, float y, float width, float height, string text_str, f
     {
         text = fold(text, width);
         Vector2 dimension = MeasureTextEx(text, font_size);
-        rect.width = width;
+        rect.width = dimension.x;
         rect.height = dimension.y;
     } else
     {

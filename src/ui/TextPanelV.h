@@ -1,8 +1,9 @@
 #pragma once
 #include "Utils.h"
 #include "UIObject.h"
-
+#include "Textbox.h"
 class TextPanelV : public UIObject {
+    vector<Textbox*> label_text, value_text;
     vector<pair<string, int>> labels, values;
     vector<int> label_h, value_h;
     float x, y, w, h;
