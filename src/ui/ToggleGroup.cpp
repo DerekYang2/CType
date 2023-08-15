@@ -248,9 +248,9 @@ void ToggleGroup::draw_hint()
     {
         const Vector2 text_dim = MeasureTextEx(text[i], hint_font_size);
         const Vector2 hint_dim { text_dim.x + 2 * padding, text_dim.y + padding };
-        DrawRectangleRoundedAlign({ corner.x + (i + 0.5f) * img_w, corner.y, hint_dim.x, hint_dim.y }, 0.4f, 5, rgba(15, 15, 15, hint_alpha[i]), CENTER, BOTTOM);
+        DrawRectangleRoundedAlign({ corner.x + (i + 0.5f) * img_w, corner.y - padding * 0.5f, hint_dim.x, hint_dim.y }, 0.4f, 5, rgba(15, 15, 15, hint_alpha[i]), CENTER, BOTTOM);
         if (hint_alpha[i] * 2 >= HINT_ALPHA)  // if alpha is half of max, draw text
-            DrawTextAlign(text[i], corner.x + (i + 0.5f) * img_w, corner.y - hint_dim.y * 0.5f, hint_font_size, WHITE, CENTER, CENTER);
+            DrawTextAlign(text[i], corner.x + (i + 0.5f) * img_w, corner.y - padding * 0.5f - hint_dim.y * 0.5f, hint_font_size, WHITE, CENTER, CENTER);
     }
 }
 

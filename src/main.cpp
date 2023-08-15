@@ -25,7 +25,6 @@
 
 /**
  * TODO:
- * - Fix ending page text stats
  * - Move includes from h to cpp files
  * - User data page
  * - Words mode

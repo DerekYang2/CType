@@ -133,9 +133,9 @@ void Button::draw_hint()
     const float padding = MeasureTextEx("o", hint_font_size).x;
     const Vector2 text_dim = MeasureTextEx(hint, hint_font_size);
     const Vector2 hint_dim { text_dim.x + 2 * padding, text_dim.y + padding };
-    DrawRectangleRoundedAlign({ hitbox.x + 0.5f * hitbox.width, hitbox.y, hint_dim.x, hint_dim.y}, 0.4f, 5, rgba(15, 15, 15, hint_alpha), CENTER, BOTTOM);
+    DrawRectangleRoundedAlign({ hitbox.x + 0.5f * hitbox.width, hitbox.y - padding*0.5f, hint_dim.x, hint_dim.y}, 0.4f, 5, rgba(15, 15, 15, hint_alpha), CENTER, BOTTOM);
     if (hint_alpha * 2 >= HINT_ALPHA)  // if alpha is half of max, draw text 
-        DrawTextAlign(hint, hitbox.x + 0.5f * hitbox.width, hitbox.y - hint_dim.y * 0.5f, hint_font_size, WHITE, CENTER, CENTER);
+        DrawTextAlign(hint, hitbox.x + 0.5f * hitbox.width, hitbox.y - padding*0.5f - hint_dim.y * 0.5f, hint_font_size, WHITE, CENTER, CENTER);
 }
 
 float Button::get_width()

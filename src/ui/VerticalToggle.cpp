@@ -55,7 +55,7 @@ void VerticalToggle::update()
 void VerticalToggle::draw()
 {
     //DrawRectangleRoundedLinesAlign(total_hitbox, 0.3f, roundedSegments(total_hitbox.height), 2.f, theme.text);
-    DrawRectangleRoundedAlign(total_hitbox, 0.3f, roundedSegments(total_hitbox.height), theme.background);
+    DrawRectangleRec(total_hitbox, theme.background);
     DrawRectangleRec(bounds, theme.sub_alt);
     for (int i = 0; i < hitbox.size(); i++)
     {
