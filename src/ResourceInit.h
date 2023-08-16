@@ -4,6 +4,8 @@
 #include "fullscreen.h"
 #include "globe.h"
 #include "hashtag_icon.h"
+#include "image.h"
+#include "info.h"
 #include "keyboard.h"
 #include "logo.h"
 #include "logo_icon.h"
@@ -12,6 +14,7 @@
 #include "reload.h"
 #include "settings_icon.h"
 #include "unfullscreen.h"
+#include "user.h"
 
 #define init_raw_data \
 Image _img = {0}; \
@@ -50,6 +53,20 @@ _img.height = HASHTAG_ICON_HEIGHT; \
 _img.data = HASHTAG_ICON_DATA; \
 _img.mipmaps = 1; \
 textureOf["hashtag_icon"] = LoadTextureFromImage(_img); \
+_img = { 0 }; \
+_img.format = IMAGE_FORMAT; \
+_img.width = IMAGE_WIDTH; \
+_img.height = IMAGE_HEIGHT; \
+_img.data = IMAGE_DATA; \
+_img.mipmaps = 1; \
+textureOf["image"] = LoadTextureFromImage(_img); \
+_img = { 0 }; \
+_img.format = INFO_FORMAT; \
+_img.width = INFO_WIDTH; \
+_img.height = INFO_HEIGHT; \
+_img.data = INFO_DATA; \
+_img.mipmaps = 1; \
+textureOf["info"] = LoadTextureFromImage(_img); \
 _img = { 0 }; \
 _img.format = KEYBOARD_FORMAT; \
 _img.width = KEYBOARD_WIDTH; \
@@ -106,5 +123,12 @@ _img.height = UNFULLSCREEN_HEIGHT; \
 _img.data = UNFULLSCREEN_DATA; \
 _img.mipmaps = 1; \
 textureOf["unfullscreen"] = LoadTextureFromImage(_img); \
+_img = { 0 }; \
+_img.format = USER_FORMAT; \
+_img.width = USER_WIDTH; \
+_img.height = USER_HEIGHT; \
+_img.data = USER_DATA; \
+_img.mipmaps = 1; \
+textureOf["user"] = LoadTextureFromImage(_img); \
 ;
 

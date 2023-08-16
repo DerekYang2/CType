@@ -186,6 +186,7 @@ void update_settings()
 {
     if (IsKeyPressed(KEY_ESCAPE))
     {
+        repeat_test = true;
         switch_start();
     }
     scrollbar->update();

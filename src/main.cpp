@@ -136,7 +136,7 @@ StatusCount status_count;
 string default_settings;
 
 // END init extern variables ----------------------------------------------------------------
-const string start_label = "default test", settings_label = "settings";
+const string start_label = "default test", settings_label = "settings", about_label = "about", user_label = "user";
 string cursor_path = "arrow_cursor";  // For custom cursor
 float cursor_height = 22.f;
 int cursor_id = MOUSE_CURSOR_DEFAULT;
@@ -223,12 +223,23 @@ void switch_settings()
     taskbar->set_selected(settings_label);
 }
 
+void switch_about()
+{
+    pending_scene = ABOUT;
+    taskbar->set_selected(about_label);
+}
+
+void switch_user()
+{
+    pending_scene = USER;
+    taskbar->set_selected(user_label);
+}
+
 void switch_popup()
 {
     pending_scene = POPUP;
     pending_popup_draw = true;
 }
-
 
 void start_test()
 {
@@ -399,6 +410,14 @@ void update_test()
     }
 }
 
+void update_about() {
+
+}
+
+void update_user() {
+    
+}
+
 void update_taskbar()
 {
 
@@ -412,15 +431,20 @@ void update_taskbar()
         } else if (taskbar->get_selected() == settings_label)  // settings
         {
             taskbar_scene = SETTINGS;
+        } else if (taskbar->get_selected() == about_label)  // about
+        {
+            taskbar_scene = ABOUT;
+        } else if (taskbar->get_selected() == user_label)  // user
+        {
+            taskbar_scene = USER;
         }
+
         if (taskbar_scene != scene)  // taskbar scene changed
         {
-            if (taskbar_scene == START)
-            {
-                switch_start();
-            }
-            else if (taskbar_scene == SETTINGS)
-                switch_settings();
+            pending_scene = taskbar_scene;
+            // Do not regenerate test if switched by taskbar
+            if (pending_scene == START)
+                repeat_test = true;
         }
     }
 }
@@ -529,6 +553,20 @@ void draw_end()
     //DrawTextAlign(TextFormat("%d wpm", final_wpm), corner.x, corner.y, 75, rgb(32, 32, 32));
     
     //EndShaderMode();
+}
+
+void draw_about()
+{
+    ClearBackground(theme.background);
+    DrawTextAlign("About", gameScreenWidth / 2, gameScreenHeight / 2, font_measure.large(), theme.main, CENTER, CENTER);
+    draw_taskbar();
+}
+
+void draw_user()
+{
+    ClearBackground(theme.background);
+    DrawTextAlign("User", gameScreenWidth / 2, gameScreenHeight / 2, font_measure.large(), theme.main, CENTER, CENTER);
+    draw_taskbar();
 }
 
 void draw_popup()
@@ -730,8 +768,8 @@ void init()
     ui_objects.alloc(dictionary_spawn, {START, POPUP});
 
     const float taskbar_height = 75;
-    taskbar = new ToggleGroup(gameScreenWidth / 2, gameScreenHeight - taskbar_height, taskbar_height, 0, { "keyboard", "settings_icon" }, { start_label, settings_label }, true);
-    ui_objects.alloc(taskbar, {START, SETTINGS});
+    taskbar = new ToggleGroup(gameScreenWidth / 2, gameScreenHeight - taskbar_height, taskbar_height, 0, { "keyboard", "settings_icon", "user", "info"}, { start_label, settings_label, user_label, about_label}, true);
+    ui_objects.alloc(taskbar, {START, SETTINGS, USER, ABOUT});
 
     // TEST UI ---------------------------------------------------------------
     restart_button = new Button(0.5f * (gameScreenWidth - font_measure.large_height), drawer.get_bottom_y() + font_measure.large_height, font_measure.large_height, &textureOf["reload"], [] { switch_start(); restart_alpha = 1; }, "restart test");    
@@ -844,6 +882,14 @@ int main(void)
         {
             update_end();
         }
+        if (scene == ABOUT) 
+        {
+            update_about();
+        }
+        if (scene == USER)
+        {
+            update_user();
+        }
         if (scene == POPUP)
         {
             
@@ -871,6 +917,12 @@ int main(void)
         } else if (scene == POPUP)
         {
             draw_popup();
+        } else if (scene == ABOUT)
+        {
+            draw_about();
+        } else if (scene == USER)
+        {
+            draw_user();
         }
         
         if (setting_toggle["debug mode"]->get_selected() == "on")
