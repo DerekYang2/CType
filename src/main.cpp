@@ -136,10 +136,12 @@ StatusCount status_count;
 string default_settings;
 
 // END init extern variables ----------------------------------------------------------------
+const string SCREENSHOT_PATH = "screenshots";
 const string start_label = "default test", settings_label = "settings", about_label = "about", user_label = "user";
 string cursor_path = "arrow_cursor";  // For custom cursor
 float cursor_height = 22.f;
 int cursor_id = MOUSE_CURSOR_DEFAULT;
+Stopwatch screenshot_timer;
 
 // render textures
 RenderTexture2D target;
@@ -783,8 +785,19 @@ void init()
         repeat_test = true;
         switch_start();
     }, "repeat test");
-
-    vector<UIObject*> end_buttons = { new_button, repeat_button };
+    
+    Button* screenshot_button = new Button(0, 0, font_measure.large_height, &textureOf["image"], [&] {
+        if (screenshot_timer.s() > 1)
+        {
+            screenshot_timer.start();
+            string file_name = SCREENSHOT_PATH + "/Screenshot_" + UnixTimeToDateString(unix_time) + ".png";
+            replace(file_name.begin(), file_name.end(), ' ', '_');
+            replace(file_name.begin(), file_name.end(), ':', '-');
+            TakeScreenshot(file_name.c_str());
+        }
+    }, "save screenshot");
+    
+    vector<UIObject*> end_buttons = { new_button, repeat_button, screenshot_button };
     center_objects(gameScreenWidth * 0.5f, 900, font_measure.large_height, end_buttons);
     for (auto& object : end_buttons)
         ui_objects.alloc(object, END);
@@ -794,7 +807,6 @@ void init()
 
     reset_IOHandler(POPUP);
 }
-
 
 //------------------------------------------------------------------------------------
 // Program main entry point
@@ -821,7 +833,6 @@ int main(void)
     init();
     init_test();
     //open_path(absolute_path("fonts"));
-    
 
     // HideCursor();  // only hide for custom cursor
     // example shader init

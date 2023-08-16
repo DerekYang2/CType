@@ -68,6 +68,8 @@ extern string remove_prefix(string name, string prefix);
 extern Font load_font(string path);
 extern vector<string> directory_files(string directory_path, string extension);
 
+extern std::string UnixTimeToDateString(std::time_t timestamp);
+
 #define rand_int(min, max) (uniform_int_distribution<>(min, max)(rng))
 #define randf(min, max) (uniform_real_distribution<>(min, max)(rng))
 #define rand() (uniform_real_distribution<double>(0.0, 1.0)(rng))

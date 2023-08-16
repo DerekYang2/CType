@@ -1,4 +1,5 @@
 #include "Utils.h"
+#include <iomanip>
 
 // Draw text using Font
 // NOTE: chars spacing is NOT proportional to fontSize
@@ -673,6 +674,17 @@ string remove_prefix(string name, string prefix) {
         return name.substr(prefix.size());
     return name;
 }
+
+std::string UnixTimeToDateString(std::time_t timestamp)
+{
+    std::tm* tm_info;
+    tm_info = std::localtime(&timestamp); // or use std::gmtime for UTC time
+
+    std::stringstream ss;
+    ss << std::put_time(tm_info, "%Y-%m-%d %H:%M:%S");
+    return ss.str();
+}
+
 
 Font load_font(string path)
 {
