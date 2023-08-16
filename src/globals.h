@@ -23,6 +23,7 @@ typedef enum {
 extern unordered_set<int> scene_ids[SCENE_COUNT];
 extern int scene, pending_scene;
 extern bool pending_popup_draw;
+extern void switch_start();
 extern void switch_settings();
 extern void switch_popup();
 // SCENE LITERALS 

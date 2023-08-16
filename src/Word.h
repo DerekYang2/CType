@@ -8,6 +8,7 @@ public:
     std::string word, typed; // word, user typed
     Word();
     Word(std::string w);
+    void reset();
     int length();
     bool correct();
     void add(char c);

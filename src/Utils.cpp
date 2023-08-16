@@ -1,4 +1,5 @@
 #include "Utils.h"
+
 // Draw text using Font
 // NOTE: chars spacing is NOT proportional to fontSize
 void DrawTextEx(Font font, string text, Vector2 position, float fontSize, float spacing, Color tint, float line_spacing)
@@ -114,6 +115,24 @@ float screen_height()
 {
     return IsWindowFullscreen() ? GetMonitorHeight(GetCurrentMonitor()) : GetScreenHeight();
 }
+
+void center_objects(float cx, float cy, float padding, vector<UIObject*> objects)
+{
+    float tot_width = 0;
+    for (int i = 0; i < objects.size(); i++)
+    {
+        tot_width += objects[i]->get_width();
+    }
+    tot_width += (objects.size() - 1) * padding;
+
+    float x_pos = cx - tot_width * 0.5f;
+    for (UIObject* obj : objects)
+    {
+        obj->set_pos(x_pos, cy - obj->get_height() * 0.5f);
+        x_pos += obj->get_width() + padding;
+    }
+}
+
 void DrawTextAlign(char c, float x, float y, float font_size, Color col, int x_align, int y_align)
 {
     return DrawTextAlign(string(1, c), x, y, font_size, col, x_align, y_align);

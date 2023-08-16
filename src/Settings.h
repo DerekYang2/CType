@@ -11,7 +11,6 @@
 
 // EXTERNALS USED
 extern UIAlloc ui_objects;
-extern void switch_start();
 extern void draw_taskbar();
 
 // settings.json object

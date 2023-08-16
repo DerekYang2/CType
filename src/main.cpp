@@ -175,35 +175,46 @@ float graph_top = 200;
 float graph_height = 600 ;
 int mouse_frames;
 float scale;
+// main local flags 
 bool pending_popup_draw = false;
+bool repeat_test = false;
 
 void init_test()
 {
     drawer = TextDrawer(font, font_measure.large());
     reset_IOHandler(TEST);
-    char_status.clear();
-    words.clear();
     // reset variables
     status_count = StatusCount(0, 0, 0, 0);
     elapsed = 0;
     word_i = 0;
     empty_i = 0;
     wpm_logger.reset();
-    // generate first chars
-    generated_chars = "";
-    text_gen.set_punctuation(setting_bar->is_toggled("punctuation"));
-    text_gen.set_numbers(setting_bar->is_toggled("numbers"));
-    text_gen.set_list(dictionary_spawn->get_selected());
-    text_gen.generate_text((is_tape_mode ? 1 : 3) * ceil(gameScreenWidth / char_dimension['i'].x));
+    char_status.clear();
+    
+    if (repeat_test)  // Only repeat once when flag is set
+    {
+        repeat_test = false;
+        // Reset word variables
+        for (auto& word : words)
+        {
+            word.reset();
+        }
+    } else  // Regenerate text
+    {
+        words.clear();
+        generated_chars = "";
+        text_gen.set_punctuation(setting_bar->is_toggled("punctuation"));
+        text_gen.set_numbers(setting_bar->is_toggled("numbers"));
+        text_gen.set_list(dictionary_spawn->get_selected());
+        text_gen.generate_text((is_tape_mode ? 1 : 3) * ceil(gameScreenWidth / char_dimension['i'].x));
+    } 
 }
 
 // scene switch functions
-
 void switch_start()
 {
-    taskbar->set_selected(start_label);
     pending_scene = START;
-    init_test();
+    taskbar->set_selected(start_label);
 }
 
 void switch_settings()
@@ -725,8 +736,21 @@ void init()
     // TEST UI ---------------------------------------------------------------
     restart_button = new Button(0.5f * (gameScreenWidth - font_measure.large_height), drawer.get_bottom_y() + font_measure.large_height, font_measure.large_height, &textureOf["reload"], [] { switch_start(); restart_alpha = 1; }, "restart test");    
     ui_objects.alloc(restart_button, START);  // Auto handled in start scene, manually handled in test scene
+
     // ENDING UI ---------------------------------------------------------------
-    new_Button(END, 100, 900, 300, 100, "restart", [] { switch_start(); });
+    Button* new_button = new Button(0, 0, font_measure.large_height, &textureOf["next"], [&] {
+        switch_start();
+    }, "new test");
+    Button* repeat_button = new Button(0, 0, font_measure.large_height, &textureOf["reload"], [&] {
+        repeat_test = true;
+        switch_start();
+    }, "repeat test");
+
+    vector<UIObject*> end_buttons = { new_button, repeat_button };
+    center_objects(gameScreenWidth * 0.5f, 900, font_measure.large_height, end_buttons);
+    for (auto& object : end_buttons)
+        ui_objects.alloc(object, END);
+    
     graph = new Graph(wpm_width + (gameScreenWidth - (graph_width + wpm_width)) * 0.5f, graph_top, graph_width, graph_height, 4), ui_objects.alloc(graph, END);
     end_stats = new TextPanelV(0.5f * (gameScreenWidth - (wpm_width + graph_width)), graph_top, wpm_width, graph_height + 20), ui_objects.alloc(end_stats, END);
 
@@ -784,7 +808,11 @@ int main(void)
         set_cursor(MOUSE_CURSOR_DEFAULT);
         // Update pending scene
         if (pending_scene != -1)
+        {
             scene = pending_scene;
+            if (scene == START)
+                init_test();
+        }
         pending_scene = -1;
         // Update alloc 
         ui_objects.update();

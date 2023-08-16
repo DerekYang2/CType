@@ -420,14 +420,14 @@ void Graph::draw()
         DrawRectanglePro({ errors[i].x, errors[i].y, stroke, 3 * stroke }, { stroke * 0.5f, 3 * stroke * 0.5f }, 45 + 90, col);
     }
 
-    if (IsKeyDown(KEY_SPACE))
+/*     if (IsKeyDown(KEY_SPACE))
     {
         for (int i = 0; i <= 1; i++)
         for (Vector2& p : points[i])
         {
             DrawCircleV(p, 3, GREEN);
         }
-    }
+    } */
 
 }
 

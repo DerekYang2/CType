@@ -123,7 +123,6 @@ void init_settings()
     
     // Set all UIObject positions
     float y_pos = boundary.y;
-
     for (string heading : headings_list)
     {
         // Heading title
@@ -170,14 +169,14 @@ void init_settings()
 
 void write_settings()
 {
-    // update settings json behavior toggles
+    // Update settings json behavior toggles
     for (auto &[label, toggle] : setting_toggle)
     {
         setting_json["behavior"][label]["default"] = toggle->selected_index();
     }
     setting_json["appearance"]["theme"] = RSJresource("'" + theme_toggle->get_selected() + "'");
-    // update settings file
-    // replace single quote with double quote 
+    // Update settings file
+    // Replace single quote with double quote 
     string setting_str = setting_json.as_str();
     replace(setting_str.begin(), setting_str.end(), '\'', '"');
     writeText(setting_path, setting_str);

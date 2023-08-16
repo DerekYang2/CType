@@ -17,6 +17,14 @@ Word::Word(std::string w)
     skipped = false;
 }
 
+void Word::reset()
+{
+    typed = "";
+    idx = 0;
+    space_status = false;
+    skipped = false;
+}
+
 int Word::length()
 {
     return word.size();
