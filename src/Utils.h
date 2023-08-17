@@ -4,6 +4,7 @@
 #include "Theme.h"
 #include "UIObject.h"
 
+extern Image TextureToImage(Texture texture, Rectangle src);
 extern int GetCodepointNext(const char* text, int* codepointSize);
 extern string current_dir();
 extern string absolute_path(string relative_path);
@@ -24,7 +25,7 @@ typedef enum {
 extern float screen_width();
 extern float screen_height();
 
-extern void center_objects(float cx, float cy, float padding, vector<UIObject*> objects);
+extern Vector2 center_objects(float cx, float cy, float padding, vector<UIObject*> objects);
 
 // override draw text ex with custom spacing
 extern void DrawTextEx(Font font, string text, Vector2 position, float fontSize, float spacing, Color tint, float line_spacing = 1.f);

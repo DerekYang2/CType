@@ -97,6 +97,14 @@ Vector2 MeasureTextEx(Font font, string text, float fontSize, float spacing, flo
     return textSize;
 }
 
+Image TextureToImage(Texture texture, Rectangle src)
+{
+    Image img = LoadImageFromTexture(texture);
+    ImageCrop(&img, src);
+    ImageFlipVertical(&img);
+    return img;
+}
+
 string current_dir()
 {
     return GetApplicationDirectory();
@@ -117,12 +125,13 @@ float screen_height()
     return IsWindowFullscreen() ? GetMonitorHeight(GetCurrentMonitor()) : GetScreenHeight();
 }
 
-void center_objects(float cx, float cy, float padding, vector<UIObject*> objects)
+Vector2 center_objects(float cx, float cy, float padding, vector<UIObject*> objects)
 {
-    float tot_width = 0;
+    float tot_width = 0, max_height = 0;
     for (int i = 0; i < objects.size(); i++)
     {
         tot_width += objects[i]->get_width();
+        max_height = max(max_height, objects[i]->get_height());
     }
     tot_width += (objects.size() - 1) * padding;
 
@@ -132,6 +141,7 @@ void center_objects(float cx, float cy, float padding, vector<UIObject*> objects
         obj->set_pos(x_pos, cy - obj->get_height() * 0.5f);
         x_pos += obj->get_width() + padding;
     }
+    return {tot_width, max_height};
 }
 
 void DrawTextAlign(char c, float x, float y, float font_size, Color col, int x_align, int y_align)

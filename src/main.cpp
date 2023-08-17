@@ -65,6 +65,7 @@
 #include "UserData.h"
 #include "ToggleSpawn.h"
 #include "FileExplorer.h"
+#include "HorizontalGroup.h"
 // Init extern variables ------------------------------------------------------------------
 /* Theme theme(
     rgb(232, 233, 236), // background
@@ -444,9 +445,6 @@ void update_taskbar()
         if (taskbar_scene != scene)  // taskbar scene changed
         {
             pending_scene = taskbar_scene;
-            // Do not regenerate test if switched by taskbar
-            if (pending_scene == START)
-                repeat_test = true;
         }
     }
 }
@@ -786,6 +784,9 @@ void init()
         switch_start();
     }, "repeat test");
     
+    graph = new Graph(wpm_width + (gameScreenWidth - (graph_width + wpm_width)) * 0.5f, graph_top, graph_width, graph_height, 4), ui_objects.alloc(graph, END);
+    end_stats = new TextPanelV(0.5f * (gameScreenWidth - (wpm_width + graph_width)), graph_top, wpm_width, graph_height + 20), ui_objects.alloc(end_stats, END);
+
     Button* screenshot_button = new Button(0, 0, font_measure.large_height, &textureOf["image"], [&] {
         if (screenshot_timer.s() > 1)
         {
@@ -793,17 +794,15 @@ void init()
             string file_name = SCREENSHOT_PATH + "/Screenshot_" + UnixTimeToDateString(unix_time) + ".png";
             replace(file_name.begin(), file_name.end(), ' ', '_');
             replace(file_name.begin(), file_name.end(), ':', '-');
-            TakeScreenshot(file_name.c_str());
+            //TakeScreenshot(file_name.c_str());
+            Image img = TextureToImage(target.texture, { 75, graph_top + 25, gameScreenWidth - 2*75, graph_height + 90 });
+            ExportImage(img, file_name.c_str());
         }
     }, "save screenshot");
+
+    HorizontalGroup * end_buttons = new HorizontalGroup(gameScreenWidth * 0.5f, 0.5f * (gameScreenHeight + (graph_top + graph_height)), font_measure.large_height, { new_button, repeat_button, screenshot_button}, true);
+    ui_objects.alloc(end_buttons, END);
     
-    vector<UIObject*> end_buttons = { new_button, repeat_button, screenshot_button };
-    center_objects(gameScreenWidth * 0.5f, 900, font_measure.large_height, end_buttons);
-    for (auto& object : end_buttons)
-        ui_objects.alloc(object, END);
-    
-    graph = new Graph(wpm_width + (gameScreenWidth - (graph_width + wpm_width)) * 0.5f, graph_top, graph_width, graph_height, 4), ui_objects.alloc(graph, END);
-    end_stats = new TextPanelV(0.5f * (gameScreenWidth - (wpm_width + graph_width)), graph_top, wpm_width, graph_height + 20), ui_objects.alloc(end_stats, END);
 
     reset_IOHandler(POPUP);
 }

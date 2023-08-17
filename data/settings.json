@@ -30,6 +30,6 @@
         }
     },
     "appearance": {
-        "theme": "dots"
+        "theme": "material"
     }
 }
