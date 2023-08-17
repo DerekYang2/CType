@@ -30,7 +30,8 @@ void HorizontalGroup::update()
 
 void HorizontalGroup::draw()
 {
-    DrawRectangleRoundedAlign(cx, cy, tot_width, max_height + padding, 0.3f, roundedSegments(max_height + padding), theme.sub_alt, CENTER, CENTER);
+    if (show_rect)
+        DrawRectangleRoundedAlign(cx, cy, tot_width, max_height + padding, 0.3f, roundedSegments(max_height + padding), theme.sub_alt, CENTER, CENTER);
     for (UIObject* obj : objects)
     {
         obj->draw();
@@ -47,7 +48,7 @@ void HorizontalGroup::draw_hint()
 
 void HorizontalGroup::set_pos(float x, float y)
 {
-    cx = x, cy = y;
+    cx = x + 0.5f * get_width(), cy = y + padding + 0.5f * get_height();
     float x_pos = cx - tot_width * 0.5f + padding;
     for (UIObject* obj : objects)
     {

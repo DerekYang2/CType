@@ -12,7 +12,7 @@ class HorizontalGroup : public UIObject {
     void update() override;
     void draw() override;
     void draw_hint() override;
-    void set_pos(float x, float y) override;
+    void set_pos(float x, float y) override;  // x,y are corners, not center
     float get_width() override;
     float get_height() override;
 };

@@ -26,9 +26,7 @@
 /**
  * TODO:
  * - Move includes from h to cpp files
- * - User data page
  * - Words mode
- * - Test results buttons
  * - Change font settings
  * - Typing sound effects
 */
@@ -66,6 +64,7 @@
 #include "ToggleSpawn.h"
 #include "FileExplorer.h"
 #include "HorizontalGroup.h"
+#include "VerticalGroup.h"
 // Init extern variables ------------------------------------------------------------------
 /* Theme theme(
     rgb(232, 233, 236), // background
@@ -558,7 +557,7 @@ void draw_end()
 void draw_about()
 {
     ClearBackground(theme.background);
-    DrawTextAlign("About", gameScreenWidth / 2, gameScreenHeight / 2, font_measure.large(), theme.main, CENTER, CENTER);
+    //DrawTextAlign("About", gameScreenWidth / 2, gameScreenHeight / 2, font_measure.large(), theme.main, CENTER, CENTER);
     draw_taskbar();
 }
 
@@ -795,14 +794,34 @@ void init()
             replace(file_name.begin(), file_name.end(), ' ', '_');
             replace(file_name.begin(), file_name.end(), ':', '-');
             //TakeScreenshot(file_name.c_str());
-            Image img = TextureToImage(target.texture, { 75, graph_top + 25, gameScreenWidth - 2*75, graph_height + 90 });
-            ExportImage(img, file_name.c_str());
+            ExportImage(TextureToImage(target.texture, Rectangle(75, graph_top + 25, gameScreenWidth - 2*75, graph_height + 90)), file_name.c_str());
         }
     }, "save screenshot");
 
     HorizontalGroup * end_buttons = new HorizontalGroup(gameScreenWidth * 0.5f, 0.5f * (gameScreenHeight + (graph_top + graph_height)), font_measure.large_height, { new_button, repeat_button, screenshot_button}, true);
     ui_objects.alloc(end_buttons, END);
     
+    // ABOUT UI ---------------------------------------------------------------
+    const float ABOUT_PADDING = 200;
+    TextPanelV* about_panel = new TextPanelV(ABOUT_PADDING, ABOUT_PADDING, gameScreenWidth - 2 * ABOUT_PADDING,
+    {
+        {"About", font_measure.title()}, {"Word Set", font_measure.medium()}, {"Keybinds", font_measure.medium()}
+    },
+    {
+        {"CType: Minimalistic Typing Test in C/C++", font_measure.medium()},
+        {"By default, 'english' dictionary contains the 200 most common words in the English language. Dictionary files are located in: " + absolute_path(DICTIONARY_FOLDER) + ". These dictionaries are the same as those in Monkeytype.", font_measure.medium()},
+        {"tab - restart test\nescape - toggle between test and settings", font_measure.medium()}
+    });
+    Button* github_button = new Button(0, 0, font_measure.title_height, "View on Github", [] {
+        OpenURL("https://github.com/DerekYang2/CType");
+    });
+    Button * reveal_explorer = new Button(0, 0, font_measure.title_height, "Reveal in Explorer", [] {
+        open_path(current_dir()); 
+    });
+    HorizontalGroup * link_buttons = new HorizontalGroup(0, 0, font_measure.title_height, { github_button, reveal_explorer }, true);
+    
+    VerticalGroup* about_group = new VerticalGroup(gameScreenWidth * 0.5f, ABOUT_PADDING, font_measure.large_height, { about_panel, link_buttons }, false);
+    ui_objects.alloc(about_group, ABOUT);
 
     reset_IOHandler(POPUP);
 }
