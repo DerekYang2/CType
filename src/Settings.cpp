@@ -1,4 +1,5 @@
 #include "Settings.h"
+#include "HorizontalGroup.h"
 
 const float MENU_HEIGHT = 50;
 const float SETTING_PADDING = 100;
@@ -6,6 +7,8 @@ string setting_path = "data/settings.json";
 RSJresource setting_json;
 Scrollbar* scrollbar;
 Rectangle boundary;
+HorizontalGroup* menu_group;
+
 unordered_map<string, Button*> menu_button;
 unordered_map<string, Textbox*> heading_text;
 unordered_map<string, vector<UIObject*>> heading_objects;
@@ -84,12 +87,15 @@ void init_settings()
     // Menu buttons
     list<string> headings_list{ "Behavior", "Appearance" };
     float x_pos = SETTING_PADDING;
+    vector<UIObject*> button_list;
     for (string heading : headings_list)
     {
-        menu_button[heading] = new Button(x_pos, SETTING_PADDING, MENU_HEIGHT - 6, heading);
+        menu_button[heading] = new Button(x_pos, SETTING_PADDING, MENU_HEIGHT - 6, heading, NULL, "jump to " + heading);
         x_pos += menu_button[heading]->get_width();
-        ui_objects.alloc(menu_button[heading], SETTINGS);
+        button_list.push_back(menu_button[heading]);
     }
+    menu_group = new HorizontalGroup(gameScreenWidth * 0.5f, SETTING_PADDING, MENU_HEIGHT/2, button_list, true);
+    ui_objects.alloc(menu_group, SETTINGS);
     
     // APPEARANCE OBJECTS: Initialize themes first
     fetch_themes();
@@ -207,10 +213,8 @@ void draw_borders()
     // Drawing left right padding blocks out buttons that expand a bit
     //DrawRectangle(0, 0, SETTING_PADDING, gameScreenHeight, theme.background);
     //DrawRectangleAlign(gameScreenWidth, 0, SETTING_PADDING, gameScreenHeight, theme.background, RIGHT, TOP);
-    for (auto& [heading, button] : menu_button)
-    {
-        button->draw();
-    }
+    menu_group->draw();
     draw_taskbar();
     scrollbar->draw();
+    menu_group->draw_hint();
 }
