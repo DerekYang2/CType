@@ -136,7 +136,7 @@ StatusCount status_count;
 string default_settings;
 
 // END init extern variables ----------------------------------------------------------------
-const string SCREENSHOT_PATH = "screenshots";
+const string SCREENSHOT_FOLDER = "screenshots", FONTS_FOLDER = "fonts";
 const string start_label = "default test", settings_label = "settings", about_label = "about", user_label = "user";
 string cursor_path = "arrow_cursor";  // For custom cursor
 float cursor_height = 22.f;
@@ -790,7 +790,7 @@ void init()
         if (screenshot_timer.s() > 1)
         {
             screenshot_timer.start();
-            string file_name = SCREENSHOT_PATH + "/Screenshot_" + UnixTimeToDateString(unix_time) + ".png";
+            string file_name = SCREENSHOT_FOLDER + "/Screenshot_" + UnixTimeToDateString(unix_time) + ".png";
             replace(file_name.begin(), file_name.end(), ' ', '_');
             replace(file_name.begin(), file_name.end(), ':', '-');
             //TakeScreenshot(file_name.c_str());
@@ -812,14 +812,25 @@ void init()
         {"By default, 'english' dictionary contains the 200 most common words in the English language. Dictionary files are located in: " + absolute_path(DICTIONARY_FOLDER) + ". These dictionaries are the same as those in Monkeytype.", font_measure.medium()},
         {"tab - restart test\nescape - toggle between test and settings", font_measure.medium()}
     });
-    Button* github_button = new Button(0, 0, font_measure.title_height, "View on Github", [] {
+    Button* github_button = new Button(0, 0, font_measure.large_height, "github", [] {
         OpenURL("https://github.com/DerekYang2/CType");
-    });
-    Button * reveal_explorer = new Button(0, 0, font_measure.title_height, "Reveal in Explorer", [] {
+    }, "https://github.com/DerekYang2/CType");
+    Button * reveal_explorer = new Button(0, 0, font_measure.large_height, "file explorer", [] {
         open_path(current_dir()); 
-    });
-    HorizontalGroup * link_buttons = new HorizontalGroup(0, 0, font_measure.title_height, { github_button, reveal_explorer }, true);
-    
+    }, "application location");
+    Button * fonts_reveal = new Button(0, 0, font_measure.large_height, "fonts", [] {
+        open_path(absolute_path(FONTS_FOLDER));
+    }, "fonts location (.ttf)");
+    Button* languages_reveal = new Button(0, 0, font_measure.large_height, "languages", [] {
+        open_path(absolute_path(DICTIONARY_FOLDER));
+    }, "languages location (.json)");
+    Button* themes_reveal = new Button(0, 0, font_measure.large_height, "themes", [] {
+        open_path(absolute_path(THEMES_FOLDER));
+    }, "themes location (.css)");
+
+    HorizontalGroup* link_buttons = new HorizontalGroup(0, 0, font_measure.large_height, { github_button, reveal_explorer, fonts_reveal, languages_reveal, themes_reveal}, true);
+
+
     VerticalGroup* about_group = new VerticalGroup(gameScreenWidth * 0.5f, ABOUT_PADDING, font_measure.large_height, { about_panel, link_buttons }, false);
     ui_objects.alloc(about_group, ABOUT);
 

@@ -19,7 +19,7 @@ Button::Button(float x, float y, float w, float h, string text, std::function<vo
     fontSize = MeasureFontSize(text, hitbox.width * 0.8f, hitbox.height * 0.8f);
 }
 
-Button::Button(float x, float y, float h, string text, std::function<void()> f) : triggerFunc(f), height(h)
+Button::Button(float x, float y, float h, string text, std::function<void()> f, string hint) : triggerFunc(f), height(h), hint(hint)
 {
     reset();
     texture = nullptr;
