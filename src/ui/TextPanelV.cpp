@@ -4,7 +4,7 @@ TextPanelV::TextPanelV(float x, float y, float w, float h) : x(x), y(y), w(w), h
 {
 }
 
-TextPanelV::TextPanelV(float x, float y, float w, float h, vector<pair<string, int>> labels_list, vector<pair<string, int>> values_list) : x(x), y(y), w(w), h(h)
+TextPanelV::TextPanelV(float x, float y, float w, float h, vector<pair<string, int>> labels_list, vector<pair<string, int>> values_list, bool value_priority) : x(x), y(y), w(w), h(h)
 {
     labels = labels_list, values = values_list;
     assert(labels_list.size() == values_list.size());
@@ -17,7 +17,7 @@ TextPanelV::TextPanelV(float x, float y, float w, float h, vector<pair<string, i
     }
     for (int i = 0; i < values.size(); i++)
     {
-        value_text.push_back(Textbox(0, 0, w, INT_MAX, values_list[i].first, values_list[i].second, "main", true));
+        value_text.push_back(Textbox(0, 0, w, INT_MAX, values_list[i].first, values_list[i].second, value_priority ? "main" : "text", true));
         tot_height += value_text.back().get_height();
     }
     gap = (h - tot_height) / (labels.size() - 1);
@@ -31,7 +31,7 @@ TextPanelV::TextPanelV(float x, float y, float w, float h, vector<pair<string, i
     }
 }
 
-TextPanelV::TextPanelV(float x, float y, float w, vector<pair<string, int>> labels_list, vector<pair<string, int>> values_list) : x(x), y(y), w(w)
+TextPanelV::TextPanelV(float x, float y, float w, vector<pair<string, int>> labels_list, vector<pair<string, int>> values_list, bool value_priority) : x(x), y(y), w(w)
 {
     assert(labels_list.size() == values_list.size());
     labels = labels_list, values = values_list;
@@ -44,7 +44,7 @@ TextPanelV::TextPanelV(float x, float y, float w, vector<pair<string, int>> labe
     }
     for (int i = 0; i < values.size(); i++)
     {
-        value_text.push_back(Textbox(0, 0, w, INT_MAX, values_list[i].first, values_list[i].second, "main", true));
+        value_text.push_back(Textbox(0, 0, w, INT_MAX, values_list[i].first, values_list[i].second, value_priority ? "main" : "text", true));
         tot_height += value_text.back().get_height();
     }
     gap = font_measure.title_height;
@@ -61,7 +61,7 @@ TextPanelV::TextPanelV(float x, float y, float w, vector<pair<string, int>> labe
     }
 }
 
-void TextPanelV::init(vector<pair<string, int>> labels_list, vector<pair<string, int>> values_list, vector<string> hints)
+void TextPanelV::init(vector<pair<string, int>> labels_list, vector<pair<string, int>> values_list, vector<string> hints, bool value_priority)
 {
     labels = labels_list, values = values_list;
     assert(labels_list.size() == values_list.size());
@@ -74,7 +74,7 @@ void TextPanelV::init(vector<pair<string, int>> labels_list, vector<pair<string,
     }
     for (int i = 0; i < values.size(); i++)
     {
-        value_text.push_back(Textbox(0, 0, w, INT_MAX, values_list[i].first, values_list[i].second, "main", true, hints.empty()?"":hints[i]));
+        value_text.push_back(Textbox(0, 0, w, INT_MAX, values_list[i].first, values_list[i].second, value_priority ? "main" : "text", true, hints.empty()?"":hints[i]));
         tot_height += value_text.back().get_height();
     }
     gap = (h - tot_height) / (labels.size() - 1);

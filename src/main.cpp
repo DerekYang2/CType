@@ -806,13 +806,14 @@ void init()
     const float ABOUT_PADDING = 200;
     TextPanelV* about_panel = new TextPanelV(ABOUT_PADDING, ABOUT_PADDING, gameScreenWidth - 2 * ABOUT_PADDING,
     {
-        {"About", font_measure.title()}, {"Word Set", font_measure.medium()}, {"Keybinds", font_measure.medium()}
+        {"About", font_measure.title()}, {"Word Set", font_measure.large()}, {"Keybinds", font_measure.large()}, {"Customization", font_measure.large()},
     },
     {
-        {"CType: Minimalistic Typing Test in C/C++", font_measure.medium()},
+        {"CType: Minimalistic Typing Test in C/C++.", font_measure.medium()},
         {"By default, 'english' dictionary contains the 200 most common words in the English language. Dictionary files are located in: " + absolute_path(DICTIONARY_FOLDER) + ". These dictionaries are the same as those in Monkeytype.", font_measure.medium()},
-        {"tab - restart test\nescape - toggle between test and settings", font_measure.medium()}
-    });
+        {"tab - restart test\nescape - toggle between test and settings", font_measure.medium()},
+        {"Buttons above link to folders containing fonts, languages, themes, etc. Custom files may be directly added and loaded by application, as long as valid. You may look at already existing files to see what is valid. \nOnly .ttf and .otf fonts are support. \nNote that css themes files are not actually parsed, just read for certain tokens. \nDictionary files only support standard ASCII for now.", font_measure.medium()}
+    }, false);
     Button* github_button = new Button(0, 0, font_measure.large_height, "github", [] {
         OpenURL("https://github.com/DerekYang2/CType");
     }, "https://github.com/DerekYang2/CType");
@@ -820,19 +821,21 @@ void init()
         open_path(current_dir()); 
     }, "application location");
     Button * fonts_reveal = new Button(0, 0, font_measure.large_height, "fonts", [] {
-        open_path(absolute_path(FONTS_FOLDER));
-    }, "fonts location (.ttf)");
+        open_path(FONTS_FOLDER);
+    }, "fonts folder (.ttf)");
     Button* languages_reveal = new Button(0, 0, font_measure.large_height, "languages", [] {
-        open_path(absolute_path(DICTIONARY_FOLDER));
-    }, "languages location (.json)");
+        open_path(DICTIONARY_FOLDER);
+    }, "languages folder (.json)");
     Button* themes_reveal = new Button(0, 0, font_measure.large_height, "themes", [] {
-        open_path(absolute_path(THEMES_FOLDER));
-    }, "themes location (.css)");
+        open_path(THEMES_FOLDER);
+    }, "themes folder (.css)");
+    Button* screenshot_reveal = new Button(0, 0, font_measure.large_height, "screenshots", [] {
+        open_path(SCREENSHOT_FOLDER);
+    }, "saved screenshots folder");
+    
+    HorizontalGroup* link_buttons = new HorizontalGroup(0, 0, font_measure.large_height, { github_button, reveal_explorer, fonts_reveal, languages_reveal, themes_reveal, screenshot_reveal }, true);
 
-    HorizontalGroup* link_buttons = new HorizontalGroup(0, 0, font_measure.large_height, { github_button, reveal_explorer, fonts_reveal, languages_reveal, themes_reveal}, true);
-
-
-    VerticalGroup* about_group = new VerticalGroup(gameScreenWidth * 0.5f, ABOUT_PADDING, font_measure.large_height, { about_panel, link_buttons }, false);
+    VerticalGroup* about_group = new VerticalGroup(gameScreenWidth * 0.5f, ABOUT_PADDING * 0.5f, font_measure.large_height, { link_buttons, about_panel }, false);
     ui_objects.alloc(about_group, ABOUT);
 
     reset_IOHandler(POPUP);

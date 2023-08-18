@@ -64,5 +64,5 @@ float HorizontalGroup::get_width()
 
 float HorizontalGroup::get_height()
 {
-    return max_height;
+    return max_height + padding;
 }
