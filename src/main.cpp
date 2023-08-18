@@ -65,6 +65,7 @@
 #include "FileExplorer.h"
 #include "HorizontalGroup.h"
 #include "VerticalGroup.h"
+#include "Notification.h"
 // Init extern variables ------------------------------------------------------------------
 /* Theme theme(
     rgb(232, 233, 236), // background
@@ -141,8 +142,9 @@ const string start_label = "default test", settings_label = "settings", about_la
 string cursor_path = "arrow_cursor";  // For custom cursor
 float cursor_height = 22.f;
 int cursor_id = MOUSE_CURSOR_DEFAULT;
-Stopwatch screenshot_timer;
 
+// Notification handler
+Notification* notification;
 // render textures
 RenderTexture2D target;
 
@@ -169,7 +171,7 @@ Toggle* fullscreen_toggle;
 int display_wpm_frames = 15;  // frames to update wpm display
 int display_wpm;
 float max_wpm = 0, cur_wpm = 0;
-float restart_alpha = 0;
+
 // UI DIMENSIONS 
 float wpm_width = 350;  // width of wpm text 
 float graph_width = 1300;
@@ -350,11 +352,6 @@ void update_start()
     // Tape mode <-> normal mode changes drawer.y position
     dictionary_spawn->set_pos(gameScreenWidth * 0.5f, drawer.get_top_y() - 2 * font_measure.medium_height);
 
-    if (restart_alpha > 0)
-    {
-        restart_alpha -= 1.f / 60;
-        restart_alpha = max(restart_alpha, 0.f);
-    }
     if (IsKeyPressed(KEY_ESCAPE))
     {
         switch_settings();
@@ -366,7 +363,7 @@ void update_start()
         data_json["numbers"] = (int)setting_bar->is_toggled("numbers");
         data_json["dictionary"] = "'" + dictionary_spawn->get_selected() + "'";
         init_test();
-        restart_alpha = 1;
+        notification->spawn_notification("notice", "test reloaded", 2, &textureOf["reload"]);
         return;
     }
     
@@ -375,7 +372,7 @@ void update_start()
         if (setting_toggle["strict space"]->get_selected() == "on" || !IsKeyPressed(KEY_SPACE))  // if strict space on, any key start, otherwise must not be space press
         {
             start_test();
-            restart_alpha = 0;
+            notification->kill();
         }
     }
 } 
@@ -408,7 +405,7 @@ void update_test()
     if (IsKeyPressed(KEY_TAB))  
     {
         switch_start();
-        restart_alpha = 1;
+        notification->spawn_notification("notice", "test reloaded", 2, &textureOf["reload"]);
     }
 }
 
@@ -450,7 +447,8 @@ void update_taskbar()
 
 void update_end()
 {
-    
+    if (IsKeyPressed(KEY_TAB))
+        switch_start();
 }
 
 // Updates on any scene 
@@ -494,10 +492,6 @@ void draw_start()
     {
         drawer.draw_caret();
     }
-
-    Color text_color = theme.main;
-    text_color.a = restart_alpha * 255;
-    DrawTextAlign("Restarted", gameScreenWidth / 2, 975, font_measure.large(), text_color, CENTER, CENTER);
     draw_taskbar();
 }
 
@@ -579,6 +573,7 @@ void draw_popup()
 
 void global_draw()
 {
+    notification->draw();
     close_button->draw();
     minimize_button->draw();
     fullscreen_toggle->draw();
@@ -673,7 +668,10 @@ void init()
     load_user_data();
     init_settings();
     set_icon();
-    
+
+    // Notification
+    notification = new Notification(10, font_measure.medium());
+
     // Get selected test time and other user data
     string selected_time = data_json["test time"].as<string>();
     string custom_time = data_json["custom time"].as<string>();
@@ -771,7 +769,10 @@ void init()
     ui_objects.alloc(taskbar, {START, SETTINGS, USER, ABOUT});
 
     // TEST UI ---------------------------------------------------------------
-    restart_button = new Button(0.5f * (gameScreenWidth - font_measure.large_height), drawer.get_bottom_y() + font_measure.large_height, font_measure.large_height, &textureOf["reload"], [] { switch_start(); restart_alpha = 1; }, "restart test");    
+    restart_button = new Button(0.5f * (gameScreenWidth - font_measure.large_height), drawer.get_bottom_y() + font_measure.large_height, font_measure.large_height, &textureOf["reload"], [] {
+        switch_start();
+        notification->spawn_notification("notice", "test reloaded", 2, &textureOf["reload"]);
+    }, "restart test");
     ui_objects.alloc(restart_button, START);  // Auto handled in start scene, manually handled in test scene
 
     // ENDING UI ---------------------------------------------------------------
@@ -787,14 +788,14 @@ void init()
     end_stats = new TextPanelV(0.5f * (gameScreenWidth - (wpm_width + graph_width)), graph_top, wpm_width, graph_height + 20), ui_objects.alloc(end_stats, END);
 
     Button* screenshot_button = new Button(0, 0, font_measure.large_height, &textureOf["image"], [&] {
-        if (screenshot_timer.s() > 1)
+        if (!notification->is_alive())  // If screenshot notif wears off
         {
-            screenshot_timer.start();
             string file_name = SCREENSHOT_FOLDER + "/Screenshot_" + UnixTimeToDateString(unix_time) + ".png";
             replace(file_name.begin(), file_name.end(), ' ', '_');
             replace(file_name.begin(), file_name.end(), ':', '-');
             //TakeScreenshot(file_name.c_str());
-            ExportImage(TextureToImage(target.texture, Rectangle(75, graph_top + 25, gameScreenWidth - 2*75, graph_height + 90)), file_name.c_str());
+            ExportImage(TextureToImage(target.texture, Rectangle(75, graph_top + 25, gameScreenWidth - 2 * 75, graph_height + 90)), file_name.c_str());
+            notification->spawn_notification("success", "saved to screenshots folder", 3, &textureOf["image"]);
         }
     }, "save screenshot");
 
