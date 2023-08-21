@@ -1,10 +1,12 @@
 #ifndef _GLOBALSH_
 #define _GLOBALSH_
+
 #include "raylibcustom.h"
 #include "Theme.h"
 #include "Word.h"
 #include "Utils.h"
 #include "FontMeasure.h"
+extern const string SCREENSHOT_FOLDER, FONTS_FOLDER;
 
 // Window Variables
 extern int windowWidth, windowHeight;
@@ -68,6 +70,8 @@ extern FontMeasure font_measure;
 extern float font_spacing;
 extern Shader shader;
 extern Vector2 char_dimension[CHAR_MAX + 1];
+
+extern unordered_map<string, pair<unsigned char*, int>> loaded_file_data;
 
 Vector2 operator+(const Vector2& a, const Vector2& b);
 Vector3 operator+(const Vector3& a, const Vector3& b);

@@ -3,6 +3,7 @@
 #include <fstream>
 #include "Theme.h"
 #include "UIObject.h"
+extern unordered_map<string, pair<unsigned char*, int>> loaded_file_data;
 
 extern Image TextureToImage(Texture texture, Rectangle src);
 extern int GetCodepointNext(const char* text, int* codepointSize);
@@ -37,8 +38,10 @@ extern bool IsKeyPressed();
 extern char convertKey(int key);
 extern int convertChar(char c);
 extern Vector2 MeasureTextEx(string str, float font_size);
+extern Vector2 MeasureTextEx(Font font, string str, float font_size);
 extern void DrawTextAlign(char c, float x, float y, float font_size, Color col = BLACK, int alignment = LEFT, int y_align = TOP);
 extern void DrawTextAlign(string str, float x, float y, float font_size, Color col = BLACK, int x_align = LEFT, int y_align = TOP);
+extern void DrawTextAlign(Font font, string str, float x, float y, float font_size, Color col = BLACK, int x_align = LEFT, int y_align = TOP);
 extern void DrawText(string text, float x, float y, float font_size, Color col = BLACK);
 extern void DrawTextCenter(string text, float x, float y, float font_size, Color col = BLACK);
 extern void DrawLabel(string text, int x, int y, int fontSize, Color label_col, Color text_col = WHITE);
@@ -58,6 +61,7 @@ extern string format_time(string s);  // lower level function, just raw conversi
 extern Rectangle formatRect(Rectangle r);  // make rectangle width and height positive
 extern char shiftChar(char original);
 extern float MeasureFontSize(string str, float width, float height = INT_MAX);
+extern float MeasureFontSize(Font f, string str, float width, float height = INT_MAX);
 
 extern Color hexToColor(string hex);
 extern float luma(Color color);
@@ -67,6 +71,7 @@ extern bool starts_with(std::string str, std::string prefix);
 extern string add_prefix(string name, string prefix);
 extern string remove_prefix(string name, string prefix);
 extern Font load_font(string path);
+extern Font load_font(string path, int font_base_size, int *font_chars, int glyph_count);
 extern vector<string> directory_files(string directory_path, string extension);
 
 extern std::string UnixTimeToDateString(std::time_t timestamp);

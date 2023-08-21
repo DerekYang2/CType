@@ -8,6 +8,7 @@
 #include "Textbox.h"
 #include "Scrollbar.h"
 #include "VerticalToggle.h"
+#include "FontToggle.h"
 
 // EXTERNALS USED
 extern UIAlloc ui_objects;

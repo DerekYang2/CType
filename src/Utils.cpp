@@ -182,6 +182,39 @@ void DrawTextAlign(string str, float x, float y, float font_size, Color col, int
     DrawTextEx(font, str, { x + x_offset, y + y_offset }, font_size, font_size / font_spacing, col, 1.0f);
 }
 
+void DrawTextAlign(Font font, string str, float x, float y, float font_size, Color col, int x_align, int y_align)
+{
+    Vector2 text_size = MeasureTextEx(font, str, font_size);
+    float txtw = text_size.x;
+    float txth = text_size.y;
+
+    float x_offset = 0;
+    float y_offset = 0;
+
+    // Handle x-alignment
+    if (x_align == CENTER)
+    {
+        x_offset = -txtw / 2;
+    }
+    else if (x_align == RIGHT)
+    {
+        x_offset = -txtw;
+    }
+
+    // Handle y-alignment
+    if (y_align == CENTER)
+    {
+        y_offset = -txth / 2;
+    }
+    else if (y_align == BOTTOM)
+    {
+        y_offset = -txth;
+    }
+
+    // Draw the text
+    DrawTextEx(font, str, { x + x_offset, y + y_offset }, font_size, font_size / font_spacing, col, 1.0f);  
+}
+
 void DrawText(string text, float x, float y, float font_size, Color col)
 {
     DrawTextEx(font, text.c_str(), {x, y}, font_size, font_size/font_spacing, col, 1.0f);
@@ -290,6 +323,25 @@ float MeasureFontSize(string text, float width, float height)
     while (true)  //find the max font size that fits
     {
         Vector2 textSize = MeasureTextEx(font, text, maxFit, maxFit / font_spacing);
+        if (textSize.x + 2 * padding <= width && textSize.y + 2 * padding <= height)
+        {
+            fontSize = maxFit;
+        } else
+            break;
+        maxFit++;
+    }
+    return fontSize;
+}
+
+float MeasureFontSize(Font f, string text, float width, float height)
+{
+    if (text.empty()) return 0;
+    float fontSize = 0;
+    int maxFit = 2;
+    float padding = 0;
+    while (true)  //find the max font size that fits
+    {
+        Vector2 textSize = MeasureTextEx(f, text, maxFit, maxFit / font_spacing);
         if (textSize.x + 2 * padding <= width && textSize.y + 2 * padding <= height)
         {
             fontSize = maxFit;
@@ -430,6 +482,11 @@ int convertChar(char c)
 }
 
 Vector2 MeasureTextEx(string str, float font_size)
+{
+    return MeasureTextEx(font, str, font_size, font_size / font_spacing);
+}
+
+Vector2 MeasureTextEx(Font font, string str, float font_size)
 {
     return MeasureTextEx(font, str, font_size, font_size / font_spacing);
 }
@@ -703,21 +760,64 @@ Font load_font(string path)
 
     // Loading file to memory
     unsigned int fileSize = 0;
-    unsigned char* fileData = LoadFileData(full_path.c_str(), &fileSize);
-
+    unsigned char* fileData;
+    if (loaded_file_data.contains(path))
+    {
+        fileData = loaded_file_data[path].first;
+        fileSize = loaded_file_data[path].second;
+    } else
+    {
+        fileData = LoadFileData(full_path.c_str(), &fileSize);
+    }
+    
     // SDF font generation from TTF font
     Font ret_font = { 0 };
-    const float font_base = 48;
+    const float font_base = 44;
     ret_font.baseSize = font_base;
     ret_font.glyphCount = 95;
-    // Parameters > font size: 48, no glyphs array provided (0), glyphs count: 0 (defaults to 95)
+    // Parameters > font size: 44, no glyphs array provided (0), glyphs count: 0 (defaults to 95)
     ret_font.glyphs = LoadFontData(fileData, fileSize, font_base, 0, 0, FONT_SDF);
-    // Parameters > glyphs count: 95, font size: 48, glyphs padding in image: 0 px, pack method: 1 (Skyline algorythm)
+    // Parameters > glyphs count: 95, font size: 44, glyphs padding in image: 0 px, pack method: 1 (Skyline algorythm)
     Image atlas = GenImageFontAtlas(ret_font.glyphs, &ret_font.recs, 95, font_base, 0, 1);
     ret_font.texture = LoadTextureFromImage(atlas);
     UnloadImage(atlas);
-    UnloadFileData(fileData);      // Free memory from loaded file
+    if (!loaded_file_data.contains(path))
+        UnloadFileData(fileData);      // Free memory from loaded file
 
+    SetTextureFilter(ret_font.texture, TEXTURE_FILTER_BILINEAR);    // Required for SDF font  
+    return ret_font;
+}
+
+Font load_font(string path, int font_size, int* font_chars, int glyph_count)
+{
+    // FONT LOADING -----------------------------------------------
+    string full_path = path;
+
+    // Loading file to memory
+    unsigned int fileSize = 0;
+    unsigned char* fileData;
+    if (loaded_file_data.contains(path))
+    {
+        fileData = loaded_file_data[path].first;
+        fileSize = loaded_file_data[path].second;
+    } else
+    {
+        fileData = LoadFileData(full_path.c_str(), &fileSize);
+    }
+    
+    // SDF font generation from TTF font
+    Font ret_font = { 0 };
+    const float font_base = font_size;
+    ret_font.baseSize = font_base;
+    ret_font.glyphCount = glyph_count;
+    ret_font.glyphs = LoadFontData(fileData, fileSize, font_base, font_chars, glyph_count, FONT_SDF);
+    Image atlas = GenImageFontAtlas(ret_font.glyphs, &ret_font.recs, glyph_count, font_base, 0, 1);
+    ret_font.texture = LoadTextureFromImage(atlas);
+    UnloadImage(atlas);
+    
+    if (!loaded_file_data.contains(path))
+        UnloadFileData(fileData);      // Free memory from loaded file
+    
     SetTextureFilter(ret_font.texture, TEXTURE_FILTER_BILINEAR);    // Required for SDF font  
     return ret_font;
 }

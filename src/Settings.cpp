@@ -102,6 +102,8 @@ void init_settings()
     theme_toggle = new ThemeToggle(SETTING_PADDING, 0, gameScreenWidth - 2 * SETTING_PADDING, 40, setting_json["appearance"]["theme"].as<string>());
     theme_toggle->set_bounds(boundary);
     init_theme(theme_toggle->get_selected());
+    Textbox* theme_heading = new Textbox(SETTING_PADDING, 0, gameScreenWidth - 2 * SETTING_PADDING, font_measure.large_height, "\nSelect Theme", font_measure.large(), "main", true);
+    heading_objects["Appearance"].push_back(theme_heading);
     heading_objects["Appearance"].push_back(theme_toggle);
     
     // Titles (heading)
@@ -126,6 +128,11 @@ void init_settings()
     vertical_toggle->set_bounds(boundary);
     heading_objects["Appearance"].push_back(vertical_toggle);
     */
+    Textbox* font_heading = new Textbox(SETTING_PADDING, 0, gameScreenWidth - 2 * SETTING_PADDING, font_measure.large_height, "\nSelect Font", font_measure.large(), "main", true);
+    heading_objects["Appearance"].push_back(font_heading);
+    FontToggle* font_toggle = new FontToggle(SETTING_PADDING, 0, gameScreenWidth - 2 * SETTING_PADDING, 40, "RobotoMono.ttf");
+    font_toggle->set_bounds(boundary);
+    heading_objects["Appearance"].push_back(font_toggle);
     
     // Set all UIObject positions
     float y_pos = boundary.y;

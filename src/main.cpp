@@ -22,6 +22,7 @@
 *   SOFTWARE.
 *   
 *********************************************************************************/
+#define CTYPE_VERSION "v0.0 beta"
 
 /**
  * TODO:
@@ -30,8 +31,7 @@
  * - Change font settings
  * - Typing sound effects
 */
-
-#include <iostream>
+#include <thread>
 #include "raylibcustom.h"        
 #include <math.h>
 #include <chrono>
@@ -66,6 +66,7 @@
 #include "HorizontalGroup.h"
 #include "VerticalGroup.h"
 #include "Notification.h"
+#include "FontToggle.h"
 // Init extern variables ------------------------------------------------------------------
 /* Theme theme(
     rgb(232, 233, 236), // background
@@ -135,6 +136,9 @@ ThemeToggle* theme_toggle;
 StatusCount status_count;
 
 string default_settings;
+// multithreading
+unordered_map<string, pair<unsigned char*, int>> loaded_file_data;
+std::mutex global_mutex;
 
 // END init extern variables ----------------------------------------------------------------
 const string SCREENSHOT_FOLDER = "screenshots", FONTS_FOLDER = "fonts";
@@ -577,6 +581,7 @@ void global_draw()
     close_button->draw();
     minimize_button->draw();
     fullscreen_toggle->draw();
+    DrawTextAlign(CTYPE_VERSION, 10, gameScreenHeight - 10, font_measure.small(), theme.sub, LEFT, BOTTOM);
 }
 
 void draw_cursor()
@@ -655,7 +660,7 @@ void init()
 {
     load_sdf_shader();
     //test_shader = LoadShader(0, "./fonts/test2.frag");
-    load_base_font("./fonts/RobotoMono.ttf");
+    load_base_font("fonts/RobotoMono.ttf");
     //set_rand_font();
     
     init_raw_data;
@@ -841,11 +846,39 @@ void init()
     reset_IOHandler(POPUP);
 }
 
+
+std::function<void()> init_loading_thread()
+{
+    // Get font file data
+    vector<string> font_paths = directory_files(FONTS_FOLDER, ".ttf");
+    for (string path : font_paths)
+    {
+        loaded_file_data.insert({path, {nullptr, 0}});
+    }
+    // Loading function
+    auto test_func = [&] {
+        std::lock_guard<std::mutex> lock(global_mutex);
+        Stopwatch sw;
+        sw.start();
+        for (auto& [path, value] : loaded_file_data)
+        {
+            // Loading file to memory
+            unsigned int fileSize = 0;
+            unsigned char* fileData = LoadFileData(path.c_str(), &fileSize);
+            loaded_file_data[path] = make_pair(fileData, fileSize);
+        }
+        cout << "Loading time: " << sw.ms() << endl;
+        
+     };
+    return test_func;
+}
+
 //------------------------------------------------------------------------------------
 // Program main entry point
 //------------------------------------------------------------------------------------
 int main(void)
 {
+    thread loading_thread(init_loading_thread());
     /**
      * TECHNICAL INITIALIZATION
     */
@@ -862,7 +895,9 @@ int main(void)
         
     SetTargetFPS(60);                   // Set our game to run at 60 frames-per-second
     SetExitKey(KEY_NULL);
-    
+
+    if (loading_thread.joinable())  // Join loading thread before initializing
+        loading_thread.join();
     init();
     init_test();
     //open_path(absolute_path("fonts"));
@@ -877,7 +912,8 @@ int main(void)
     bool shader_on = false; */
     // timer funcs
     float frame_time = 1;
-    Stopwatch frame_timer;
+    Stopwatch frame_timer, application_timer;
+    application_timer.start();
     //--------------------------------------------------------------------------------------
     // Main game loop
     while (!WindowShouldClose() && !close_window)        // Detect window close button 
