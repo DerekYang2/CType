@@ -412,7 +412,14 @@ Rectangle RectangleIntersection(Rectangle rect1, Rectangle rect2) {
 
 int roundedSegments(float height)
 {
-    return floor(height / 10);
+    if (height < 20)
+        return 2;
+    else if (height < 30)
+        return 3;
+    else if (height < 50)
+        return 3;
+    else
+        return floor(height / 10);
 }
 
 bool IsKeyPressed()

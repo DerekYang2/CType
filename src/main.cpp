@@ -28,9 +28,9 @@
  * TODO:
  * - Move includes from h to cpp files
  * - Words mode
- * - Change font settings
  * - Typing sound effects
 */
+
 #include <thread>
 #include "raylibcustom.h"        
 #include <math.h>

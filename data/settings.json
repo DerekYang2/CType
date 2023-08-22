@@ -30,7 +30,7 @@
         }
     },
     "appearance": {
-        "theme": "dracula",
+        "theme": "serika dark",
         "font": "fonts/RobotoMono.ttf"
     }
 }
