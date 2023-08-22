@@ -1,10 +1,6 @@
 #pragma once
 #include "ToggleGroup.h"
 
-/**
- * TODO: image preview cache
-*/
-
 extern const int FONT_PER_ROW;
 extern void init_font(string font_path);
 

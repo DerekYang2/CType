@@ -37,7 +37,6 @@ VerticalToggle::VerticalToggle(float x, float y, float w, float h, int rows, vec
     scrollbar = new Scrollbar(corner.x + tot_width - bar_w / 3, corner.y + padding, bar_w, visible_h, visible_h, hitbox.size() * h);
 }
 
-// TODO: need to restart test when toggle is pressed?
 void VerticalToggle::update()
 {
     // update scrollbar 

@@ -1,10 +1,6 @@
 #include "globals.h"
 #include "StatusHandling.h"
 
-/** TODO:
- * set offset of drawer here
-*/
-
 void update_status(char c)
 {
     if (c == ' ') { update_space(); return; }

@@ -25,7 +25,6 @@ void DrawTextEx(Font font, string text, Vector2 position, float fontSize, float 
         if (codepoint == '\n')
         {
             // NOTE: Fixed line spacing of 1.5 line-height
-            // TODO: Support custom line spacing defined by user
             textOffsetY += (int)(font.baseSize  * line_spacing * scaleFactor);
             textOffsetX = 0.0f;
         }

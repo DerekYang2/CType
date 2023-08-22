@@ -2,7 +2,6 @@
 
 /**
  * TODO: ctrl + hold key doesn't work, GetCharPressed() doesn't return valid char when ctrl + char is held
- * TODO: MOVE offset_x to status handling
 */
 
 IOHandler::IOHandler()

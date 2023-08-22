@@ -125,7 +125,6 @@ void Button::draw()
 
 }
 
-// TODO: shift hint up (for button and toggle group)
 void Button::draw_hint()
 {
     if (hint.empty()) return;

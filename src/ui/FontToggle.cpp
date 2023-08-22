@@ -47,7 +47,6 @@ FontToggle::FontToggle(float x, float y, float w, float h, string init_font) : T
     }
     
     // load fonts
-    // todo: remove fonts/ and .ttf in text, but also consider font loading, padding and title for whole toggle section
     for (int i = 0; i < text.size(); i++) {
         unordered_set<char> req_chars(display_text[i].begin(), display_text[i].end());
         int* fontChars = new int[req_chars.size()];

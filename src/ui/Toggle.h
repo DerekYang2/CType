@@ -4,9 +4,6 @@
 #include "Stopwatch.h"
 #include "UIObject.h"
 
-/**
- * TODO: add toggle art (different drawing for arrow icon, muted icon, etc)
-*/
 class Toggle: public UIObject
 {
     Rectangle hitbox;

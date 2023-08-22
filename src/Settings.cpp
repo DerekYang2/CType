@@ -34,9 +34,6 @@ unordered_map<string, vector<pair<string, string>>> toggle_descriptions({
         }
     }
 });
-/**
- * TODO: fix menu button, maybe center
-*/
 
 void init_settings()
 {

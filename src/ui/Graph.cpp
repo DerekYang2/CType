@@ -284,7 +284,6 @@ void Graph::update()
     }
 }
 
-//TODO: ORDER
 void Graph::draw_hint()
 {
     if (!show_hint) return;
