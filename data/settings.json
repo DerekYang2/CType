@@ -31,6 +31,6 @@
     },
     "appearance": {
         "theme": "dracula",
-        "font": "fonts/SourceCodePro.ttf"
+        "font": "fonts/RobotoMono.ttf"
     }
 }

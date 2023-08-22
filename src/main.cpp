@@ -355,6 +355,7 @@ void update_start()
 {
     // Tape mode <-> normal mode changes drawer.y position
     dictionary_spawn->set_pos(gameScreenWidth * 0.5f, drawer.get_top_y() - 2 * font_measure.medium_height);
+    restart_button->set_pos(0.5f * (gameScreenWidth - font_measure.large_height), drawer.get_bottom_y() + font_measure.large_height);
 
     if (IsKeyPressed(KEY_ESCAPE))
     {
