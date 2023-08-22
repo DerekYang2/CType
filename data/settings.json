@@ -1,6 +1,6 @@
 {
-    "behavior": {
-        "show wpm": {
+    "Behavior": {
+        "quick restart": {
             "options": [
                 "off",
                 "on"
@@ -13,8 +13,26 @@
                 "on"
             ],
             "default": 0
-        },
+        }
+    },
+    "Input": {
         "strict space": {
+            "options": [
+                "off",
+                "on"
+            ],
+            "default": 0
+        },
+        "indicate typos": {
+            "options": [
+                "color",
+                "replace"
+            ],
+            "default": 0
+        }
+    },
+    "Appearance": {
+        "show wpm": {
             "options": [
                 "off",
                 "on"
@@ -29,8 +47,10 @@
             "default": 0
         }
     },
-    "appearance": {
-        "theme": "serika dark",
-        "font": "fonts/RobotoMono.ttf"
+    "Theme": {
+        "name": "serika dark"
+    },
+    "Font": {
+        "path": "fonts/CourierNewBold.ttf"
     }
 }

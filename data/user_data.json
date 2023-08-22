@@ -1,8 +1,8 @@
 {
     "custom time": 12,
-    "dictionary": "english 1k",
-    "numbers": 0,
-    "test time": 5,
+    "dictionary": "wordle",
+    "numbers": 1,
+    "test time": 15,
     "punctuation": 1,
     "test history": [
         {

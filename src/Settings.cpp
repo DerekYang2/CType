@@ -9,11 +9,31 @@ Scrollbar* scrollbar;
 Rectangle boundary;
 HorizontalGroup* menu_group;
 FontToggle* font_toggle;
-
+unordered_map<string, string> section_name;
 unordered_map<string, Button*> menu_button;
 unordered_map<string, Textbox*> heading_text;
 unordered_map<string, vector<UIObject*>> heading_objects;
-
+// Toggle descriptions
+unordered_map<string, vector<pair<string, string>>> toggle_descriptions({
+    { "Behavior",
+        {
+            {"Quick Restart", "Allows restarting the test by pressing 'tab'."},
+            {"Debug Mode", "Allows debugging functions."}
+        }
+    },
+    { "Input",
+        {
+            {"Strict Space", "When enabled, pressing space at the beginning of a word will insert a space character."},
+            {"Indicate Typos", "Color mistyped characters with a different color or replace them with the mistyped character."}
+        }
+    },
+    { "Appearance",
+        {
+            {"Show WPM",  "Displays the live WPM on the test screen."},
+            {"Tape Mode", "Only shows one line which scrolls horizontally."}
+        }
+    }
+});
 /**
  * TODO: fix menu button, maybe center
 */
@@ -23,15 +43,23 @@ void init_settings()
     RSJresource default_json(
     R"(
     { 
-        'behavior' : {
-            'show wpm' : { options: ['off', 'on'], default: 1 }, 
-            'strict space' : { options: ['off', 'on'], default: 0 }, 
-            'tape mode' : { options: ['off', 'on'], default: 0 }, 
-            'debug mode' : { options: ['off', 'on'], default: 0 } 
+        'Behavior' : {
+            'quick restart': { options: ['off', 'on'], default: 1 },
+            'debug mode' : { options: ['off', 'on'], default: 0 }
         }, 
-        'appearance' : {
-            'theme' : 'vscode',
-            'font' : 'fonts/RobotoMono.ttf'
+        'Input': {
+            'strict space' : { options: ['off', 'on'], default: 0 }, 
+            'indicate typos': {options: ['color', 'replace'], default: 1}
+        },
+        'Appearance' : {
+            'show wpm' : { options: ['off', 'on'], default: 1 },
+            'tape mode' : { options: ['off', 'on'], default: 0 }
+        },
+        'Theme' : {
+            'name' : 'vscode'
+        },
+        'Font' : {
+            'path' : 'fonts/RobotoMono.ttf'
         }
     }  
     )");
@@ -70,21 +98,21 @@ void init_settings()
     // Initialise UI ---------------------------------------------------------------------------
     boundary = Rectangle(SETTING_PADDING, SETTING_PADDING + MENU_HEIGHT, gameScreenWidth - 2 * SETTING_PADDING, gameScreenHeight - 2 * SETTING_PADDING - MENU_HEIGHT);  // Mouse will be registered 
        
-    // APPEARANCE OBJECTS: Initialize themes and fonts first as they are required to initializes other objects
+    // FONT/THEME OBJECTS: Initialize themes and fonts first as they are required to initializes other objects
     // Font init
-    init_font(setting_json["appearance"]["font"].as<string>());  // INTIALIZE GLOBAL FONT 
+    init_font(setting_json["Font"]["path"].as<string>());  // INTIALIZE GLOBAL FONT 
     font_toggle = new FontToggle(SETTING_PADDING, 0, gameScreenWidth - 2 * SETTING_PADDING, 40, font_path);
     font_toggle->set_bounds(boundary);
-    Textbox* font_heading = new Textbox(SETTING_PADDING, 0, gameScreenWidth - 2 * SETTING_PADDING, font_measure.large_height, "\nSelect Font", font_measure.large(), "main", true);
+    heading_objects["Font"].push_back(font_toggle);
     // Theme init
     fetch_themes();
-    theme_toggle = new ThemeToggle(SETTING_PADDING, 0, gameScreenWidth - 2 * SETTING_PADDING, 40, setting_json["appearance"]["theme"].as<string>());
+    theme_toggle = new ThemeToggle(SETTING_PADDING, 0, gameScreenWidth - 2 * SETTING_PADDING, 40, setting_json["Theme"]["name"].as<string>());
     theme_toggle->set_bounds(boundary);
     init_theme(theme_toggle->get_selected());  // INTIALIZE GLOBAL THEME
-    Textbox* theme_heading = new Textbox(SETTING_PADDING, 0, gameScreenWidth - 2 * SETTING_PADDING, font_measure.large_height, "\nSelect Theme", font_measure.large(), "main", true);
- 
+    heading_objects["Theme"].push_back(theme_toggle);
+    
     // Menu buttons -> MOVE DOWN, FONTS FIRST
-    list<string> headings_list{ "Behavior", "Appearance" };
+    list<string> headings_list{ "Behavior", "Input", "Appearance", "Theme", "Font" };
     float x_pos = SETTING_PADDING;
     vector<UIObject*> button_list;
     for (string heading : headings_list)
@@ -103,35 +131,29 @@ void init_settings()
     }
 
     // BEHAVIOR objects 
-    vector<ToggleGroup*> toggle_pointers;  // issue toggle pointers not in order because of unordered map
-    for (auto& [key, value] : setting_json["behavior"].as_object())
+    for (string SETTING_SECTION : {"Behavior", "Input", "Appearance"})
     {
-        vector<string> options;
-        for (auto& str : value["options"].as_array())
-            options.push_back(str.as<string>());
-        setting_toggle[key] = new ToggleGroup(0, 0, font_measure.medium_height, value["default"].as<int>(), options, true);
-        ui_objects.alloc(setting_toggle[key], SETTINGS);
+        vector<ToggleGroup*> toggle_pointers;
+        for (auto& [key, value] : setting_json[SETTING_SECTION].as_object())
+        {
+            // INIT ToggleGroup
+            vector<string> options;
+            for (auto& str : value["options"].as_array())
+                options.push_back(str.as<string>());
+            setting_toggle[key] = new ToggleGroup(0, 0, font_measure.medium_height, value["default"].as<int>(), options, true);
+            ui_objects.alloc(setting_toggle[key], SETTINGS);
+            section_name[key] = SETTING_SECTION;
+        }
+        // Init display panel
+        vector<string> toggles_ordered = default_json[SETTING_SECTION].get_keys();
+        for (auto& str : toggles_ordered)
+        {
+            toggle_pointers.push_back(setting_toggle[str]);
+        }
+        TogglePanel* display_panel = new TogglePanel(SETTING_PADDING, 0, gameScreenWidth - 2 * SETTING_PADDING, toggle_pointers, toggle_descriptions[SETTING_SECTION]);
+        display_panel->set_bounds(boundary);
+        heading_objects[SETTING_SECTION].push_back(display_panel);
     }
-
-    vector<string> behavior_toggle_ordered = default_json["behavior"].get_keys();
-    for (auto& str : behavior_toggle_ordered)
-    {
-        toggle_pointers.push_back(setting_toggle[str]);
-    }
-    behavior_panel = new TogglePanel(SETTING_PADDING, 0, gameScreenWidth - 2 * SETTING_PADDING, toggle_pointers, {
-        {"Show Live WPM", "Displays the live WPM on the test screen."},
-        {"Strict Space", "When enabled, pressing space at the beginning of a word will insert a space character."},
-        {"Tape Mode", "Only shows one line which scrolls horizontally."},
-        {"Debug Mode", "Allows debugging functions."}
-    });
-    behavior_panel->set_bounds(boundary);
-    heading_objects["Behavior"].push_back(behavior_panel);
-
-    // APPEARANCE objects continue
-    heading_objects["Appearance"].push_back(theme_heading);
-    heading_objects["Appearance"].push_back(theme_toggle);
-    heading_objects["Appearance"].push_back(font_heading);
-    heading_objects["Appearance"].push_back(font_toggle);
     
     // Set all UIObject positions
     float y_pos = boundary.y;
@@ -184,10 +206,11 @@ void write_settings()
     // Update settings json behavior toggles
     for (auto &[label, toggle] : setting_toggle)
     {
-        setting_json["behavior"][label]["default"] = toggle->selected_index();
+        setting_json[section_name[label]][label]["default"] = toggle->selected_index();
     }
-    setting_json["appearance"]["theme"] = RSJresource("'" + theme_toggle->get_selected() + "'");
-    setting_json["appearance"]["font"] = RSJresource("'" + font_toggle->get_selected() + "'");
+    
+    setting_json["Theme"]["name"] = RSJresource("'" + theme_toggle->get_selected() + "'");
+    setting_json["Font"]["path"] = RSJresource("'" + font_toggle->get_selected() + "'");
     // Update settings file
     // Replace single quote with double quote 
     string setting_str = setting_json.as_str();
