@@ -66,6 +66,7 @@ extern int word_i;
 // Init mt19937 with random seed
 extern mt19937 rng;
 extern Font font; // Font: UI font
+extern string font_path;
 extern FontMeasure font_measure;
 extern float font_spacing;
 extern Shader shader;

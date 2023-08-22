@@ -23,6 +23,7 @@ extern Scrollbar* scrollbar;
 extern TogglePanel* behavior_panel;
 extern ToggleGroup* taskbar;
 extern ThemeToggle* theme_toggle;
+extern FontToggle* font_toggle;
 
 extern unordered_map<string, ToggleGroup*> setting_toggle;
 extern string default_settings;

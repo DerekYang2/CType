@@ -1,5 +1,6 @@
 #include "Utils.h"
 #include <iomanip>
+#include "RobotoMono.h"
 
 // Draw text using Font
 // NOTE: chars spacing is NOT proportional to fontSize
@@ -756,18 +757,22 @@ std::string UnixTimeToDateString(std::time_t timestamp)
 Font load_font(string path)
 {
     // FONT LOADING -----------------------------------------------
-    string full_path = path;
-
     // Loading file to memory
     unsigned int fileSize = 0;
     unsigned char* fileData;
-    if (loaded_file_data.contains(path))
+    if (path.find("RobotoMono") != string::npos)
+    {
+        // Use embedded font
+        cout << "Loading Embedded RobotoMono font" << endl;
+        fileData = RobotoMono_DATA;
+        fileSize = RobotoMono_SIZE;
+    } else if (loaded_file_data.contains(path))
     {
         fileData = loaded_file_data[path].first;
         fileSize = loaded_file_data[path].second;
     } else
     {
-        fileData = LoadFileData(full_path.c_str(), &fileSize);
+        fileData = LoadFileData(path.c_str(), &fileSize);
     }
     
     // SDF font generation from TTF font
@@ -791,8 +796,6 @@ Font load_font(string path)
 Font load_font(string path, int font_size, int* font_chars, int glyph_count)
 {
     // FONT LOADING -----------------------------------------------
-    string full_path = path;
-
     // Loading file to memory
     unsigned int fileSize = 0;
     unsigned char* fileData;
@@ -802,7 +805,7 @@ Font load_font(string path, int font_size, int* font_chars, int glyph_count)
         fileSize = loaded_file_data[path].second;
     } else
     {
-        fileData = LoadFileData(full_path.c_str(), &fileSize);
+        fileData = LoadFileData(path.c_str(), &fileSize);
     }
     
     // SDF font generation from TTF font

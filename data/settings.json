@@ -30,6 +30,7 @@
         }
     },
     "appearance": {
-        "theme": "wavez"
+        "theme": "dracula",
+        "font": "fonts/SourceCodePro.ttf"
     }
 }

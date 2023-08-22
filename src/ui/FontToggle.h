@@ -6,6 +6,7 @@
 */
 
 extern const int FONT_PER_ROW;
+extern void init_font(string font_path);
 
 class FontToggle : public ToggleGroup {
     vector<string> display_text;

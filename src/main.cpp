@@ -39,7 +39,6 @@
 #include "globals.h"
 #include "Theme.h"
 #include "ResourceInit.h"
-#include "RobotoMono.h"
 #include "UIAlloc.h"
 #include "Button.h"
 #include "ObjectMacros.h"
@@ -111,6 +110,7 @@ int word_i = 0;
 // Init mt19937 with random seed
 mt19937 rng(std::chrono::system_clock::now().time_since_epoch().count());
 Font font; // Font: UI font
+string font_path = "";
 float font_spacing;
 
 UIAlloc ui_objects(200);
@@ -603,36 +603,6 @@ void draw_logo()
     DrawTextureEx(textureOf["logo"], {25, 25}, 0, 50.f / textureOf["logo"].height, theme.main);
 }
 //NOTE: C:/Windows/Fonts/segoeui.ttf - SEGOE UI PATH
-// Font loading function
-void load_base_font(string path = "default")
-{
-    if (path == "default" || !FileExists(path.c_str()))
-    {
-        // FONT LOADING USING STATIC CHAR ARRAY
-        string full_path = path;
-        // SDF font generation from TTF font
-        font = { 0 };
-        const float font_base = 48;
-        font.baseSize = font_base;
-        font.glyphCount = 95;
-        // Parameters > font size: 16, no glyphs array provided (0), glyphs count: 0 (defaults to 95)
-        font.glyphs = LoadFontData(RobotoMono_DATA, RobotoMono_SIZE, font_base, 0, 0, FONT_SDF);
-        // Parameters > glyphs count: 95, font size: 16, glyphs padding in image: 0 px, pack method: 1 (Skyline algorythm)
-        Image atlas = GenImageFontAtlas(font.glyphs, &font.recs, 95, font_base, 0, 1);
-        font.texture = LoadTextureFromImage(atlas);
-        UnloadImage(atlas);
-
-        SetTextureFilter(font.texture, TEXTURE_FILTER_BILINEAR);    // Required for SDF font  
-    } else 
-    {
-        //font = LoadFontEx(path.c_str(), small_font_size, nullptr, 0);
-        //SetTextureFilter(font.texture, TEXTURE_FILTER_BILINEAR);
-        font = load_font(path.c_str());
-        cout << "Font loaded: " << path << endl;
-    }
-    font_spacing = 12;  // Default Font 
-    font_measure.set_font(font);
-}
 
 void set_rand_font()
 {
@@ -640,7 +610,7 @@ void set_rand_font()
     string font_path = font_paths[rand_int(0, font_paths.size() - 1)];
     //string font_path = select_file("C:/Users/derek/Documents/projects/typingtest/fonts", "ttf");
     //cout << font_path << endl;
-    load_base_font(font_path);
+    init_font(font_path);
 }
 
 void set_icon()
@@ -660,7 +630,9 @@ void init()
 {
     load_sdf_shader();
     //test_shader = LoadShader(0, "./fonts/test2.frag");
-    load_base_font("fonts/RobotoMono.ttf");
+    //load_base_font("fonts/RobotoMono.ttf");
+    // init_font("fonts/RobotoMono.ttf");
+
     //set_rand_font();
     
     init_raw_data;
@@ -668,7 +640,6 @@ void init()
     {
         SetTextureFilter(texture, TEXTURE_FILTER_BILINEAR);
     }
-
     init_dictionary_names();
     load_user_data();
     init_settings();
@@ -817,7 +788,7 @@ void init()
         {"CType: Minimalistic Typing Test in C/C++.", font_measure.medium()},
         {"By default, 'english' dictionary contains the 200 most common words in the English language. Dictionary files are located in: " + absolute_path(DICTIONARY_FOLDER) + ". These dictionaries are the same as those in Monkeytype.", font_measure.medium()},
         {"tab - restart test\nescape - toggle between test and settings", font_measure.medium()},
-        {"Buttons above link to folders containing fonts, languages, themes, etc. Custom files may be directly added and loaded by application, as long as valid. You may look at already existing files to see what is valid. \nOnly .ttf and .otf fonts are support. \nNote that css themes files are not actually parsed, just read for certain tokens. \nDictionary files only support standard ASCII for now.", font_measure.medium()}
+        {"Buttons above link to folders containing fonts, languages, themes, etc. Custom files may be directly added and loaded by application, as long as valid. You may look at already existing files to see what is valid. \nOnly .ttf and .otf fonts are supported. \nNote that css themes files are not actually parsed, just read for certain tokens. \nDictionary files only support standard ASCII for now.", font_measure.medium()}
     }, false);
     Button* github_button = new Button(0, 0, font_measure.large_height, "github", [] {
         OpenURL("https://github.com/DerekYang2/CType");

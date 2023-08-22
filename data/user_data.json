@@ -1,9 +1,9 @@
 {
     "custom time": 12,
-    "dictionary": "english",
+    "dictionary": "english 1k",
     "numbers": 0,
     "test time": 5,
-    "punctuation": 0,
+    "punctuation": 1,
     "test history": [
         {
             "wpm": 0.0,

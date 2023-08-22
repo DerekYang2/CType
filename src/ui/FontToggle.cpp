@@ -1,6 +1,15 @@
 #include "FontToggle.h"
 
 const int FONT_PER_ROW = 4;
+void init_font(string path)
+{
+    if (font_path == path) return;
+    cout << "Loading font: " << path << endl;
+    font_path = path;
+    font = load_font(path);  // set global font to f
+    font_spacing = 12;  // Default Font 
+    font_measure.set_font(font);
+}
 
 FontToggle::FontToggle(float x, float y, float w, float h, string init_font) : ToggleGroup(x, y, h, 0, {"anything"}, true)
 {
@@ -119,10 +128,7 @@ void FontToggle::update()
     ToggleGroup::update();
     if (was_pressed())
     {
-        font = load_font(get_selected());
-        cout << "Font loaded: " << get_selected() << endl;
-        font_spacing = 12;  // Default Font 
-        font_measure.set_font(font);
+        init_font(get_selected());
     }
 }
 
