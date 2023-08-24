@@ -1,5 +1,8 @@
-#include "TextDrawer.h"
 #include "globals.h"
+#include "TextDrawer.h"
+#include "WpmLogger.h"
+#include "Settings.h"
+
 #define side_padding 200
 TextDrawer::TextDrawer() { }
 

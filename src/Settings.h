@@ -36,6 +36,7 @@ extern unordered_map<string, vector<UIObject*>> heading_objects;
 // custom macros
 #define is_strict_space (setting_toggle["strict space"]->get_selected() == "on")
 #define is_tape_mode (setting_toggle["tape mode"]->get_selected() == "on")
+#define replace_typos (setting_toggle["replace typos"]->get_selected() == "on")
 extern void init_settings();
 extern void write_settings();  // write settings.json to file path
 extern void update_settings();

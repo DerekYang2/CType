@@ -1,21 +1,27 @@
 #include "globals.h"
 #include "StatusHandling.h"
+#include "IOHandler.h"
+#include "TextDrawer.h"
+#include "Settings.h"
 
 void update_status(char c)
 {
     if (c == ' ') { update_space(); return; }
     if (words[word_i].typed.size() >= words[word_i].word.size() + 5) return;  // word too long
     char status;
-    if (generated_chars[empty_i] == ' ')  // adding extra 
+    const char correct_char = generated_chars[empty_i];
+    if (correct_char == ' ')  // adding extra 
     {
         status = EXTRA;
         status_count.extra++;
+        char_status.push_back({ status, c });
         words[word_i].add(c);
         wpm_logger.push_error();
-    } else if (c != generated_chars[empty_i]) // normal incorrect
+    } else if (c != correct_char) // normal incorrect
     {
         status = INCORRECT;
         status_count.incorrect++;
+        char_status.push_back({ status, replace_typos? c : correct_char });  // If replace typo, displayed char is the mistyped input
         words[word_i].add(c);
         wpm_logger.push_error();
         empty_i++;
@@ -23,11 +29,11 @@ void update_status(char c)
     {
         status = CORRECT;
         status_count.correct++;
+        char_status.push_back({ status, c });
         words[word_i].add(c);
         wpm_logger.push_char(true);
         empty_i++;
     }
-    char_status.push_back({ status, c });
     drawer.add_offset(char_dimension[c].x);
 }
 

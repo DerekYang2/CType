@@ -1,7 +1,4 @@
 #pragma once
-#include "globals.h"
-#include "Settings.h"
-#include "WpmLogger.h"
 
 class TextDrawer {
     // non-tape mode variables

@@ -24,7 +24,7 @@ unordered_map<string, vector<pair<string, string>>> toggle_descriptions({
     { "Input",
         {
             {"Strict Space", "When enabled, pressing space at the beginning of a word will insert a space character."},
-            {"Indicate Typos", "Color mistyped characters with a different color or replace them with the mistyped character."}
+            {"Replace Typos", "Typos will override the correct character instead of just displaying the correct character with an error color."}
         }
     },
     { "Appearance",
@@ -46,14 +46,14 @@ void init_settings()
         }, 
         'Input': {
             'strict space' : { options: ['off', 'on'], default: 0 }, 
-            'indicate typos': {options: ['color', 'replace'], default: 1}
+            'replace typos': {options: ['off', 'on'], default: 0}
         },
         'Appearance' : {
             'show wpm' : { options: ['off', 'on'], default: 1 },
             'tape mode' : { options: ['off', 'on'], default: 0 }
         },
         'Theme' : {
-            'name' : 'vscode'
+            'name' : 'serika dark'
         },
         'Font' : {
             'path' : 'fonts/RobotoMono.ttf'
