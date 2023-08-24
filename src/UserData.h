@@ -1,6 +1,9 @@
 #pragma once
 #include "UIAlloc.h"
 #include "jsonparser.h"
+/**
+ * TODO: add test history and user statistics saving
+*/
 
 // EXTERNALS
 extern UIAlloc ui_objects;

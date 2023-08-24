@@ -9,6 +9,16 @@
 #include "Scrollbar.h"
 #include "FontToggle.h"
 
+/**
+ * TODO:
+ * main settings to add:
+ * - caret smoothness, style
+ * - timer style
+ * - test ending conditions (min speed, min accuracy, etc.)
+ * - resetting settings to default, import/export
+ * - display average
+*/
+
 // EXTERNALS USED
 extern UIAlloc ui_objects;
 extern void draw_taskbar();

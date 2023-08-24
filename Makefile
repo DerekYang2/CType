@@ -25,7 +25,7 @@ EXE      := main.exe
 WARNINGS := -Wno-missing-braces -Wno-narrowing -Wno-sign-compare -Wno-char-subscripts
 CFLAGS   := -O2 -Wall -std=c++20 $(WARNINGS)
 LDFLAGS  := -std=c++20 -L ./lib 
-LDLIBS   := -lnfd -lole32 -luuid -lraylib -lopengl32 -lgdi32 -lwinmm
+LDLIBS   := -licon -lnfd -lole32 -luuid -lraylib -lopengl32 -lgdi32 -lwinmm
 IFLAGS   := $(foreach dir,$(INCLUDE),-I $(dir)/)
 
 .PHONY: all run clean debug default info export

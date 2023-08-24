@@ -28,6 +28,7 @@
  * TODO:
  * - Words mode
  * - Typing sound effects
+ * - User profile, test history, etc
 */
 
 #include <thread>
@@ -564,7 +565,7 @@ void draw_about()
 void draw_user()
 {
     ClearBackground(theme.background);
-    DrawTextAlign("User", gameScreenWidth / 2, gameScreenHeight / 2, font_measure.large(), theme.main, CENTER, CENTER);
+    DrawTextAlign("User (not implemented yet)", gameScreenWidth / 2, gameScreenHeight / 2, font_measure.large(), theme.main, CENTER, CENTER);
     draw_taskbar();
 }
 
@@ -861,6 +862,7 @@ int main(void)
     InitWindow(windowWidth, windowHeight, "CType");
     MaximizeWindow();
     SetWindowMinSize(320, 240);
+    InitAudioDevice();              
     // Render texture initialization, used to hold the rendering result so we can easily resize it
     target = LoadRenderTexture(gameScreenWidth, gameScreenHeight);
     SetTextureFilter(target.texture, TEXTURE_FILTER_BILINEAR);  // Texture scale filter to use
@@ -1026,6 +1028,7 @@ int main(void)
         UnloadTexture(texture);
     UnloadShader(shader);
     CloseWindow();                      // Close window and OpenGL context
+    CloseAudioDevice();
     //--------------------------------------------------------------------------------------
     refresh_themes();
     return 0;
