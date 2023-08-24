@@ -7,7 +7,6 @@
 #include "Button.h"
 #include "Textbox.h"
 #include "Scrollbar.h"
-#include "VerticalToggle.h"
 #include "FontToggle.h"
 
 // EXTERNALS USED

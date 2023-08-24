@@ -1,3 +1,5 @@
+#include "globals.h"
+#include "TogglePanel.h"
 #include "UserData.h"
 
 string DATA_PATH = "data/user_data.json";

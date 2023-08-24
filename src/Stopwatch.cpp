@@ -1,4 +1,6 @@
+#include "raylib.h"
 #include "Stopwatch.h"
+
 Stopwatch::Stopwatch()
 {
     t_init = -1e9;

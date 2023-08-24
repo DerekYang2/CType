@@ -1,6 +1,6 @@
 #include "globals.h"
 #include "StatusHandling.h"
-#include "IOHandler.h"
+#include "WpmLogger.h"
 #include "TextDrawer.h"
 #include "Settings.h"
 

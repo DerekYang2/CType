@@ -1,5 +1,4 @@
 #pragma once
-#include "WpmLogger.h"
 #include "Graph.h"
 struct TestInfo {
     Stopwatch watch;

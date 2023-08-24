@@ -26,7 +26,6 @@
 
 /**
  * TODO:
- * - Move includes from h to cpp files
  * - Words mode
  * - Typing sound effects
 */
@@ -44,9 +43,11 @@
 #include "ObjectMacros.h"
 #include "StopWatch.h"
 #include "ShaderEmbed.h"
+#include "WordList.h"
 #include "TextGeneration.h"
 #include "TextDrawer.h"
 #include "IOHandler.h"
+#include "StatusHandling.h"
 #include "WpmLogger.h"
 #include "BezierPath.h"
 #include "Graph.h"

@@ -1,5 +1,5 @@
 #pragma once
-#include "WordList.h"
+#include "raylibcustom.h"
 /**
  * TODO: Handle punctuation in words and sentences
  * TODO: Maybe unlaod old word lists?

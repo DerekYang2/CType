@@ -1,7 +1,6 @@
 #pragma once
-#include "StatusHandling.h"
-#include "WpmLogger.h"
-#include "InputBox.h"
+#include "globals.h"
+
 #define inactive_time 30
 #define blink_time 30
 struct IOHandler {

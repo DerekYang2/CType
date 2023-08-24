@@ -1,5 +1,7 @@
 #include "TextGeneration.h"
+#include "WordList.h"
 #include "Word.h"
+
 extern vector<Word> words;
 
 TextGenerator::TextGenerator()

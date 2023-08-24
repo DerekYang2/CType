@@ -1,3 +1,4 @@
+#include "WpmLogger.h"
 #include "TestInfo.h"
 #define sample_hz 2
 TestInfo::TestInfo() {}

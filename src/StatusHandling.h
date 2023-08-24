@@ -1,4 +1,5 @@
 #pragma once 
+
 typedef struct StatusCount {
     int correct, incorrect, missing, extra;
 } StatusCount;

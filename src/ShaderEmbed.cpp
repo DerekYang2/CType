@@ -1,4 +1,7 @@
+#include <string>
+#include "globals.h"
 #include "ShaderEmbed.h"
+
 void load_sdf_shader()
 {
     char *vShaderStr = NULL;

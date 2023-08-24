@@ -1,3 +1,6 @@
+#include "StatusHandling.h"
+#include "WpmLogger.h"
+#include "InputBox.h"
 #include "IOHandler.h"
 
 /**
