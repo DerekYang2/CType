@@ -33,13 +33,29 @@ void IOHandler::update()
     int key_pressed = GetKeyPressed();
     
     fill(handled_press, handled_press + CHAR_MAX + 1, false);
+    
     while (key_pressed)  // IF PRESSED
     {
         active_frames = inactive_time;
-        char char_pressed = convertKey(key_pressed);
-        // shift the character pressed
-        if (IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT))
-            char_pressed = shiftChar(char_pressed);
+        char char_pressed = convertKey(key_pressed);  // convention is convertKey always returns lowercase 
+        if (IsKeyDown(KEY_CAPS_LOCK))
+        {
+            if (char_pressed >= 'a' && char_pressed <= 'z')  
+            {
+                if (!(IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT)))  // Caps lock and shift brings to lowercase
+                    char_pressed += 'A' - 'a';
+            } else
+            {
+                if (IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT))  // Symbols have regular behavior
+                    char_pressed = shiftChar(char_pressed);
+            }
+        } else
+        {
+            // shift the character pressed
+            if (IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT))
+                char_pressed = shiftChar(char_pressed);
+        }
+        
         if (char_pressed != 0)  // valid character
         {
             add_function(char_pressed);
