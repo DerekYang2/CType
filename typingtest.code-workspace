@@ -128,6 +128,7 @@
 		"metaGo.decoration.additionalSingleCharCodeCharacters": "J,K,L,D,F,A,H,G,I,N,R,E,M,B,Q,T,Y",
 		"metaGo.jumper.timeout": 4,
 		"metaGo.decoration.characters": "k, j, l, d, f, s, a, h, g, i, o, n, u, r, v, c, w, e, x, m, b, p, q, t, y, z",
-		"metaGo.jumper.commandsToUseSingleTargetChar": null
+		"metaGo.jumper.commandsToUseSingleTargetChar": null,
+		"editor.formatOnPaste": true
 	}
 }

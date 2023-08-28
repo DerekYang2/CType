@@ -3,6 +3,7 @@
 #include "WpmLogger.h"
 #include "TextDrawer.h"
 #include "Settings.h"
+#include "SoundEffects.h"
 
 void update_status(char c)
 {
@@ -12,6 +13,7 @@ void update_status(char c)
     const char correct_char = generated_chars[empty_i];
     if (correct_char == ' ')  // adding extra 
     {
+        play_error_sound();
         status = EXTRA;
         status_count.extra++;
         char_status.push_back({ status, c });
@@ -19,6 +21,7 @@ void update_status(char c)
         wpm_logger.push_error();
     } else if (c != correct_char) // normal incorrect
     {
+        play_error_sound();
         status = INCORRECT;
         status_count.incorrect++;
         char_status.push_back({ status, replace_typos? c : correct_char });  // If replace typo, displayed char is the mistyped input
@@ -51,6 +54,7 @@ void update_space()
         word_i++;  // go to next word
     } else if (idx != 0) // cannot press space on first index, if first index then ignore 
     {
+        play_error_sound();
         // JUMP TO NEXT WORD
         int space_idx = empty_i + words[word_i].length() - idx;
         for (int i = empty_i; i < space_idx; i++)  // fill missing spaces
@@ -71,6 +75,7 @@ void update_space()
         word_i++;
     } else if (setting_toggle["strict space"]->get_selected() == "on")  // if idx == 0 but strict space is on
     {
+        play_error_sound();
         words[word_i].add(' ');
         char_status.push_back({ MISSING, words[word_i].word[words[word_i].idx - 1] });
         status_count.missing++;

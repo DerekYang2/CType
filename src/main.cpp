@@ -31,6 +31,7 @@
  * - User profile, test history, etc
 */
 
+#include <filesystem>
 #include <thread>
 #include "raylibcustom.h"        
 #include <math.h>
@@ -39,6 +40,7 @@
 #include "globals.h"
 #include "Theme.h"
 #include "ResourceInit.h"
+#include "SoundEffects.h"
 #include "UIAlloc.h"
 #include "Button.h"
 #include "ObjectMacros.h"
@@ -407,12 +409,18 @@ void update_test()
     // Only activate button if cursor is on screen
     if (!IsCursorHidden())
         restart_button->update();
-    
+
     // Restart test
     if (IsKeyPressed(KEY_TAB))  
     {
         switch_start();
         notification->spawn_notification("notice", "test reloaded", 2, &textureOf["reload"]);
+    }
+
+    // Play sound on key press
+    if (IsKeyPressed() || IsKeyPressed(KEY_BACKSPACE) || IsKeyPressed(KEY_LEFT_SHIFT) || IsKeyPressed(KEY_RIGHT_SHIFT))
+    {
+        play_sound();
     }
 }
 
@@ -646,6 +654,7 @@ void init()
     init_dictionary_names();
     load_user_data();
     init_settings();
+    load_sound_effects("sounds/nk_creams");
     set_icon();
 
     // Notification
@@ -811,8 +820,11 @@ void init()
     Button* screenshot_reveal = new Button(0, 0, font_measure.large_height, "screenshots", [] {
         open_path(SCREENSHOT_FOLDER);
     }, "saved screenshots folder");
+    Button* sounds_reveal = new Button(0, 0, font_measure.large_height, "sounds", [] {
+        open_path(SOUNDS_FOLDER);
+    }, "keyboard sounds folder (.wav)");
     
-    HorizontalGroup* link_buttons = new HorizontalGroup(0, 0, font_measure.large_height, { github_button, reveal_explorer, fonts_reveal, languages_reveal, themes_reveal, screenshot_reveal }, true);
+    HorizontalGroup* link_buttons = new HorizontalGroup(0, 0, font_measure.large_height, { github_button, reveal_explorer, fonts_reveal, languages_reveal, themes_reveal, screenshot_reveal, sounds_reveal}, true);
 
     VerticalGroup* about_group = new VerticalGroup(gameScreenWidth * 0.5f, ABOUT_PADDING * 0.5f, font_measure.large_height, { link_buttons, about_panel }, false);
     ui_objects.alloc(about_group, ABOUT);
@@ -823,12 +835,27 @@ void init()
 
 std::function<void()> init_loading_thread()
 {
+    namespace fs = std::filesystem;
     // Get font file data
     vector<string> font_paths = directory_files(FONTS_FOLDER, ".ttf");
     for (string path : font_paths)
     {
         loaded_file_data.insert({path, {nullptr, 0}});
     }
+    // Get sound file data 
+    for (const auto& path : fs::directory_iterator(SOUNDS_FOLDER))
+    {
+        if (fs::is_directory(path))
+        {
+            vector<string> wav_paths = directory_files(path.path().string(), ".wav");
+            for (string file_path : wav_paths)
+            {
+                replace(file_path.begin(), file_path.end(), '\\', '/');  // Be consistent with backslash direction
+                loaded_file_data.insert({ file_path, {nullptr, 0} });
+            }
+        }
+    }
+    
     // Loading function
     auto test_func = [&] {
         std::lock_guard<std::mutex> lock(global_mutex);
