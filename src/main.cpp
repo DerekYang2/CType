@@ -193,6 +193,8 @@ bool repeat_test = false;
 
 void init_test()
 {
+
+    load_sound_effects(SOUNDS_FOLDER + "/" + sound_toggle->get_selected());
     drawer = TextDrawer(font, font_measure.large());
     reset_IOHandler(TEST);
     // reset variables
@@ -930,7 +932,7 @@ int main(void)
         if (pending_scene != -1)
         {
             scene = pending_scene;
-            if (scene == START)
+            if (scene == START) 
                 init_test();
         }
         pending_scene = -1;

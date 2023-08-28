@@ -8,6 +8,7 @@
 #include "Textbox.h"
 #include "Scrollbar.h"
 #include "FontToggle.h"
+#include "SoundToggle.h"
 
 /**
  * TODO:
@@ -33,6 +34,7 @@ extern TogglePanel* behavior_panel;
 extern ToggleGroup* taskbar;
 extern ThemeToggle* theme_toggle;
 extern FontToggle* font_toggle;
+extern SoundToggle* sound_toggle;
 
 extern unordered_map<string, ToggleGroup*> setting_toggle;
 extern string default_settings;

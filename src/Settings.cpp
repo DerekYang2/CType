@@ -9,6 +9,8 @@ Scrollbar* scrollbar;
 Rectangle boundary;
 HorizontalGroup* menu_group;
 FontToggle* font_toggle;
+SoundToggle* sound_toggle;
+
 unordered_map<string, string> section_name;
 unordered_map<string, Button*> menu_button;
 unordered_map<string, Textbox*> heading_text;
@@ -57,6 +59,9 @@ void init_settings()
         },
         'Font' : {
             'path' : 'fonts/RobotoMono.ttf'
+        },
+        'Sound' : {
+            'path' : 'nk_creams'
         }
     }  
     )");
@@ -109,7 +114,7 @@ void init_settings()
     heading_objects["Theme"].push_back(theme_toggle);
     
     // Menu buttons -> MOVE DOWN, FONTS FIRST
-    list<string> headings_list{ "Behavior", "Input", "Appearance", "Theme", "Font" };
+    list<string> headings_list{ "Behavior", "Input", "Appearance", "Theme", "Font", "Sound" };
     float x_pos = SETTING_PADDING;
     vector<UIObject*> button_list;
     for (string heading : headings_list)
@@ -127,7 +132,13 @@ void init_settings()
         heading_text[heading] = new Textbox(SETTING_PADDING, 0, gameScreenWidth - 2 * SETTING_PADDING, 50, "\n" + heading, font_measure.title(), "main", true);
     }
 
-    // BEHAVIOR objects 
+    // Sounds
+    sound_toggle = new SoundToggle(SETTING_PADDING, 0, gameScreenWidth - 2 * SETTING_PADDING, 40, setting_json["Sound"]["path"].as<string>());
+    load_sound_effects(SOUNDS_FOLDER + "/" + sound_toggle->get_selected());
+    sound_toggle->set_bounds(boundary);
+    heading_objects["Sound"].push_back(sound_toggle);
+
+    // Generic toggle objects 
     for (string SETTING_SECTION : {"Behavior", "Input", "Appearance"})
     {
         vector<ToggleGroup*> toggle_pointers;
@@ -208,6 +219,7 @@ void write_settings()
     
     setting_json["Theme"]["name"] = RSJresource("'" + theme_toggle->get_selected() + "'");
     setting_json["Font"]["path"] = RSJresource("'" + font_toggle->get_selected() + "'");
+    setting_json["Sound"]["path"] = RSJresource("'" + sound_toggle->get_selected() + "'");
     // Update settings file
     // Replace single quote with double quote 
     string setting_str = setting_json.as_str();

@@ -1,11 +1,16 @@
 #include <filesystem>
 #include "SoundEffects.h"
+
+string loaded_sound_path = "";
 const string SOUNDS_FOLDER = "sounds";
 vector<Sound> loaded_sfx;
 Sound error_sound;
 
 void load_sound_effects(string folder_path)
 {
+    if (folder_path == loaded_sound_path)
+        return;
+    loaded_sound_path = folder_path;
     // Load error sound if unloaded
     if (!IsSoundReady(error_sound))
     {

@@ -20,7 +20,7 @@ class ToggleGroup : public UIObject {
     float tot_width;
     float padding = 0;
     bool pressed;
-    int selected;
+    int selected = 0;
     Stopwatch pressWatch;
     bool show_rect;
     public:

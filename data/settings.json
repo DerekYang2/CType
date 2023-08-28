@@ -1,56 +1,59 @@
 {
-    "Font": {
-        "path": "fonts/RobotoMono.ttf"
+    "Sound": {
+        "path": "typewriter"
+    },
+    "Behavior": {
+        "quick restart": {
+            "options": [
+                "off",
+                "on"
+            ],
+            "default": 1
+        },
+        "debug mode": {
+            "options": [
+                "off",
+                "on"
+            ],
+            "default": 0
+        }
+    },
+    "Input": {
+        "strict space": {
+            "options": [
+                "off",
+                "on"
+            ],
+            "default": 0
+        },
+        "replace typos": {
+            "options": [
+                "off",
+                "on"
+            ],
+            "default": 1
+        }
+    },
+    "Appearance": {
+        "show wpm": {
+            "options": [
+                "off",
+                "on"
+            ],
+            "default": 1
+        },
+        "tape mode": {
+            "options": [
+                "off",
+                "on"
+            ],
+            "default": 0
+        }
     },
     "Theme": {
         "name": "serika dark"
     },
-    "Appearance": {
-        "tape mode": {
-            "default": 0,
-            "options": [
-                "off",
-                "on"
-            ]
-        },
-        "show wpm": {
-            "default": 1,
-            "options": [
-                "off",
-                "on"
-            ]
-        }
-    },
-    "Input": {
-        "replace typos": {
-            "default": 1,
-            "options": [
-                "off",
-                "on"
-            ]
-        },
-        "strict space": {
-            "default": 0,
-            "options": [
-                "off",
-                "on"
-            ]
-        }
-    },
-    "Behavior": {
-        "debug mode": {
-            "default": 0,
-            "options": [
-                "off",
-                "on"
-            ]
-        },
-        "quick restart": {
-            "default": 1,
-            "options": [
-                "off",
-                "on"
-            ]
-        }
+    "Font": {
+        "path": "fonts/RobotoMono.ttf"
     }
 }
