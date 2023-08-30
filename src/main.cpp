@@ -35,7 +35,6 @@
 #include "raylibcustom.h"        
 #include <math.h>
 #include <chrono>
-#include "nfd_wrapper.h"
 #include "globals.h"
 #include "Theme.h"
 #include "ResourceInit.h"
@@ -43,7 +42,7 @@
 #include "UIAlloc.h"
 #include "Button.h"
 #include "ObjectMacros.h"
-#include "StopWatch.h"
+#include "Stopwatch.h"
 #include "ShaderEmbed.h"
 #include "WordList.h"
 #include "TextGeneration.h"
