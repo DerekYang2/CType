@@ -9,6 +9,8 @@ SoundToggle::SoundToggle(float x, float y, float w, float h, string init_folder)
     tot_width = w;
     text.clear();
 
+    sample.push_back(Sound());
+    text.push_back("off");
     // Load sample sound from each folder
     for (const auto& path : fs::directory_iterator(SOUNDS_FOLDER))
     {
@@ -18,11 +20,14 @@ SoundToggle::SoundToggle(float x, float y, float w, float h, string init_folder)
             string first_sound = wav_paths[0];
             replace(first_sound.begin(), first_sound.end(), '\\', '/');  // Be consistent with backslash direction
             sample.push_back(LoadSoundFromWave(LoadWaveFromMemory(".wav", loaded_file_data[first_sound].first, loaded_file_data[first_sound].second)));
+            SetSoundVolume(sample.back(), 1.0f);
             text.push_back(path.path().filename().string());
+
+            string formatted = text.back();
+            replace(formatted.begin(), formatted.end(), '_', ' ');
         }
     }
-    sort(text.begin(), text.end());
-    
+
     for (int i = 0; i < text.size(); i++)
     {
         if (text[i] == init_folder)
@@ -85,7 +90,10 @@ void SoundToggle::draw()
             rect_col = theme.sub;  // blink sub when click
         float border = (i == selected || hover[i]) ? stroke_w : 0;
         DrawRectangleRoundedAlign(hitbox[i].x + hitbox[i].width * 0.5f, hitbox[i].y + hitbox[i].height * 0.5f, hitbox[i].width + 2 * border + 2 * pressed, hitbox[i].height + 2 * border + 2 * pressed, 0.35f, roundedSegments(hitbox[i].height), rect_col, CENTER, CENTER);
-        DrawTextAlign(text[i], hitbox[i].x + hitbox[i].width * 0.5f, hitbox[i].y + hitbox[i].height * 0.5f, font_size, text_col, CENTER, CENTER);
+
+        string formatted_text = text[i];
+        replace(formatted_text.begin(), formatted_text.end(), '_', ' ');
+        DrawTextAlign(formatted_text, hitbox[i].x + hitbox[i].width * 0.5f, hitbox[i].y + hitbox[i].height * 0.5f, font_size, text_col, CENTER, CENTER);
     }
 }
 
@@ -94,6 +102,8 @@ void SoundToggle::update()
     ToggleGroup::update();
     if (was_pressed())
     {
+        if (get_selected() == "off") // off has no sound
+            return;
         PlaySound(sample[selected]);
     }
 }

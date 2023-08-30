@@ -27,7 +27,6 @@
 /**
  * TODO:
  * - Words mode
- * - Typing sound effects
  * - User profile, test history, etc
 */
 

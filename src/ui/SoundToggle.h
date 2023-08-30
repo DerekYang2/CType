@@ -5,7 +5,7 @@
 extern const int SOUND_PER_ROW;
 
 class SoundToggle : public ToggleGroup {
-    vector<Sound> sample;
+    deque<Sound> sample;
     public:
     SoundToggle(float x, float y, float w, float h, string init_theme);
     void update() override;
