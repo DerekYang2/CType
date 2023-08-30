@@ -72,7 +72,7 @@ void VerticalToggle::draw()
         if (i == selected)
         {
             float radius = hitbox[i].height;
-            DrawRectangleRoundedAlign(hitbox[i].x + 0.5f * radius, hitbox[i].y + 0.5f * hitbox[i].height, radius * 0.5f, radius * 0.5f, 0.4f, 4, text_col, CENTER, CENTER);
+            DrawRectangleRoundedAlign(hitbox[i].x + 0.5f * radius, hitbox[i].y + 0.5f * hitbox[i].height, radius * 0.5f, radius * 0.5f, 0.4f, 4, theme.main, CENTER, CENTER);
         }
         // Shift text over by hitbox height
         DrawTextAlign(text[i], hitbox[i].x + hitbox[i].height, hitbox[i].y + hitbox[i].height * 0.5f, font_size, text_col, LEFT, CENTER);

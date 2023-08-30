@@ -509,6 +509,7 @@ void draw_start()
         drawer.draw_caret();
     }
     draw_taskbar();
+    notification->draw();
 }
 
 /* deque<float> stored_wpm;
@@ -551,17 +552,13 @@ void draw_test()
         restart_button->draw();
         restart_button->draw_hint();
     }
+    notification->draw();
 }
 
 void draw_end()
 {
     ClearBackground(theme.background);  // Clear render texture background color
-    //Vector2 corner = { 0.5f * (gameScreenWidth - (wpm_width + graph_width)), graph_top };
-    //DrawRectangle(corner.x, corner.y, wpm_width, graph_height, BLACK);
-    //BeginShaderMode(shader);
-    //DrawTextAlign(TextFormat("%d wpm", final_wpm), corner.x, corner.y, 75, rgb(32, 32, 32));
-    
-    //EndShaderMode();
+    notification->draw();
 }
 
 void draw_about()
@@ -589,7 +586,6 @@ void draw_popup()
 
 void global_draw()
 {
-    notification->draw();
     close_button->draw();
     minimize_button->draw();
     fullscreen_toggle->draw();
