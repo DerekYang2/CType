@@ -1,3 +1,4 @@
+#include <set>
 #include "FontToggle.h"
 
 const int FONT_PER_ROW = 4;
@@ -47,13 +48,18 @@ FontToggle::FontToggle(float x, float y, float w, float h, string init_font) : T
     }
     
     // load fonts
-    for (int i = 0; i < text.size(); i++) {
-        unordered_set<char> req_chars(display_text[i].begin(), display_text[i].end());
-        int* fontChars = new int[req_chars.size()];
+    for (int i = 0; i < text.size(); i++)
+    {
+#ifdef _WIN32
+        std::set<char> req_chars(display_text[i].begin(), display_text[i].end());
+        int fontChars[req_chars.size()];
         int idx = 0;
         for (char c : req_chars)
             fontChars[idx++] = (int)c;
-        Font f = load_font(text[i], 24, fontChars, req_chars.size());          
+        Font f = load_font(text[i], 24, fontChars, req_chars.size());
+#elif __linux__
+        Font f = load_font(text[i], 24, NULL, 95);  // Need to load full set on linux for some reason
+#endif
         // LoadFontEx(path.c_str(), 16, fontChars, req_chars.size());
         fonts.push_back(f);
     }
