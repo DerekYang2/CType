@@ -1,4 +1,6 @@
+#ifdef _WIN32
 #include <set>
+#endif
 #include "FontToggle.h"
 
 const int FONT_PER_ROW = 4;
