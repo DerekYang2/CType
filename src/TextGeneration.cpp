@@ -1,3 +1,4 @@
+#include <sstream>
 #include "TextGeneration.h"
 #include "WordList.h"
 #include "Word.h"

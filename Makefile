@@ -3,31 +3,30 @@
 
 # Get OS
 PLATFORM_OS ?= WINDOWS
-ifeq ($(PLATFORM),PLATFORM_DESKTOP)
-    # No uname.exe on MinGW!, but OS=Windows_NT on Windows!
-    # ifeq ($(UNAME),Msys) -> Windows
-    ifeq ($(OS),Windows_NT)
-        PLATFORM_OS = WINDOWS
-    else
-        UNAMEOS = $(shell uname)
-        ifeq ($(UNAMEOS),Linux)
-            PLATFORM_OS = LINUX
-        endif
-        ifeq ($(UNAMEOS),FreeBSD)
-            PLATFORM_OS = BSD
-        endif
-        ifeq ($(UNAMEOS),OpenBSD)
-            PLATFORM_OS = BSD
-        endif
-        ifeq ($(UNAMEOS),NetBSD)
-            PLATFORM_OS = BSD
-        endif
-        ifeq ($(UNAMEOS),DragonFly)
-            PLATFORM_OS = BSD
-        endif
-        ifeq ($(UNAMEOS),Darwin)
-            PLATFORM_OS = OSX
-        endif
+
+# No uname.exe on MinGW!, but OS=Windows_NT on Windows!
+# ifeq ($(UNAME),Msys) -> Windows
+ifeq ($(OS),Windows_NT)
+    PLATFORM_OS = WINDOWS
+else
+    UNAMEOS = $(shell uname -s)
+    ifeq ($(UNAMEOS),Linux)
+        PLATFORM_OS = LINUX
+    endif
+    ifeq ($(UNAMEOS),FreeBSD)
+        PLATFORM_OS = BSD
+    endif
+    ifeq ($(UNAMEOS),OpenBSD)
+        PLATFORM_OS = BSD
+    endif
+    ifeq ($(UNAMEOS),NetBSD)
+        PLATFORM_OS = BSD
+    endif
+    ifeq ($(UNAMEOS),DragonFly)
+        PLATFORM_OS = BSD
+    endif
+    ifeq ($(UNAMEOS),Darwin)
+        PLATFORM_OS = OSX
     endif
 endif
 
@@ -45,9 +44,9 @@ SRCS     := $(wildcard $(SRC)/*.cpp) $(wildcard $(SRC)/ui/*.cpp)
 OBJS     := $(patsubst $(SRC)/%.cpp,$(OBJ)/%.o,$(SRCS))
 
 ifeq ($(PLATFORM_OS),WINDOWS)
-EXE      := main.exe
+EXE      := CType.exe
 else
-EXE      := main
+EXE      := CType
 endif
 
 WARNINGS := -Wno-missing-braces -Wno-narrowing -Wno-sign-compare -Wno-char-subscripts
@@ -58,7 +57,7 @@ ifeq ($(PLATFORM_OS),WINDOWS)
 LDLIBS   := -licon -lraylib -lopengl32 -lgdi32 -lwinmm
 endif
 ifeq ($(PLATFORM_OS),LINUX)
-LDLIBS   := -lraylib -lGL -lc -lm -lpthread -ldl -lrt -lX11
+LDLIBS   := ./lib/librayliblinux.a -lc -lm -lpthread -ldl -lrt -lX11
 endif
  
 IFLAGS   := $(foreach dir,$(INCLUDE),-I $(dir)/)
@@ -73,7 +72,10 @@ default: all run
 debug: CFLAGS+=-g3
 debug: all
 
-release: LDLIBS+=-static -static-libgcc -static-libstdc++ 
+ifeq ($(PLATFORM_OS),WINDOWS)
+release: LDLIBS+=-static
+endif
+release: LDLIBS+=-static-libgcc -static-libstdc++ 
 ifeq ($(PLATFORM_OS),WINDOWS) # how to remove console for linux?
 release: LDLIBS+=-Wl,--subsystem,windows
 endif
@@ -103,7 +105,7 @@ $(OBJ)/ui/%.o: %.cpp
 
 
 run: $(EXE)
-	$<
+	./$(EXE)
 
 clean:
 	$(REMOVE) $(OBJ)/*.o
