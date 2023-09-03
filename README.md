@@ -28,15 +28,32 @@ A dependency free typing test application inspired by Monkeytype. Contains many 
 Test has similar behavior to Monkeytype: pressing space too early will jump to the next word, backspace is ignore if previous word is correctly typed, space is ignored if you haven't started the next word, etc. Test statistics are calculated as follows:
 
 <center>
-
-| Statistic | Description |  
-|-----------|-------------|
-| WPM | Number of characters typed in **only correct words** divided by seconds elapsed (characters/second) converted to words/minute. All characters from an incorrectly typed word are ignored. |
-| Accuracy | Percentage of characters that were typed correctly, regardless  of whether it was in a correctly typed word. |
-| Raw WPM | Raw WPM is the WPM of the full test not counting incorrect characters. |
-| Consistency | Calculated using the coefficient of variation mapped from 0% to 100% by dividing the coefficient by a worst case variation.|
-| Instantaneous WPM | The WPM from the last 5 seconds (displayed as `instant` in graph results hint). |
-
+<table>
+  <tr>
+    <th>Statistic</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>WPM</td>
+    <td>Number of characters typed in <strong>only correct words</strong> divided by seconds elapsed (characters/second) converted to words/minute. All characters from an incorrectly typed word are ignored.</td>
+  </tr>
+  <tr>
+    <td>Accuracy</td>
+    <td>Percentage of characters that were typed correctly, regardless  of whether it was in a correctly typed word.</td>
+  </tr>
+  <tr>
+    <td>Raw WPM</td>
+    <td>Raw WPM is the WPM of the full test not counting incorrect characters.</td>
+  </tr>
+  <tr>
+    <td>Consistency</td>
+    <td>Calculated using the coefficient of variation mapped from 0% to 100% by dividing the coefficient by a worst case variation.</td>
+  </tr>
+  <tr>
+    <td>Instantaneous WPM</td>
+    <td>The WPM from the last 5 seconds (displayed as <code>instant</code> in graph results hint).</td>
+  </tr>
+</table>
 </center>
 
 ## Features
