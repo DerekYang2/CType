@@ -17,9 +17,9 @@
             "wpm": 100.0
         }
     ],
-    "punctuation": 1,
-    "test time": 5,
+    "punctuation": 0,
+    "test time": 7,
     "numbers": 0,
-    "dictionary": "english",
-    "custom time": 12
+    "dictionary": "code c++",
+    "custom time": 7
 }

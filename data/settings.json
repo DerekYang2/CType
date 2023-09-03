@@ -47,13 +47,13 @@
                 "off",
                 "on"
             ],
-            "default": 0
+            "default": 1
         }
     },
     "Theme": {
-        "name": "serika dark"
+        "name": "80s after dark"
     },
     "Font": {
-        "path": "fonts/RobotoMono.ttf"
+        "path": "fonts/TimesNewRoman.ttf"
     }
 }
