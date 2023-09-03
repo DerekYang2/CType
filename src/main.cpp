@@ -880,7 +880,7 @@ int main(void)
      * TECHNICAL INITIALIZATION
     */
     // Enable config flags for resizable window and vertical synchro
-    SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_MSAA_4X_HINT | FLAG_WINDOW_UNDECORATED | FLAG_VSYNC_HINT);
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_MSAA_4X_HINT | FLAG_WINDOW_UNDECORATED);
 
     InitWindow(windowWidth, windowHeight, "CType");
     MaximizeWindow();
