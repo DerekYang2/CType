@@ -15,7 +15,9 @@
   <a href="#license">License</a> 
 </p>
 
-![Sample Gif](./Sample.webp)
+<p align="center">
+  <img src="./Sample.gif" alt="Sample Gif" />
+</p>
 
 ---
 
