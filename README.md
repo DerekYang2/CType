@@ -16,7 +16,7 @@
 </p>
 
 <p align="center">
-  <img src="./Sample.gif" alt="Sample Gif" />
+  <img src="./Sample.webp" alt="Sample Gif" />
 </p>
 
 ---
