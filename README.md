@@ -15,7 +15,7 @@
   <a href="#license">License</a> 
 </p>
 
-![Sample Gif](./Sample.gif)
+![Sample Gif](./Sample.webp)
 
 ---
 
