@@ -16,7 +16,7 @@
 </p>
 
 <p align="center">
-  <img src="./Sample.webp" alt="Sample Gif" />
+  <img src="./Sample.webp" alt="Sample Webp" />
 </p>
 
 ---
@@ -24,7 +24,7 @@
 ## About 
 Long term project in progress. 
 
-A dependency free typing test application inspired by Monkeytype. Contains many fundamental features including custom test settings, user settings, themes, dictionaries, fonts, sounds, screenshots, and various UI features including hovering hints, toggles, scrolling, interactive results graph, text input boxes, etc. Written from scratch in C++ with OpenGL drawing functions provided by [Raylib](https://github.com/raysan5/raylib) and a simple json parser provided by [RSJ](https://github.com/subh83/RSJp-cpp). As a result, executable runs without any setup on most Windows platforms as DLLs come with Windows 10 and 11. Linux is also supported with installation of a few libraries. Tested to be lightweight enough to easily reach above 60 fps on your dying 2-core 2GB RAM chromebook.
+A dependency free typing test application that aims to be a C++ implementation of Monkeytype. Contains the fundamental features including custom test settings, user settings, themes, dictionaries, fonts, sounds, screenshots, and various UI features including hovering hints, toggles, scrolling, interactive results graph, text input boxes, etc. Written from scratch in C++ with OpenGL drawing functions provided by [Raylib](https://github.com/raysan5/raylib) and a simple json parser provided by [RSJ](https://github.com/subh83/RSJp-cpp). As a result, executable runs without any setup on most Windows platforms as DLLs come with Windows 10 and 11. Linux is also supported with installation of a few libraries. Tested to be lightweight enough to easily reach above 60 fps on your dying 2-core 2GB ram chromebook.
 
 ## Behavior
 Test has similar behavior to Monkeytype: pressing space too early will jump to the next word, backspace is ignore if previous word is correctly typed, space is ignored if you haven't started the next word, etc. Test statistics are calculated as follows:
@@ -82,9 +82,11 @@ CType has many features despite being implemented from scratch, including:
 The only dependency is Raylib, which already has static libraries for Windows and Linux included in the `lib` folder. The makefile currently automatically detects Windows versus Linux operating systems. Feel free to make custom tweaks.
 
 ### Windows
-Call `mingw32-make all` in the root directory of the project to compile the executable. Call `mingw32-make run` to run the .exe, or run it directly by other means. If you want to compile and run the .exe in one command, call `mingw32-make default`. 
+Call `mingw32-make all` in the root directory of the project to compile the executable. Call `mingw32-make run` to run the `.exe`, or run it directly by other means. If you want to compile and run the `.exe` in one command, call `mingw32-make default`. 
 - Call `mingw32-make clean` to remove all old object files.
-- Call `mingw32-make release` after cleaning to compile a release version of the .exe. This will be a bit slower due to static compilation.
+- Call `mingw32-make release` after cleaning to compile a release version of the `.exe`. This will be a bit slower due to static compilation.
+
+Note that some may use `make` instead of `mingw32-make` which is typically installed from MSYS2. Use whatever Makefile command you prefer.
 
 ### Linux
 
@@ -92,7 +94,7 @@ For Linux, libraries required by Raylib must be installed:  https://github.com/r
 ```
 sudo apt install libasound2-dev libx11-dev libxrandr-dev libxi-dev libgl1-mesa-dev libglu1-mesa-dev libxcursor-dev libxinerama-dev
 ```
-The commands are the same as windows, however use `make` instead of `mingw32-make`.
+Makefile commands are the same as that of windows.
 
 ## Installation
 If you just want to try the application, visit https://github.com/DerekYang2/CType/releases for instructions. Download the zipped folder which contains the executable and proper folder structure. The location you place the master folder does not matter.
