@@ -32,6 +32,7 @@
 
 #include <filesystem>
 #include <thread>
+#include <mutex>
 #include "raylibcustom.h"        
 #include <math.h>
 #include <chrono>
