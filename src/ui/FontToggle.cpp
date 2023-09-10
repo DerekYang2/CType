@@ -9,6 +9,7 @@ void init_font(string path)
     if (font_path == path) return;
     cout << "Loading font: " << path << endl;
     font_path = path;
+    UnloadFont(font);
     font = load_font(path);  // set global font to f
     font_spacing = 12;  // Default Font 
     font_measure.set_font(font);
