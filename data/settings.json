@@ -3,7 +3,7 @@
         "path": "fonts/RobotoMono.ttf"
     },
     "Theme": {
-        "name": "alpine"
+        "name": "dracula"
     },
     "Appearance": {
         "tape mode": {

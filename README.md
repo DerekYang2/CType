@@ -77,7 +77,7 @@ CType has many features despite being implemented from scratch, including:
 - Json data and setting loading 
 
 ## Build 
-The only dependency is Raylib, which already has static libraries for Windows and Linux included in the `lib` folder. The makefile currently automatically detects Windows versus Linux operating systems. Feel free to make custom tweaks. `libraylib.a` is a static library for raylib version 4.5, with custom tweaks for blending modes. The alpha blending in Raylib is drastically improved with a custom function as outlined in https://github.com/raysan5/raylib/pull/2741.
+The only dependency is Raylib, which already has static libraries for Windows and Linux included in the `lib` folder. The makefile currently automatically detects Windows versus Linux operating systems. `libraylib.a` is a static library for raylib version 4.5, with custom tweaks for blending modes. The alpha blending in Raylib is drastically improved with a custom function as outlined in https://github.com/raysan5/raylib/pull/2741. This significantly improves font rendering, removing the thin black line around textures. 
 
 ### Windows
 Call `mingw32-make all` in the root directory of the project to compile the executable. Call `mingw32-make run` to run the `.exe`, or run it directly by other means. If you want to compile and run the `.exe` in one command, call `mingw32-make default`. 
@@ -100,7 +100,6 @@ If you just want to try the application, visit https://github.com/DerekYang2/CTy
 For Windows 10 and 11, the .exe file is standalone -- you should be able to directly start using the application. For now, Linux may require a bit of installing and setup.
 
 ## Limitations
-- MSAA does not fix serious jaggies. Solution will likely require tweaks in the underlying OpenGL line drawing functions. Nvidia control panel FXAA fixes jagged curves yet reduces quality of small text. FXAA fragment shaders found online do not perform as well, ruining small text and removing thin grid lines.
 - Only regular ASCII character support for now.
 - Screen scaling keeps a 1920x1080 ratio with black padding to fill the rest, possibly add custom ratio.
 - Ideally, there should have been a better layout management system for dynamic aspect ratio and screen scaling.
