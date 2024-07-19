@@ -3,7 +3,7 @@
   <a href="https://github.com/DerekYang2/CType"><img src="https://github.com/DerekYang2/CType/assets/115889767/0f7fd2d9-1161-46f4-8aa9-e1c6a3c2753f" width=300px></a>
 </h1>
 
-<h3 align="center">Minimalistic Typing Test in C/C++</h3>
+<h3 align="center">Minimalistic Typing Test in C++</h3>
 
 <p align="center">
   <a href="#about">About</a> •
@@ -59,7 +59,6 @@ Test has similar behavior to Monkeytype: pressing space too early will jump to t
 ## Features
 CType has many features despite being implemented from scratch, including:
 - Executable directly runs with no dependencies (on Windows)
-- Can theoretically compile on all platforms Raylib compiles on
 - Extremely lightweight and offline
 - Input custom test time, set punctuation and numbers settings
 - Real-time setting updating and saving
@@ -84,7 +83,7 @@ Call `mingw32-make all` in the root directory of the project to compile the exec
 - Call `mingw32-make clean` to remove all old object files.
 - Call `mingw32-make release` after cleaning to compile a release version of the `.exe`. The folders `data`, `fonts`, `languages`, `screenshots`, `sounds`, `themes` should be in the same root folder as the executable. Include any assets of your choice, as long as they are the right file format. The executable is then ready to run!
 
-Note that some may use `make` instead of `mingw32-make` which is typically installed from MSYS2. Use whatever Makefile command you prefer.
+Note that you may use`make` instead of `mingw32-make`.
 
 ### Linux
 
