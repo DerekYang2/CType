@@ -49,13 +49,12 @@ PopupHandler::PopupHandler(float x, float y, float width, float toggle_height, i
     rect = Rectangle(x, y, width, height_sum);
     // Center rect by default
     rect.x -= rect.width * 0.5f, rect.y -= rect.height * 0.5f;
-
     // Set all proper positions
     float cx = rect.x + rect.width * 0.5f, y_pos = rect.y + padding;
     if (title != nullptr)
         title->set_pos(cx - title->get_width() * 0.5f, y_pos), y_pos += title->get_height() + padding;
     if (description != nullptr)
-        description->set_pos(cx - description->get_width() * 0.5f, y_pos), y_pos += description->get_height() + padding;
+        description->set_pos(rect.x + panel->get_padding(), y_pos), y_pos += description->get_height() + padding;
     if (panel != nullptr)
         panel->set_pos(cx - panel->get_width() * 0.5f, y_pos), y_pos += panel->get_height() + padding;
     if (button != nullptr)

@@ -22,7 +22,7 @@
 *   SOFTWARE.
 *   
 *********************************************************************************/
-#define CTYPE_VERSION "v0.0 beta"
+#define CTYPE_VERSION "v0.1"
 
 /**
  * TODO:
@@ -589,7 +589,10 @@ void global_draw()
     close_button->draw();
     minimize_button->draw();
     fullscreen_toggle->draw();
-    DrawTextAlign(CTYPE_VERSION, 10, gameScreenHeight - 10, font_measure.small(), theme.sub, LEFT, BOTTOM);
+    if (scene != POPUP)
+    {
+        DrawTextAlign(CTYPE_VERSION, 10, gameScreenHeight - 10, font_measure.small(), theme.sub, LEFT, BOTTOM);  // Draw version
+    }
 }
 
 void draw_cursor()
@@ -616,8 +619,6 @@ void set_rand_font()
 {
     vector<string> font_paths = directory_files("C:/Windows/Fonts", ".ttf");
     string font_path = font_paths[rand_int(0, font_paths.size() - 1)];
-    //string font_path = select_file("C:/Users/derek/Documents/projects/typingtest/fonts", "ttf");
-    //cout << font_path << endl;
     init_font(font_path);
 }
 
@@ -979,6 +980,8 @@ int main(void)
         //----------------------------------------------------------------------------------
         // Draw everything in the render texture, note this will not be rendered on screen, yet
         BeginTextureMode(target);
+        BeginBlendMode(BLEND_CUSTOM_SEPARATE);
+
         BeginShaderMode(shader);    // Activate SDF font shader    
 
         if (scene == START)
@@ -1009,7 +1012,7 @@ int main(void)
             int max_fps = 1000.0 / frame_time;
             DrawText(TextFormat("MAX FPS: %d | ELAPSED TIME: %.2f", max_fps, frame_time), 0, gameScreenHeight - 30, 25, BLACK);
         }
-        
+
         for (const int id : scene_ids[scene])
         {
             ui_objects[id]->draw();
@@ -1026,6 +1029,7 @@ int main(void)
         global_draw();
         EndShaderMode();
         draw_logo();
+        EndBlendMode();
         EndTextureMode();
         // Draw render texture onto real screen ---------------------------------------------------
         BeginDrawing();

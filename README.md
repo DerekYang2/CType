@@ -22,9 +22,7 @@
 ---
 
 ## About 
-Long term project in progress. 
-
-A dependency free typing test application that aims to be a C++ implementation of Monkeytype. Contains the fundamental features including custom test settings, user settings, themes, dictionaries, fonts, sounds, screenshots, and various UI features including hovering hints, toggles, scrolling, interactive results graph, text input boxes, etc. Written from scratch in C++ with OpenGL drawing functions provided by [Raylib](https://github.com/raysan5/raylib) and a simple json parser provided by [RSJ](https://github.com/subh83/RSJp-cpp). As a result, executable runs without any setup on most Windows platforms as DLLs come with Windows 10 and 11. Linux is also supported with installation of a few libraries. Tested to be lightweight enough to easily reach above 60 fps on your dying 2-core 2GB ram chromebook.
+A dependency free typing test application that aims to be a C++ implementation of Monkeytype. Contains the fundamental features including custom test settings, user settings, themes, dictionaries, fonts, sounds, screenshots, and various UI features including hovering hints, toggles, scrolling, interactive results graph, text input boxes, etc. Written from scratch in C++ with OpenGL drawing functions provided by [Raylib](https://github.com/raysan5/raylib) and a simple json parser provided by [RSJ](https://github.com/subh83/RSJp-cpp). As a result, executable runs without any setup on most Windows platforms as DLLs come with Windows 10 and 11. Linux is also supported with installation of a few libraries. The UI is written from scratch (see `src/ui`) and is thus unfortunately very custom to this project. 
 
 ## Behavior
 Test has similar behavior to Monkeytype: pressing space too early will jump to the next word, backspace is ignore if previous word is correctly typed, space is ignored if you haven't started the next word, etc. Test statistics are calculated as follows:
@@ -79,7 +77,7 @@ CType has many features despite being implemented from scratch, including:
 - Json data and setting loading 
 
 ## Build 
-The only dependency is Raylib, which already has static libraries for Windows and Linux included in the `lib` folder. The makefile currently automatically detects Windows versus Linux operating systems. Feel free to make custom tweaks.
+The only dependency is Raylib, which already has static libraries for Windows and Linux included in the `lib` folder. The makefile currently automatically detects Windows versus Linux operating systems. Feel free to make custom tweaks. `libraylib.a` is a static library for raylib version 4.5, with custom tweaks for blending modes. The alpha blending in Raylib is drastically improved with a custom function as outlined in https://github.com/raysan5/raylib/pull/2741.
 
 ### Windows
 Call `mingw32-make all` in the root directory of the project to compile the executable. Call `mingw32-make run` to run the `.exe`, or run it directly by other means. If you want to compile and run the `.exe` in one command, call `mingw32-make default`. 
@@ -96,16 +94,16 @@ sudo apt install libasound2-dev libx11-dev libxrandr-dev libxi-dev libgl1-mesa-d
 ```
 Makefile commands are the same as that of windows.
 
-## Installation
-If you just want to try the application, visit https://github.com/DerekYang2/CType/releases for instructions. Download the zipped folder which contains the executable and proper folder structure. The location you place the master folder does not matter.
+## Running
+If you just want to try the application, visit https://github.com/DerekYang2/CType/releases for instructions. Download the zipped folder which contains the executable and proper folder structure. 
 
-For Windows 10 and 11, you will likely be able to directly start using the application. Linux may require a bit of setup.
+For Windows 10 and 11, the .exe file is standalone -- you should be able to directly start using the application. For now, Linux may require a bit of installing and setup.
 
 ## Limitations
-- Weak antialiasing for shapes and lines, especially evident with circular shapes and interpolation line in results graph. Solution will require tweaks in the OpenGL functions of the Raylib library. Nvidia control panel FXAA fixes these jagged curves yet ruins the color for small text. A fragment shader FXAA also fixes curves, yet is much worse by completely removing pixels, thin lines, etc. 
-- Issue with Raylib SDF font loading: loaded text have very thin black outlines which can make them difficult to read. Only noticeable for reading thin text for themes with light text on a light background. 
+- MSAA does not fix serious jaggies. Solution will likely require tweaks in the underlying OpenGL line drawing functions. Nvidia control panel FXAA fixes jagged curves yet reduces quality of small text. FXAA fragment shaders found online do not perform as well, ruining small text and removing thin grid lines.
 - Only regular ASCII character support for now.
 - Screen scaling keeps a 1920x1080 ratio with black padding to fill the rest, possibly add custom ratio.
+- Ideally, there should have been a better layout management system for dynamic aspect ratio and screen scaling.
 
 ## License
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)

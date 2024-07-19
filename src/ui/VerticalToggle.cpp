@@ -142,6 +142,11 @@ float VerticalToggle::get_height()
     return total_hitbox.height - 2*padding;
 }
 
+float VerticalToggle::get_padding()
+{
+    return padding;
+}
+
 string VerticalToggle::get_selected()
 {
     return trim(text[selected]);
