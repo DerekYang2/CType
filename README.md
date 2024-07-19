@@ -82,7 +82,7 @@ The only dependency is Raylib, which already has static libraries for Windows an
 ### Windows
 Call `mingw32-make all` in the root directory of the project to compile the executable. Call `mingw32-make run` to run the `.exe`, or run it directly by other means. If you want to compile and run the `.exe` in one command, call `mingw32-make default`. 
 - Call `mingw32-make clean` to remove all old object files.
-- Call `mingw32-make release` after cleaning to compile a release version of the `.exe`. This will be a bit slower due to static compilation.
+- Call `mingw32-make release` after cleaning to compile a release version of the `.exe`. The folders `data`, `fonts`, `languages`, `screenshots`, `sounds`, `themes` should be in the same root folder as the executable. Include any assets of your choice, as long as they are the right file format. The executable is then ready to run!
 
 Note that some may use `make` instead of `mingw32-make` which is typically installed from MSYS2. Use whatever Makefile command you prefer.
 
