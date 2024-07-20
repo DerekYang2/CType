@@ -79,6 +79,16 @@
         'error-color': e74040,
         'bg-color': 0058a3
     },
+    'stealth': {
+        'error-extra-color': 73280c,
+        'sub-alt-color': 121212,
+        'sub-color': 5e676e,
+        'text-color': 383e42,
+        'caret-color': e25303,
+        'main-color': 383e42,
+        'error-color': e25303,
+        'bg-color': 010203
+    },
     'sonokai': {
         'error-extra-color': ecac6a,
         'sub-alt-color': 232429,
@@ -169,16 +179,6 @@
         'error-color': ca4754,
         'bg-color': 081426
     },
-    'rudy': {
-        'error-extra-color': 793e44,
-        'sub-alt-color': 152231,
-        'sub-color': 3a506c,
-        'text-color': c9c8bf,
-        'caret-color': af8f5c,
-        'main-color': af8f5c,
-        'error-color': bf616a,
-        'bg-color': 1a2b3e
-    },
     'rose pine dawn': {
         'error-extra-color': d7827e,
         'sub-alt-color': f0e9df,
@@ -229,35 +229,45 @@
         'error-color': c43c53,
         'bg-color': efead0
     },
-    'strawberry': {
-        'error-extra-color': d7ae1e,
-        'sub-alt-color': ef6e77,
-        'sub-color': e53c58,
-        'text-color': fcfcf8,
-        'caret-color': fcfcf8,
-        'main-color': fcfcf8,
-        'error-color': fcd23f,
-        'bg-color': f37f83
+    'terror below': {
+        'error-extra-color': 793e44,
+        'sub-alt-color': 041715,
+        'sub-color': 015c53,
+        'text-color': dceae5,
+        'caret-color': 66ac92,
+        'main-color': 66ac92,
+        'error-color': bf616a,
+        'bg-color': 0b1e1a
     },
-    'cyberspace': {
-        'error-extra-color': d22a2a,
-        'sub-alt-color': 131613,
-        'sub-color': 9578d3,
-        'text-color': c2fbe1,
-        'caret-color': 00ce7c,
-        'main-color': 00ce7c,
-        'error-color': ff5f5f,
-        'bg-color': 181c18
+    'red samurai': {
+        'error-extra-color': 176b79,
+        'sub-alt-color': 751d26,
+        'sub-color': 55131b,
+        'text-color': e2dad0,
+        'caret-color': c79e6e,
+        'main-color': c79e6e,
+        'error-color': 33bbda,
+        'bg-color': 84202c
     },
-    'husqy': {
-        'error-extra-color': 791717,
-        'sub-alt-color': 1e001e,
-        'sub-color': 972fff,
-        'text-color': ebd7ff,
-        'caret-color': c58aff,
-        'main-color': c58aff,
-        'error-color': da3333,
-        'bg-color': 000000
+    'purpleish': {
+        'error-extra-color': ff6666,
+        'sub-alt-color': 181829,
+        'sub-color': 5c5c99,
+        'text-color': a3a3cc,
+        'caret-color': 7a52cc,
+        'main-color': 7a52cc,
+        'error-color': ff6666,
+        'bg-color': 1e1e32
+    },
+    'peach blossom': {
+        'error-extra-color': e84a5f,
+        'sub-alt-color': 2a363b,
+        'sub-color': 616161,
+        'text-color': fecea8,
+        'caret-color': 616161,
+        'main-color': 99b898,
+        'error-color': ff6961,
+        'bg-color': 292929
     },
     'wavez': {
         'error-extra-color': 7e2a33,
@@ -339,46 +349,6 @@
         'error-color': fff591,
         'bg-color': 18181a
     },
-    'ez mode': {
-        'error-extra-color': 42ba3b,
-        'sub-alt-color': 005bac,
-        'sub-color': 138bf7,
-        'text-color': ffffff,
-        'caret-color': 4ddb47,
-        'main-color': fa62d5,
-        'error-color': 4ddb47,
-        'bg-color': 0068c6
-    },
-    'godspeed': {
-        'error-extra-color': 7e2a33,
-        'sub-alt-color': ded9c9,
-        'sub-color': ada998,
-        'text-color': 646669,
-        'caret-color': f4d476,
-        'main-color': 9abbcd,
-        'error-color': ca4754,
-        'bg-color': eae4cf
-    },
-    'fundamentals': {
-        'error-extra-color': 413157,
-        'sub-alt-color': 666868,
-        'sub-color': cac4be,
-        'text-color': 131313,
-        'caret-color': 196378,
-        'main-color': 7fa482,
-        'error-color': 5e477c,
-        'bg-color': 727474
-    },
-    'lil dragon': {
-        'error-extra-color': f279c2,
-        'sub-alt-color': dac7e2,
-        'sub-color': a28db8,
-        'text-color': 212b43,
-        'caret-color': 212b43,
-        'main-color': 8a5bd6,
-        'error-color': f794ca,
-        'bg-color': ebe1ef
-    },
     'tiramisu': {
         'error-extra-color': e9632d,
         'sub-alt-color': d0bca7,
@@ -399,6 +369,16 @@
         'error-color': da3333,
         'bg-color': 121520
     },
+    'terrazzo': {
+        'error-extra-color': a01034,
+        'sub-alt-color': e3d3c6,
+        'sub-color': 688e8f,
+        'text-color': 023e3b,
+        'caret-color': e0794e,
+        'main-color': e0794e,
+        'error-color': a01034,
+        'bg-color': f1e5da
+    },
     'dualshot': {
         'error-extra-color': ac1823,
         'sub-alt-color': 646464,
@@ -409,35 +389,25 @@
         'error-color': c82931,
         'bg-color': 737373
     },
-    'sewing tin light': {
-        'error-extra-color': f2ce83,
-        'sub-alt-color': c8cedf,
-        'sub-color': 385eca,
-        'text-color': 2d2076,
-        'caret-color': fbdb8c,
-        'main-color': 2d2076,
-        'error-color': f2ce83,
-        'bg-color': ffffff
+    'ez mode': {
+        'error-extra-color': 42ba3b,
+        'sub-alt-color': 005bac,
+        'sub-color': 138bf7,
+        'text-color': ffffff,
+        'caret-color': 4ddb47,
+        'main-color': fa62d5,
+        'error-color': 4ddb47,
+        'bg-color': 0068c6
     },
-    'drowning': {
-        'error-extra-color': 7e2a33,
-        'sub-alt-color': 1e1f2f,
-        'sub-color': 50688c,
-        'text-color': 9393a7,
-        'caret-color': 4f85e8,
-        'main-color': 4a6fb5,
-        'error-color': be555f,
-        'bg-color': 191826
-    },
-    'cheesecake': {
-        'error-extra-color': 5cf074,
-        'sub-alt-color': f3e2bf,
-        'sub-color': d91c81,
-        'text-color': 3a3335,
-        'caret-color': 892948,
-        'main-color': 8e2949,
-        'error-color': 5cf074,
-        'bg-color': fdf0d5
+    'discord': {
+        'error-extra-color': df4f4b,
+        'sub-alt-color': 2b2d31,
+        'sub-color': 565861,
+        'text-color': dcdee3,
+        'caret-color': 5a65ea,
+        'main-color': 5a65ea,
+        'error-color': df4f4b,
+        'bg-color': 313338
     },
     'dino': {
         'error-extra-color': d22a2a,
@@ -489,6 +459,26 @@
         'error-color': b63530,
         'bg-color': 058b8c
     },
+    'pulse': {
+        'error-extra-color': 791717,
+        'sub-alt-color': 121212,
+        'sub-color': 53565a,
+        'text-color': e5f4f4,
+        'caret-color': 17b8bd,
+        'main-color': 17b8bd,
+        'error-color': da3333,
+        'bg-color': 181818
+    },
+    'horizon': {
+        'error-extra-color': ff3d3d,
+        'sub-alt-color': 17181f,
+        'sub-color': db886f,
+        'text-color': bbbbbb,
+        'caret-color': bbbbbb,
+        'main-color': c4a88a,
+        'error-color': d55170,
+        'bg-color': 1c1e26
+    },
     'miami': {
         'error-extra-color': b9b269,
         'sub-alt-color': db4979,
@@ -539,6 +529,16 @@
         'error-color': da3333,
         'bg-color': 212121
     },
+    'floret': {
+        'error-extra-color': 00708d,
+        'sub-alt-color': 173033,
+        'sub-color': 779097,
+        'text-color': e5e5e5,
+        'caret-color': c3bd40,
+        'main-color': ffdd6d,
+        'error-color': 8a4000,
+        'bg-color': 00272c
+    },
     'dark': {
         'error-extra-color': 791717,
         'sub-alt-color': 191919,
@@ -559,6 +559,46 @@
         'error-color': d44729,
         'bg-color': 0f1f2c
     },
+    'cy red': {
+        'error-extra-color': 4d5d9e,
+        'sub-alt-color': 3f1616,
+        'sub-color': ff6060,
+        'text-color': ffaaaa,
+        'caret-color': 541d1d,
+        'main-color': e55050,
+        'error-color': 919fd9,
+        'bg-color': 6e2626
+    },
+    'earthsong': {
+        'error-extra-color': ff645a,
+        'sub-alt-color': 1d1b18,
+        'sub-color': f5ae2d,
+        'text-color': e6c7a8,
+        'caret-color': 1298ba,
+        'main-color': 509452,
+        'error-color': 7e2a33,
+        'bg-color': 292521
+    },
+    'serika': {
+        'error-extra-color': 791717,
+        'sub-alt-color': d1d3d8,
+        'sub-color': aaaeb3,
+        'text-color': 323437,
+        'caret-color': e2b714,
+        'main-color': e2b714,
+        'error-color': da3333,
+        'bg-color': e1e1e3
+    },
+    'darling': {
+        'error-extra-color': 2e7dde,
+        'sub-alt-color': f2babd,
+        'sub-color': a30000,
+        'text-color': ffffff,
+        'caret-color': ffffff,
+        'main-color': ffffff,
+        'error-color': 2e7dde,
+        'bg-color': fec8cd
+    },
     'bingsu': {
         'error-extra-color': 640b2c,
         'sub-alt-color': ab989e,
@@ -578,6 +618,36 @@
         'main-color': be3c88,
         'error-color': ca4754,
         'bg-color': 212135
+    },
+    'repose dark': {
+        'error-extra-color': c43c53,
+        'sub-alt-color': 3a3c3d,
+        'sub-color': 8f8e84,
+        'text-color': d6d2bc,
+        'caret-color': d6d2bc,
+        'main-color': d6d2bc,
+        'error-color': ff4a59,
+        'bg-color': 2f3338
+    },
+    'paper': {
+        'error-extra-color': d70000,
+        'sub-alt-color': dddddd,
+        'sub-color': b2b2b2,
+        'text-color': 444444,
+        'caret-color': 444444,
+        'main-color': 444444,
+        'error-color': d70000,
+        'bg-color': eeeeee
+    },
+    'macroblank': {
+        'error-extra-color': fff5f5,
+        'sub-alt-color': c6ddd3,
+        'sub-color': 717977,
+        'text-color': 490909,
+        'caret-color': 766f71,
+        'main-color': c13117,
+        'error-color': c13117,
+        'bg-color': b2d2c8
     },
     'aurora': {
         'error-extra-color': 9b3a76,
@@ -689,26 +759,6 @@
         'error-color': bd4141,
         'bg-color': 262727
     },
-    'horizon': {
-        'error-extra-color': ff3d3d,
-        'sub-alt-color': 17181f,
-        'sub-color': db886f,
-        'text-color': bbbbbb,
-        'caret-color': bbbbbb,
-        'main-color': c4a88a,
-        'error-color': d55170,
-        'bg-color': 1c1e26
-    },
-    'pulse': {
-        'error-extra-color': 791717,
-        'sub-alt-color': 121212,
-        'sub-color': 53565a,
-        'text-color': e5f4f4,
-        'caret-color': 17b8bd,
-        'main-color': 17b8bd,
-        'error-color': da3333,
-        'bg-color': 181818
-    },
     'alduin': {
         'error-extra-color': 4d2113,
         'sub-alt-color': 242424,
@@ -729,6 +779,76 @@
         'error-color': fc5727,
         'bg-color': 36475c
     },
+    'rudy': {
+        'error-extra-color': 793e44,
+        'sub-alt-color': 152231,
+        'sub-color': 3a506c,
+        'text-color': c9c8bf,
+        'caret-color': af8f5c,
+        'main-color': af8f5c,
+        'error-color': bf616a,
+        'bg-color': 1a2b3e
+    },
+    'anti hero': {
+        'error-extra-color': 558cab,
+        'sub-alt-color': 060548,
+        'sub-color': ff3d8b,
+        'text-color': f1deef,
+        'caret-color': ffffff,
+        'main-color': ffadad,
+        'error-color': 8fecff,
+        'bg-color': 00002e
+    },
+    'tangerine': {
+        'error-extra-color': 5f8700,
+        'sub-alt-color': fdd3bf,
+        'sub-color': ff9562,
+        'text-color': 3d1705,
+        'caret-color': 5d8500,
+        'main-color': fe5503,
+        'error-color': 7fb500,
+        'bg-color': ffede0
+    },
+    'breeze': {
+        'error-extra-color': 9f3e6d,
+        'sub-alt-color': f6e6da,
+        'sub-color': 3a98b9,
+        'text-color': 1b4c5e,
+        'caret-color': 7d67a9,
+        'main-color': 7d67a9,
+        'error-color': 7d67a9,
+        'bg-color': e8d5c4
+    },
+    'bento': {
+        'error-extra-color': f04040,
+        'sub-alt-color': 263041,
+        'sub-color': 4a768d,
+        'text-color': fffaf8,
+        'caret-color': ff7a90,
+        'main-color': ff7a90,
+        'error-color': ee2a3a,
+        'bg-color': 2d394d
+    },
+    'muted': {
+        'error-extra-color': edc1cd,
+        'sub-alt-color': 494949,
+        'sub-color': 939eae,
+        'text-color': b1e4e3,
+        'caret-color': b1e4e3,
+        'main-color': c5b4e3,
+        'error-color': edc1cd,
+        'bg-color': 525252
+    },
+    'aether': {
+        'error-extra-color': e3002b,
+        'sub-alt-color': 292136,
+        'sub-color': cf6bdd,
+        'text-color': eedaea,
+        'caret-color': eedaea,
+        'main-color': eedaea,
+        'error-color': ff5253,
+        'bg-color': 101820
+    },
     'viridescent': {
         'error-extra-color': ab2f2f,
         'sub-alt-color': 232828,
@@ -748,46 +868,6 @@
         'main-color': ec4c56,
         'error-color': ec4c56,
         'bg-color': 242933
-    },
-    'aether': {
-        'error-extra-color': e3002b,
-        'sub-alt-color': 292136,
-        'sub-color': cf6bdd,
-        'text-color': eedaea,
-        'caret-color': eedaea,
-        'main-color': eedaea,
-        'error-color': ff5253,
-        'bg-color': 101820
-    },
-    'earthsong': {
-        'error-extra-color': ff645a,
-        'sub-alt-color': 1d1b18,
-        'sub-color': f5ae2d,
-        'text-color': e6c7a8,
-        'caret-color': 1298ba,
-        'main-color': 509452,
-        'error-color': 7e2a33,
-        'bg-color': 292521
-    },
-    'serika': {
-        'error-extra-color': 791717,
-        'sub-alt-color': d1d3d8,
-        'sub-color': aaaeb3,
-        'text-color': 323437,
-        'caret-color': e2b714,
-        'main-color': e2b714,
-        'error-color': da3333,
-        'bg-color': e1e1e3
-    },
-    'darling': {
-        'error-extra-color': 2e7dde,
-        'sub-alt-color': f2babd,
-        'sub-color': a30000,
-        'text-color': ffffff,
-        'caret-color': ffffff,
-        'main-color': ffffff,
-        'error-color': 2e7dde,
-        'bg-color': fec8cd
     },
     'rose pine': {
         'error-extra-color': ebbcba,
@@ -818,6 +898,76 @@
         'main-color': d65ccc,
         'error-color': ca4754,
         'bg-color': 323437
+    },
+    'superuser': {
+        'error-extra-color': d22a2a,
+        'sub-alt-color': 1f232c,
+        'sub-color': 526777,
+        'text-color': e5f7ef,
+        'caret-color': 43ffaf,
+        'main-color': 43ffaf,
+        'error-color': ff5f5f,
+        'bg-color': 262a33
+    },
+    'red dragon': {
+        'error-extra-color': 591317,
+        'sub-alt-color': 0e0506,
+        'sub-color': e2a528,
+        'text-color': 4a4d4e,
+        'caret-color': ff3a32,
+        'main-color': ff3a32,
+        'error-color': 771b1f,
+        'bg-color': 1a0b0c
+    },
+    'arch': {
+        'error-extra-color': b02a33,
+        'sub-alt-color': 171a25,
+        'sub-color': 454864,
+        'text-color': f6f5f5,
+        'caret-color': 7ebab5,
+        'main-color': 7ebab5,
+        'error-color': ff4754,
+        'bg-color': 0c0d11
+    },
+    'sewing tin light': {
+        'error-extra-color': f2ce83,
+        'sub-alt-color': c8cedf,
+        'sub-color': 385eca,
+        'text-color': 2d2076,
+        'caret-color': fbdb8c,
+        'main-color': 2d2076,
+        'error-color': f2ce83,
+        'bg-color': ffffff
+    },
+    'cheesecake': {
+        'error-extra-color': 5cf074,
+        'sub-alt-color': f3e2bf,
+        'sub-color': d91c81,
+        'text-color': 3a3335,
+        'caret-color': 892948,
+        'main-color': 8e2949,
+        'error-color': 5cf074,
+        'bg-color': fdf0d5
+    },
+    'drowning': {
+        'error-extra-color': 7e2a33,
+        'sub-alt-color': 1e1f2f,
+        'sub-color': 50688c,
+        'text-color': 9393a7,
+        'caret-color': 4f85e8,
+        'main-color': 4a6fb5,
+        'error-color': be555f,
+        'bg-color': 191826
+    },
+    'godspeed': {
+        'error-extra-color': 7e2a33,
+        'sub-alt-color': ded9c9,
+        'sub-color': ada998,
+        'text-color': 646669,
+        'caret-color': f4d476,
+        'main-color': 9abbcd,
+        'error-color': ca4754,
+        'bg-color': eae4cf
     },
     'striker': {
         'error-extra-color': cc241d,
@@ -869,6 +1019,36 @@
         'error-color': d44729,
         'bg-color': 173f35
     },
+    'strawberry': {
+        'error-extra-color': d7ae1e,
+        'sub-alt-color': ef6e77,
+        'sub-color': e53c58,
+        'text-color': fcfcf8,
+        'caret-color': fcfcf8,
+        'main-color': fcfcf8,
+        'error-color': fcd23f,
+        'bg-color': f37f83
+    },
+    'cyberspace': {
+        'error-extra-color': d22a2a,
+        'sub-alt-color': 131613,
+        'sub-color': 9578d3,
+        'text-color': c2fbe1,
+        'caret-color': 00ce7c,
+        'main-color': 00ce7c,
+        'error-color': ff5f5f,
+        'bg-color': 181c18
+    },
+    'husqy': {
+        'error-extra-color': 791717,
+        'sub-alt-color': 1e001e,
+        'sub-color': 972fff,
+        'text-color': ebd7ff,
+        'caret-color': c58aff,
+        'main-color': c58aff,
+        'error-color': da3333,
+        'bg-color': 000000
+    },
     '80s after dark': {
         'error-extra-color': fffb85,
         'sub-alt-color': 17182c,
@@ -908,36 +1088,6 @@
         'main-color': f4a3b4,
         'error-color': deb80b,
         'bg-color': 7c2142
-    },
-    'breeze': {
-        'error-extra-color': 9f3e6d,
-        'sub-alt-color': f6e6da,
-        'sub-color': 3a98b9,
-        'text-color': 1b4c5e,
-        'caret-color': 7d67a9,
-        'main-color': 7d67a9,
-        'error-color': 7d67a9,
-        'bg-color': e8d5c4
-    },
-    'bento': {
-        'error-extra-color': f04040,
-        'sub-alt-color': 263041,
-        'sub-color': 4a768d,
-        'text-color': fffaf8,
-        'caret-color': ff7a90,
-        'main-color': ff7a90,
-        'error-color': ee2a3a,
-        'bg-color': 2d394d
-    },
-    'muted': {
-        'error-extra-color': edc1cd,
-        'sub-alt-color': 494949,
-        'sub-color': 939eae,
-        'text-color': b1e4e3,
-        'caret-color': b1e4e3,
-        'main-color': c5b4e3,
-        'error-color': edc1cd,
-        'bg-color': 525252
     },
     'cafe': {
         'error-extra-color': ac1823,
@@ -979,26 +1129,6 @@
         'error-color': 7e2a2a,
         'bg-color': 242425
     },
-    'graen': {
-        'error-extra-color': 5f0715,
-        'sub-alt-color': 36453c,
-        'sub-color': 181d1a,
-        'text-color': a59682,
-        'caret-color': 601420,
-        'main-color': a59682,
-        'error-color': 601420,
-        'bg-color': 303c36
-    },
-    'joker': {
-        'error-extra-color': a62626,
-        'sub-alt-color': 14081f,
-        'sub-color': 7554a3,
-        'text-color': e9e2f5,
-        'caret-color': 99de1e,
-        'main-color': 99de1e,
-        'error-color': e32b2b,
-        'bg-color': 1a0e25
-    },
     'rose pine moon': {
         'error-extra-color': ebbcba,
         'sub-alt-color': 211f32,
@@ -1020,24 +1150,14 @@
         'bg-color': 141b1e
     },
     'catppuccin': {
-        'error-extra-color': e8a2af,
-        'sub-alt-color': 292739,
-        'sub-color': 575268,
-        'text-color': d9e0ee,
-        'caret-color': fae3b0,
-        'main-color': abe9b3,
-        'error-color': f28fad,
+        'error-extra-color': eba0ac,
+        'sub-alt-color': 181825,
+        'sub-color': 7f849c,
+        'text-color': cdd6f4,
+        'caret-color': f2cdcd,
+        'main-color': cba6f7,
+        'error-color': f38ba8,
         'bg-color': 1e1e2e
-    },
-    'chaos theory': {
-        'error-extra-color': b03c47,
-        'sub-alt-color': 1e1d2f,
-        'sub-color': 676e8a,
-        'text-color': dde5ed,
-        'caret-color': dde5ed,
-        'main-color': fd77d7,
-        'error-color': ff5869,
-        'bg-color': 141221
     },
     '9009': {
         'error-extra-color': a56961,
@@ -1088,6 +1208,46 @@
         'main-color': f8cdc6,
         'error-color': c9465e,
         'bg-color': 4a5b6e
+    },
+    'fundamentals': {
+        'error-extra-color': 413157,
+        'sub-alt-color': 666868,
+        'sub-color': cac4be,
+        'text-color': 131313,
+        'caret-color': 196378,
+        'main-color': 7fa482,
+        'error-color': 5e477c,
+        'bg-color': 727474
+    },
+    'lil dragon': {
+        'error-extra-color': f279c2,
+        'sub-alt-color': dac7e2,
+        'sub-color': a28db8,
+        'text-color': 212b43,
+        'caret-color': 212b43,
+        'main-color': 8a5bd6,
+        'error-color': f794ca,
+        'bg-color': ebe1ef
+    },
+    'graen': {
+        'error-extra-color': 5f0715,
+        'sub-alt-color': 36453c,
+        'sub-color': 181d1a,
+        'text-color': a59682,
+        'caret-color': 601420,
+        'main-color': a59682,
+        'error-color': 601420,
+        'bg-color': 303c36
+    },
+    'joker': {
+        'error-extra-color': a62626,
+        'sub-alt-color': 14081f,
+        'sub-color': 7554a3,
+        'text-color': e9e2f5,
+        'caret-color': 99de1e,
+        'main-color': 99de1e,
+        'error-color': e32b2b,
+        'bg-color': 1a0e25
     },
     'grape': {
         'error-extra-color': bf2054,
@@ -1161,33 +1321,13 @@
     },
     'modern dolch light': {
         'error-extra-color': e0556d,
-        'sub-alt-color': a8a8a8,
-        'sub-color': acacac,
+        'sub-alt-color': e8e8e8,
+        'sub-color': a3a2a2,
         'text-color': 454545,
         'caret-color': 8fd1c3,
         'main-color': 8fd1c3,
         'error-color': ea8a9a,
         'bg-color': dbdbdb
-    },
-    'paper': {
-        'error-extra-color': d70000,
-        'sub-alt-color': dddddd,
-        'sub-color': b2b2b2,
-        'text-color': 444444,
-        'caret-color': 444444,
-        'main-color': 444444,
-        'error-color': d70000,
-        'bg-color': eeeeee
-    },
-    'repose dark': {
-        'error-extra-color': c43c53,
-        'sub-alt-color': 3a3c3d,
-        'sub-color': 8f8e84,
-        'text-color': d6d2bc,
-        'caret-color': d6d2bc,
-        'main-color': d6d2bc,
-        'error-color': ff4a59,
-        'bg-color': 2f3338
     },
     'rgb': {
         'error-extra-color': b3b3b3,
@@ -1249,6 +1389,46 @@
         'error-color': ca4754,
         'bg-color': a86948
     },
+    'chaos theory': {
+        'error-extra-color': b03c47,
+        'sub-alt-color': 1e1d2f,
+        'sub-color': 676e8a,
+        'text-color': dde5ed,
+        'caret-color': dde5ed,
+        'main-color': fd77d7,
+        'error-color': ff5869,
+        'bg-color': 141221
+    },
+    'lilac mist': {
+        'error-extra-color': ff6f69,
+        'sub-alt-color': ecdceed9,
+        'sub-color': e094c2,
+        'text-color': 5c2954,
+        'caret-color': e099d6d9,
+        'main-color': b94189,
+        'error-color': ff6f69,
+        'bg-color': fffbfe
+    },
+    'incognito': {
+        'error-extra-color': e44545,
+        'sub-alt-color': 151515,
+        'sub-color': 555555,
+        'text-color': c6c6c6,
+        'caret-color': ff9900,
+        'main-color': ff9900,
+        'error-color': e44545,
+        'bg-color': 0e0e0e
+    },
+    'milkshake': {
+        'error-extra-color': e58c9d,
+        'sub-alt-color': ddeff3,
+        'sub-color': 62cfe6,
+        'text-color': 212b43,
+        'caret-color': 212b43,
+        'main-color': 212b43,
+        'error-color': f19dac,
+        'bg-color': ffffff
+    },
     'blue dolphin': {
         'error-extra-color': ff8188,
         'sub-alt-color': 014961,
@@ -1268,26 +1448,6 @@
         'main-color': 93c247,
         'error-color': ea4221,
         'bg-color': 7c878e
-    },
-    'stealth': {
-        'error-extra-color': 73280c,
-        'sub-alt-color': 121212,
-        'sub-color': 5e676e,
-        'text-color': 383e42,
-        'caret-color': e25303,
-        'main-color': 383e42,
-        'error-color': e25303,
-        'bg-color': 010203
-    },
-    'purpurite': {
-        'error-extra-color': ff6666,
-        'sub-alt-color': 3d4b66,
-        'sub-color': ccddff,
-        'text-color': 9999ff,
-        'caret-color': 9999ff,
-        'main-color': 9999ff,
-        'error-color': ff6666,
-        'bg-color': 1f2533
     },
     'luna': {
         'error-extra-color': c5972c,
@@ -1411,7 +1571,7 @@
     },
     'mexican': {
         'error-extra-color': 791717,
-        'sub-alt-color': b12189,
+        'sub-alt-color': f9b951,
         'sub-color': 333,
         'text-color': eee,
         'caret-color': eee,
@@ -1438,16 +1598,6 @@
         'main-color': 60759f,
         'error-color': c27070,
         'bg-color': 0b0e13
-    },
-    'milkshake': {
-        'error-extra-color': e58c9d,
-        'sub-alt-color': ddeff3,
-        'sub-color': 62cfe6,
-        'text-color': 212b43,
-        'caret-color': 212b43,
-        'main-color': 212b43,
-        'error-color': f19dac,
-        'bg-color': ffffff
     },
     'modern ink': {
         'error-extra-color': b00000,
@@ -1511,11 +1661,11 @@
     },
     'nord': {
         'error-extra-color': 793e44,
-        'sub-alt-color': 1b1f27,
-        'sub-color': 617b94,
+        'sub-alt-color': 2e3440,
+        'sub-color': 929aaa,
         'text-color': d8dee9,
-        'caret-color': d8dee9,
-        'main-color': d8dee9,
+        'caret-color': eceff4,
+        'main-color': 88c0d0,
         'error-color': bf616a,
         'bg-color': 242933
     },
@@ -1618,65 +1768,5 @@
         'main-color': dd7a5f,
         'error-color': ff6961,
         'bg-color': e0d7c1
-    },
-    'peach blossom': {
-        'error-extra-color': e84a5f,
-        'sub-alt-color': 2a363b,
-        'sub-color': 616161,
-        'text-color': fecea8,
-        'caret-color': 616161,
-        'main-color': 99b898,
-        'error-color': ff6961,
-        'bg-color': 292929
-    },
-    'superuser': {
-        'error-extra-color': d22a2a,
-        'sub-alt-color': 1f232c,
-        'sub-color': 526777,
-        'text-color': e5f7ef,
-        'caret-color': 43ffaf,
-        'main-color': 43ffaf,
-        'error-color': ff5f5f,
-        'bg-color': 262a33
-    },
-    'arch': {
-        'error-extra-color': b02a33,
-        'sub-alt-color': 171a25,
-        'sub-color': 454864,
-        'text-color': f6f5f5,
-        'caret-color': 7ebab5,
-        'main-color': 7ebab5,
-        'error-color': ff4754,
-        'bg-color': 0c0d11
-    },
-    'red dragon': {
-        'error-extra-color': 591317,
-        'sub-alt-color': 0e0506,
-        'sub-color': e2a528,
-        'text-color': 4a4d4e,
-        'caret-color': ff3a32,
-        'main-color': ff3a32,
-        'error-color': 771b1f,
-        'bg-color': 1a0b0c
-    },
-    'terror below': {
-        'error-extra-color': 793e44,
-        'sub-alt-color': 041715,
-        'sub-color': 015c53,
-        'text-color': dceae5,
-        'caret-color': 66ac92,
-        'main-color': 66ac92,
-        'error-color': bf616a,
-        'bg-color': 0b1e1a
-    },
-    'red samurai': {
-        'error-extra-color': 176b79,
-        'sub-alt-color': 751d26,
-        'sub-color': 55131b,
-        'text-color': e2dad0,
-        'caret-color': c79e6e,
-        'main-color': c79e6e,
-        'error-color': 33bbda,
-        'bg-color': 84202c
     }
 }

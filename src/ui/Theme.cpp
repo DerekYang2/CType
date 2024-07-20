@@ -14,7 +14,8 @@ Theme::Theme(Color background, Color main, Color caret, Color sub, Color sub_alt
 
 
 /**
- * For now, only meant for fetching specific css variables used by monkeytype 
+ * For now, only meant for fetching specific css variables used by monkeytype
+ * TODO: check if themes folder includes new themes
 */
 void fetch_themes()
 {
@@ -104,7 +105,7 @@ void init_theme(string theme_name)
     replace(theme_name.begin(), theme_name.end(), '_', ' ');
     if (theme_map.contains(theme_name))
         theme = theme_map[theme_name];
-    else
+    else  // TODO: should this be changed to a different default theme?
     {
         theme = Theme(
             rgb(36, 41, 51), // background

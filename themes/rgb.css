@@ -85,34 +85,30 @@
   animation: rgb-bg 5s linear infinite !important;
 }
 
-#top.focus .button.discord::after,
-#top .button.discord.dotHidden::after {
+header.focus .button.discord::after,
+header .button.discord.dotHidden::after {
   animation-name: none !important;
 }
 
-.logo .bottom,
-#top .config .group .buttons .textButton.active,
+#logo .bottom,
+header .config .group .buttons .textButton.active,
 #result .stats .group .bottom,
-#menu .textButton:hover,
-#top .config .group .buttons .textButton:hover,
+nav .textButton:hover,
+header .config .group .buttons .textButton:hover,
 a:hover,
 #words.flipped .word {
   animation: rgb 5s linear infinite;
 }
 
-/* .word letter.correct{
-  animation: rgb 5s linear infinite;
-
-}  */
-
-#words.flipped .word letter.correct {
-  color: var(--sub-color);
+#words {
+  --correct-letter-animation: rgb 5s linear infinite;
 }
 
-#words:not(.flipped) .word letter.correct {
-  animation: rgb 5s linear infinite;
+#words.flipped {
+  --correct-letter-animation: none;
+  --untyped-letter-animation: rgb 5s linear infinite;
 }
 
-#top .logo path {
+header #logo path {
   animation: rgb-fill 5s linear infinite;
 }

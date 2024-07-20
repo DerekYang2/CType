@@ -358,12 +358,22 @@ Color hexToColor(string hex_str)
     {
         hex_str = hex_str.substr(0, 1) + hex_str.substr(0, 1) + hex_str.substr(1, 1) + hex_str.substr(1, 1) + hex_str.substr(2, 1) + hex_str.substr(2, 1);
     }
-    size_t hex_int = std::stol(hex_str, nullptr, 16);
     Color rgbColor;
-    rgbColor.r = ((hex_int >> 16) & 0xFF);  // Extract the RR byte
-    rgbColor.g = ((hex_int >> 8) & 0xFF);   // Extract the GG byte
-    rgbColor.b = ((hex_int) & 0xFF);        // Extract the BB byte
-    rgbColor.a = 255;
+    if (hex_str.size() == 8)  // RGBA, has an alpha byte
+    {
+        long long hex_int = std::stoll(hex_str, nullptr, 16);
+        rgbColor.r = ((hex_int >> 24) & 0xFF);  // Extract the RR byte
+        rgbColor.g = ((hex_int >> 16) & 0xFF);  // Extract the GG byte
+        rgbColor.b = ((hex_int >> 8) & 0xFF);   // Extract the BB byte
+        rgbColor.a = ((hex_int) & 0xFF);        // Extract the AA byte
+    } else
+    {
+        long long hex_int = std::stoll(hex_str, nullptr, 16);
+        rgbColor.r = ((hex_int >> 16) & 0xFF);  // Extract the RR byte
+        rgbColor.g = ((hex_int >> 8) & 0xFF);   // Extract the GG byte
+        rgbColor.b = ((hex_int) & 0xFF);        // Extract the BB byte
+        rgbColor.a = 255;
+    }
     return rgbColor;
 }
 
